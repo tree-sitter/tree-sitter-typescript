@@ -48,7 +48,8 @@ module.exports = grammar(require('tree-sitter-javascript/grammar'), {
     //       ^ jsx_opening_element or type_parameter?
     [$.jsx_opening_element, $.type_parameter],
 
-    [$.this_type, $.this_expression]
+    [$.this_type, $.this_expression],
+    [$._type, $.array_type]
   ]),
   rules: {
 
