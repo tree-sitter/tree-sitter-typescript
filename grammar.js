@@ -102,32 +102,6 @@ module.exports = grammar(require('tree-sitter-javascript/grammar'), {
       optional($.type_annotation),
       optional($._initializer)),
 
-    // TODO: Maybe remove this?
-    math_op: ($, previous) => choice(
-      prec.left(PREC.NEG, seq('-', $._expression)),
-      prec.left(PREC.NEG, seq('+', $._expression)),
-      prec.left(PREC.INC, seq($._expression, '++')),
-      prec.left(PREC.INC, seq($._expression, '--')),
-      prec.left(PREC.INC, seq('++', $._expression)),
-      prec.left(PREC.INC, seq('--', $._expression)),
-      prec.left(PREC.PLUS, seq($._expression, '+', $._expression)),
-      prec.left(PREC.PLUS, seq($._expression, '-', $._expression)),
-      prec.left(PREC.TIMES, seq($._expression, '*', $._expression)),
-      prec.left(PREC.TIMES, seq($._expression, '/', $._expression)),
-      prec.left(PREC.TIMES, seq($._expression, '%', $._expression))
-    ),
-
-    rel_op: ($, previous) => prec.left(PREC.REL, choice(
-      seq($._expression, '<', $._expression),
-      seq($._expression, '<=', $._expression),
-      seq($._expression, '==', $._expression),
-      seq($._expression, '===', $._expression),
-      seq($._expression, '!=', $._expression),
-      seq($._expression, '!==', $._expression),
-      seq($._expression, '>=', $._expression),
-      seq($._expression, '>', $._expression)
-    )),
-
     function_call: ($, previous) => prec(PREC.function_call, seq(
       choice($._expression, $.super, $.function),
       optional($.type_arguments),
