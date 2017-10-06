@@ -23,6 +23,7 @@ module.exports = grammar(require('tree-sitter-javascript/grammar'), {
   name: 'typescript',
 
   conflicts: ($, previous) => previous.concat([
+    [$._expression, $.extends_clause],
     [$._expression, $.export_statement],
     [$._expression, $.import_statement],
     [$.call_expression, $.binary_expression],
@@ -332,8 +333,9 @@ module.exports = grammar(require('tree-sitter-javascript/grammar'), {
 
     extends_clause: $ => prec(PREC.EXTENDS, seq(
       'extends',
-      choice(alias($.identifier, $.type_identifier), $._expression),
-      optional($.type_arguments)
+      commaSep1(seq(
+        choice(alias($.identifier, $.type_identifier), $._expression),
+        optional($.type_arguments)))
     )),
 
     enum_declaration: $ => seq(
