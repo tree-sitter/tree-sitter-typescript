@@ -488,7 +488,7 @@ Method declarations with keywords as names
 class Foo {
   private async() {};
   get(): Result {};
-  private set(plugin) {};
+  private set?(plugin) {};
 }
 
 ---
