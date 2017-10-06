@@ -4935,6 +4935,10 @@
           "value": "export"
         },
         {
+          "type": "STRING",
+          "value": "this"
+        },
+        {
           "type": "CHOICE",
           "members": [
             {
@@ -6991,6 +6995,40 @@
     [
       "computed_property_name",
       "array"
+    ],
+    [
+      "_expression",
+      "this_expression",
+      "required_parameter",
+      "this_type"
+    ],
+    [
+      "_expression",
+      "this_expression",
+      "this_type"
+    ],
+    [
+      "this_type",
+      "required_parameter"
+    ],
+    [
+      "_expression",
+      "this_expression",
+      "optional_parameter"
+    ],
+    [
+      "_expression",
+      "this_expression",
+      "required_parameter"
+    ],
+    [
+      "_expression",
+      "this_expression",
+      "_property_name"
+    ],
+    [
+      "_expression",
+      "this_expression"
     ],
     [
       "_expression",

@@ -23,6 +23,14 @@ module.exports = grammar(require('tree-sitter-javascript/grammar'), {
   name: 'typescript',
 
   conflicts: ($, previous) => previous.concat([
+
+    [$._expression, $.this_expression, $.required_parameter, $.this_type],
+    [$._expression, $.this_expression, $.this_type],
+    [$.this_type, $.required_parameter],
+    [$._expression, $.this_expression, $.optional_parameter],
+    [$._expression, $.this_expression, $.required_parameter],
+    [$._expression, $.this_expression, $._property_name],
+    [$._expression, $.this_expression],
     [$._expression, $.extends_clause],
     [$._expression, $.export_statement],
     [$._expression, $.import_statement],
@@ -597,6 +605,7 @@ module.exports = grammar(require('tree-sitter-javascript/grammar'), {
       'void',
       'import',
       'export',
+      'this',
       previous
     )
   }
