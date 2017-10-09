@@ -148,10 +148,7 @@ module.exports = grammar(require('tree-sitter-javascript/grammar'), {
 
     parenthesized_expression: ($, previous) => seq(
       '(',
-      choice(
         seq($._expression, optional($.type_annotation)),
-        $.sequence_expression
-      ),
       ')'
     ),
 
