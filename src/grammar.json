@@ -655,7 +655,7 @@
       "members": [
         {
           "type": "SYMBOL",
-          "name": "_expression"
+          "name": "_expressions"
         },
         {
           "type": "SYMBOL",
@@ -941,7 +941,7 @@
           "members": [
             {
               "type": "SYMBOL",
-              "name": "_expression"
+              "name": "_expressions"
             },
             {
               "type": "BLANK"
@@ -1004,7 +1004,7 @@
         },
         {
           "type": "SYMBOL",
-          "name": "_expression"
+          "name": "_expressions"
         },
         {
           "type": "STRING",
@@ -1255,7 +1255,7 @@
           "members": [
             {
               "type": "SYMBOL",
-              "name": "_expression"
+              "name": "_expressions"
             },
             {
               "type": "BLANK"
@@ -1277,7 +1277,7 @@
         },
         {
           "type": "SYMBOL",
-          "name": "_expression"
+          "name": "_expressions"
         },
         {
           "type": "SYMBOL",
@@ -1349,7 +1349,7 @@
         },
         {
           "type": "SYMBOL",
-          "name": "_expression"
+          "name": "_expressions"
         },
         {
           "type": "STRING",
@@ -1443,29 +1443,51 @@
           "value": "("
         },
         {
-          "type": "SEQ",
+          "type": "CHOICE",
           "members": [
             {
-              "type": "SYMBOL",
-              "name": "_expression"
-            },
-            {
-              "type": "CHOICE",
+              "type": "SEQ",
               "members": [
                 {
                   "type": "SYMBOL",
-                  "name": "type_annotation"
+                  "name": "_expression"
                 },
                 {
-                  "type": "BLANK"
+                  "type": "CHOICE",
+                  "members": [
+                    {
+                      "type": "SYMBOL",
+                      "name": "type_annotation"
+                    },
+                    {
+                      "type": "BLANK"
+                    }
+                  ]
                 }
               ]
+            },
+            {
+              "type": "SYMBOL",
+              "name": "sequence_expression"
             }
           ]
         },
         {
           "type": "STRING",
           "value": ")"
+        }
+      ]
+    },
+    "_expressions": {
+      "type": "CHOICE",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "_expression"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "sequence_expression"
         }
       ]
     },
@@ -1631,10 +1653,6 @@
               },
               "named": true,
               "value": "identifier"
-            },
-            {
-              "type": "SYMBOL",
-              "name": "sequence_expression"
             }
           ]
         }
@@ -1977,6 +1995,10 @@
             {
               "type": "SYMBOL",
               "name": "_expression"
+            },
+            {
+              "type": "SYMBOL",
+              "name": "sequence_expression"
             },
             {
               "type": "SYMBOL",
@@ -2510,7 +2532,7 @@
           },
           {
             "type": "SYMBOL",
-            "name": "_expression"
+            "name": "_expressions"
           },
           {
             "type": "STRING",
@@ -3467,8 +3489,17 @@
             "value": ","
           },
           {
-            "type": "SYMBOL",
-            "name": "_expression"
+            "type": "CHOICE",
+            "members": [
+              {
+                "type": "SYMBOL",
+                "name": "sequence_expression"
+              },
+              {
+                "type": "SYMBOL",
+                "name": "_expression"
+              }
+            ]
           }
         ]
       }
@@ -3651,7 +3682,7 @@
         },
         {
           "type": "SYMBOL",
-          "name": "_expression"
+          "name": "_expressions"
         },
         {
           "type": "STRING",
@@ -6938,17 +6969,6 @@
   ],
   "conflicts": [
     [
-      "variable_declarator",
-      "_expression"
-    ],
-    [
-      "variable_declarator",
-      "assignment_expression"
-    ],
-    [
-      "sequence_expression"
-    ],
-    [
       "_expression",
       "_property_name"
     ],
@@ -6980,6 +7000,15 @@
     [
       "computed_property_name",
       "array"
+    ],
+    [
+      "_expression",
+      "labeled_statement"
+    ],
+    [
+      "_expression",
+      "labeled_statement",
+      "_property_name"
     ],
     [
       "_expression",

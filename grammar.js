@@ -23,6 +23,8 @@ module.exports = grammar(require('tree-sitter-javascript/grammar'), {
   name: 'typescript',
 
   conflicts: ($, previous) => previous.concat([
+    [$._expression, $.labeled_statement],
+    [$._expression, $.labeled_statement, $._property_name],
 
     [$._expression, $.this_expression, $.required_parameter, $.this_type],
     [$._expression, $.this_expression, $.this_type],
@@ -148,7 +150,10 @@ module.exports = grammar(require('tree-sitter-javascript/grammar'), {
 
     parenthesized_expression: ($, previous) => seq(
       '(',
+      choice(
         seq($._expression, optional($.type_annotation)),
+        $.sequence_expression
+      ),
       ')'
     ),
 
