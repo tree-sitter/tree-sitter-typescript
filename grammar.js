@@ -13,6 +13,7 @@ const PREC = {
   INC: 10,
   NON_NULL: 10,
   FUNCTION_CALL: 11,
+  NEW: 12,
   ARRAY_TYPE: 13,
   MEMBER: 13,
   AS_EXPRESSION: 14,
@@ -88,6 +89,13 @@ module.exports = grammar(require('tree-sitter-javascript/grammar'), {
       choice($._expression, $.super, $.function),
       optional($.type_arguments),
       choice($.arguments, $.template_string)
+    )),
+
+    new_expression: ($, previous) => prec.right(PREC.NEW, seq(
+      'new',
+      $._constructable_expression,
+      optional($.type_arguments),
+      optional($.arguments)
     )),
 
     _expression: ($, previous) => choice(
