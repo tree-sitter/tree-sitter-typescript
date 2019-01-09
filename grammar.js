@@ -1,4 +1,5 @@
 const PREC = {
+  IS: -1,
   ACCESSIBILITY: 1,
   DEFINITION: 1,
   DECLARATION: 1,
@@ -64,6 +65,9 @@ module.exports = grammar(require('tree-sitter-javascript/grammar'), {
 
     [$.object, $._property_name],
     [$.object, $.object_type],
+
+    [$.arrow_function, $.predefined_type],
+    [$.arrow_function, $._primary_type],
   ]),
 
   inline: ($, previous) => previous.concat([
@@ -427,7 +431,7 @@ module.exports = grammar(require('tree-sitter-javascript/grammar'), {
       optional($.type_annotation)
     ),
 
-    type_annotation: $ => seq(':', $._type),
+    type_annotation: $ => prec.left(seq(':', $._type)),
 
     _type: $ => choice(
       $._primary_type,
@@ -437,13 +441,13 @@ module.exports = grammar(require('tree-sitter-javascript/grammar'), {
       $.constructor_type
     ),
 
-    constructor_type: $ => seq(
+    constructor_type: $ => prec.right(seq(
       'new',
       optional($.type_parameters),
       $.formal_parameters,
       '=>',
       $._type
-    ),
+    )),
 
     _primary_type: $ => choice(
       $.parenthesized_type,
@@ -472,11 +476,11 @@ module.exports = grammar(require('tree-sitter-javascript/grammar'), {
       $.type_arguments
     ),
 
-    type_predicate: $ => seq(
+    type_predicate: $ => prec(PREC.IS, seq(
       $.identifier,
       'is',
       $._type
-    ),
+    )),
 
     type_query: $ => prec(PREC.TYPEOF, seq(
       'typeof',
@@ -608,12 +612,15 @@ module.exports = grammar(require('tree-sitter-javascript/grammar'), {
       optional($._type), '&', $._type
     )),
 
-    function_type: $ => seq(
+    function_type: $ => prec.right(seq(
       optional($.type_parameters),
-      $.formal_parameters,
+      choice(
+        $.formal_parameters,
+        $._type
+      ),
       '=>',
       $._type
-    ),
+    )),
 
     _type_identifier: $ => alias($.identifier, $.type_identifier),
 

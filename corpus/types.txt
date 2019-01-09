@@ -67,7 +67,9 @@ Function types
 
 let x: (result: string) => any;
 const foo: (this: Readable, size?: number) => any;
-
+function foo(cb: string | boolean => number) {};
+foo<string => void>();
+(cb: boolean => string): number => 3
 
 ---
 
@@ -86,7 +88,22 @@ const foo: (this: Readable, size?: number) => any;
         (formal_parameters
           (required_parameter (this) (type_annotation (type_identifier)))
           (optional_parameter (identifier) (type_annotation (predefined_type))))
-        (predefined_type))))))
+        (predefined_type)))))
+  (function (identifier)
+    (call_signature (formal_parameters
+      (required_parameter (identifier)
+        (type_annotation (function_type (union_type (predefined_type) (predefined_type)) (predefined_type))))))
+    (statement_block))
+  (empty_statement)
+  (expression_statement
+    (call_expression (identifier)
+      (type_arguments (function_type (predefined_type) (predefined_type))) (arguments)))
+  (expression_statement
+    (arrow_function (call_signature
+      (formal_parameters
+        (required_parameter (identifier) (type_annotation (function_type (predefined_type) (predefined_type)))))
+      (type_annotation (predefined_type)))
+      (number))))
 
 =======================================
 Constructor types
