@@ -169,7 +169,8 @@ module.exports = grammar(require('tree-sitter-javascript/grammar'), {
       choice(
         $.required_parameter,
         $.rest_parameter,
-        $.optional_parameter
+        $.optional_parameter,
+        prec.dynamic(-1, $._type),
       )
     ),
 
@@ -509,9 +510,9 @@ module.exports = grammar(require('tree-sitter-javascript/grammar'), {
 
     flow_maybe_type: $ => prec.right(seq( '?', $._primary_type )),
 
-    parenthesized_type: $ => seq(
+    parenthesized_type: $ => prec(-1, seq(
       '(', $._type, ')'
-    ),
+    )),
 
     predefined_type: $ => choice(
       'any',
