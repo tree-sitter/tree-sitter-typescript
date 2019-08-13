@@ -6391,6 +6391,14 @@
           "value": "export"
         },
         {
+          "type": "STRING",
+          "value": "readonly"
+        },
+        {
+          "type": "STRING",
+          "value": "abstract"
+        },
+        {
           "type": "CHOICE",
           "members": [
             {
@@ -8701,6 +8709,10 @@
     [
       "_expression",
       "predefined_type"
+    ],
+    [
+      "_expression",
+      "readonly"
     ],
     [
       "object",

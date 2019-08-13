@@ -53,6 +53,7 @@ module.exports = function defineGrammar(dialect) {
       [$._expression, $._primary_type],
       [$._expression, $.generic_type],
       [$._expression, $.predefined_type],
+      [$._expression, $.readonly],
 
       [$.object, $.object_type],
       [$.object, $._property_name],
@@ -648,6 +649,7 @@ module.exports = function defineGrammar(dialect) {
         'symbol',
         'void',
         'export',
+        'readonly',
         previous
       ),
     },

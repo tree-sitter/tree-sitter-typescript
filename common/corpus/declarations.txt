@@ -783,3 +783,18 @@ abstract class Animal {
               object: (identifier)
               property: (property_identifier))
             arguments: (arguments (string)))))))))
+
+=================================
+Object with reserved keywords
+=================================
+
+{ readonly: 1, abstract: 1, static: 1 };
+
+---
+
+(program
+  (expression_statement
+    (object
+      (pair (property_identifier) (number))
+      (pair (property_identifier) (number))
+      (pair (property_identifier) (number)))))
