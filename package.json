@@ -10,11 +10,12 @@
   "author": "Max Brunsfeld",
   "license": "MIT",
   "dependencies": {
-    "nan": "^2.14.0"
+    "nan": "^2.14.0",
+    "tree-sitter": "^0.16.2"
   },
   "devDependencies": {
     "tree-sitter-cli": "^0.16.9",
-    "tree-sitter-javascript": "tree-sitter/tree-sitter-javascript"
+    "tree-sitter-javascript": "github:tree-sitter/tree-sitter-javascript#3032cf5"
   },
   "scripts": {
     "build": "npm run build-typescript && npm run build-tsx",

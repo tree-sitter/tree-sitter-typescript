@@ -4028,6 +4028,10 @@
             "named": true
           },
           {
+            "type": "super",
+            "named": true
+          },
+          {
             "type": "template_string",
             "named": true
           },
@@ -5806,6 +5810,10 @@
     "named": false
   },
   {
+    "type": "&&=",
+    "named": false
+  },
+  {
     "type": "&=",
     "named": false
   },
@@ -5950,7 +5958,15 @@
     "named": false
   },
   {
+    "type": "?.",
+    "named": false
+  },
+  {
     "type": "??",
+    "named": false
+  },
+  {
+    "type": "??=",
     "named": false
   },
   {
@@ -6159,11 +6175,11 @@
   },
   {
     "type": "number",
-    "named": false
+    "named": true
   },
   {
     "type": "number",
-    "named": true
+    "named": false
   },
   {
     "type": "of",
@@ -6311,6 +6327,10 @@
   },
   {
     "type": "||",
+    "named": false
+  },
+  {
+    "type": "||=",
     "named": false
   },
   {

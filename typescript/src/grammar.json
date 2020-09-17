@@ -3014,7 +3014,7 @@
     },
     "call_expression": {
       "type": "PREC",
-      "value": 11,
+      "value": 12,
       "content": {
         "type": "SEQ",
         "members": [
@@ -3022,22 +3022,21 @@
             "type": "FIELD",
             "name": "function",
             "content": {
-              "type": "CHOICE",
-              "members": [
-                {
-                  "type": "SYMBOL",
-                  "name": "_expression"
-                },
-                {
-                  "type": "SYMBOL",
-                  "name": "super"
-                },
-                {
-                  "type": "SYMBOL",
-                  "name": "function"
-                }
-              ]
+              "type": "SYMBOL",
+              "name": "_expression"
             }
+          },
+          {
+            "type": "CHOICE",
+            "members": [
+              {
+                "type": "STRING",
+                "value": "?."
+              },
+              {
+                "type": "BLANK"
+              }
+            ]
           },
           {
             "type": "FIELD",
@@ -3076,7 +3075,7 @@
       }
     },
     "new_expression": {
-      "type": "PREC_RIGHT",
+      "type": "PREC",
       "value": 12,
       "content": {
         "type": "SEQ",
@@ -3090,7 +3089,7 @@
             "name": "constructor",
             "content": {
               "type": "SYMBOL",
-              "name": "_constructable_expression"
+              "name": "_expression"
             }
           },
           {
@@ -3116,8 +3115,12 @@
               "type": "CHOICE",
               "members": [
                 {
-                  "type": "SYMBOL",
-                  "name": "arguments"
+                  "type": "PREC_DYNAMIC",
+                  "value": 1,
+                  "content": {
+                    "type": "SYMBOL",
+                    "name": "arguments"
+                  }
                 },
                 {
                   "type": "BLANK"
@@ -3131,6 +3134,10 @@
     "_constructable_expression": {
       "type": "CHOICE",
       "members": [
+        {
+          "type": "SYMBOL",
+          "name": "super"
+        },
         {
           "type": "SYMBOL",
           "name": "this"
@@ -3253,35 +3260,22 @@
             "type": "FIELD",
             "name": "object",
             "content": {
-              "type": "CHOICE",
-              "members": [
-                {
-                  "type": "SYMBOL",
-                  "name": "_expression"
-                },
-                {
-                  "type": "SYMBOL",
-                  "name": "identifier"
-                },
-                {
-                  "type": "SYMBOL",
-                  "name": "super"
-                },
-                {
-                  "type": "ALIAS",
-                  "content": {
-                    "type": "SYMBOL",
-                    "name": "_reserved_identifier"
-                  },
-                  "named": true,
-                  "value": "identifier"
-                }
-              ]
+              "type": "SYMBOL",
+              "name": "_expression"
             }
           },
           {
-            "type": "STRING",
-            "value": "."
+            "type": "CHOICE",
+            "members": [
+              {
+                "type": "STRING",
+                "value": "."
+              },
+              {
+                "type": "STRING",
+                "value": "?."
+              }
+            ]
           },
           {
             "type": "FIELD",
@@ -3309,18 +3303,21 @@
             "type": "FIELD",
             "name": "object",
             "content": {
-              "type": "CHOICE",
-              "members": [
-                {
-                  "type": "SYMBOL",
-                  "name": "_expression"
-                },
-                {
-                  "type": "SYMBOL",
-                  "name": "super"
-                }
-              ]
+              "type": "SYMBOL",
+              "name": "_expression"
             }
+          },
+          {
+            "type": "CHOICE",
+            "members": [
+              {
+                "type": "STRING",
+                "value": "?."
+              },
+              {
+                "type": "BLANK"
+              }
+            ]
           },
           {
             "type": "STRING",
@@ -3499,6 +3496,18 @@
               {
                 "type": "STRING",
                 "value": "**="
+              },
+              {
+                "type": "STRING",
+                "value": "&&="
+              },
+              {
+                "type": "STRING",
+                "value": "||="
+              },
+              {
+                "type": "STRING",
+                "value": "??="
               }
             ]
           },
@@ -4868,7 +4877,7 @@
                 },
                 {
                   "type": "PATTERN",
-                  "value": "[^*]*\\*+([^/*][^*]*\\*+)*"
+                  "value": "[^*]*\\*+([^\\/*][^*]*\\*+)*"
                 },
                 {
                   "type": "STRING",
@@ -5030,7 +5039,7 @@
             },
             {
               "type": "PATTERN",
-              "value": "[^/\\\\\\[\\n]"
+              "value": "[^\\/\\\\\\[\\n]"
             }
           ]
         }
@@ -5539,13 +5548,13 @@
         "members": [
           {
             "type": "PATTERN",
-            "value": "[^\\x00-\\x1F\\s0-9:;`\"'@#.,|^&<=>+\\-*/\\\\%?!~()\\[\\]{}\\uFEFF\\u2060\\u200B\\u00A0]|\\\\u[0-9a-fA-F]{4}|\\\\u\\{[0-9a-fA-F]+\\}"
+            "value": "[^\\x00-\\x1F\\s0-9:;`\"'@#.,|^&<=>+\\-*\\/\\\\%?!~()\\[\\]{}\\uFEFF\\u2060\\u200B\\u00A0]|\\\\u[0-9a-fA-F]{4}|\\\\u\\{[0-9a-fA-F]+\\}"
           },
           {
             "type": "REPEAT",
             "content": {
               "type": "PATTERN",
-              "value": "[^\\x00-\\x1F\\s:;`\"'@#.,|^&<=>+\\-*/\\\\%?!~()\\[\\]{}\\uFEFF\\u2060\\u200B\\u00A0]|\\\\u[0-9a-fA-F]{4}|\\\\u\\{[0-9a-fA-F]+\\}"
+              "value": "[^\\x00-\\x1F\\s:;`\"'@#.,|^&<=>+\\-*\\/\\\\%?!~()\\[\\]{}\\uFEFF\\u2060\\u200B\\u00A0]|\\\\u[0-9a-fA-F]{4}|\\\\u\\{[0-9a-fA-F]+\\}"
             }
           }
         ]
@@ -8682,6 +8691,10 @@
     [
       "_for_header",
       "_expression"
+    ],
+    [
+      "call_expression",
+      "new_expression"
     ],
     [
       "call_expression",
