@@ -17,7 +17,6 @@ const PREC = {
   ARRAY_TYPE: 13,
   MEMBER: 14,
   AS_EXPRESSION: 15,
-  TYPE_ASSERTION: 16,
   TYPE_REFERENCE: 16
 };
 
@@ -271,10 +270,10 @@ module.exports = function defineGrammar(dialect) {
         $.ambient_declaration
       ),
 
-      type_assertion: $ => prec(PREC.TYPE_ASSERTION, seq(
+      type_assertion: $ => seq(
         $.type_arguments,
         $._expression
-      )),
+      ),
 
       as_expression: $ => prec.left(PREC.AS_EXPRESSION, seq(
         $._expression,
