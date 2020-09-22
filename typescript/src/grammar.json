@@ -3119,67 +3119,104 @@
       ]
     },
     "call_expression": {
-      "type": "PREC",
-      "value": 11,
-      "content": {
-        "type": "SEQ",
-        "members": [
-          {
-            "type": "FIELD",
-            "name": "function",
-            "content": {
-              "type": "CHOICE",
-              "members": [
-                {
+      "type": "CHOICE",
+      "members": [
+        {
+          "type": "PREC",
+          "value": 11,
+          "content": {
+            "type": "SEQ",
+            "members": [
+              {
+                "type": "FIELD",
+                "name": "function",
+                "content": {
                   "type": "SYMBOL",
                   "name": "_expression"
-                },
-                {
-                  "type": "SYMBOL",
-                  "name": "super"
-                },
-                {
-                  "type": "SYMBOL",
-                  "name": "function"
                 }
-              ]
-            }
-          },
-          {
-            "type": "FIELD",
-            "name": "type_arguments",
-            "content": {
-              "type": "CHOICE",
-              "members": [
-                {
-                  "type": "SYMBOL",
-                  "name": "type_arguments"
-                },
-                {
-                  "type": "BLANK"
+              },
+              {
+                "type": "FIELD",
+                "name": "type_arguments",
+                "content": {
+                  "type": "CHOICE",
+                  "members": [
+                    {
+                      "type": "SYMBOL",
+                      "name": "type_arguments"
+                    },
+                    {
+                      "type": "BLANK"
+                    }
+                  ]
                 }
-              ]
-            }
-          },
-          {
-            "type": "FIELD",
-            "name": "arguments",
-            "content": {
-              "type": "CHOICE",
-              "members": [
-                {
+              },
+              {
+                "type": "FIELD",
+                "name": "arguments",
+                "content": {
+                  "type": "CHOICE",
+                  "members": [
+                    {
+                      "type": "SYMBOL",
+                      "name": "arguments"
+                    },
+                    {
+                      "type": "SYMBOL",
+                      "name": "template_string"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "PREC",
+          "value": 14,
+          "content": {
+            "type": "SEQ",
+            "members": [
+              {
+                "type": "FIELD",
+                "name": "function",
+                "content": {
+                  "type": "SYMBOL",
+                  "name": "_primary_expression"
+                }
+              },
+              {
+                "type": "STRING",
+                "value": "?."
+              },
+              {
+                "type": "FIELD",
+                "name": "type_arguments",
+                "content": {
+                  "type": "CHOICE",
+                  "members": [
+                    {
+                      "type": "SYMBOL",
+                      "name": "type_arguments"
+                    },
+                    {
+                      "type": "BLANK"
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "FIELD",
+                "name": "arguments",
+                "content": {
                   "type": "SYMBOL",
                   "name": "arguments"
-                },
-                {
-                  "type": "SYMBOL",
-                  "name": "template_string"
                 }
-              ]
-            }
+              }
+            ]
           }
-        ]
-      }
+        }
+      ]
     },
     "new_expression": {
       "type": "PREC_RIGHT",
