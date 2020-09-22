@@ -101,8 +101,8 @@ module.exports = function defineGrammar(dialect) {
       new_expression: $ => prec(PREC.NEW, seq(
         'new',
         field('constructor', $._expression),
-        field('type_arguments', optional($.type_arguments)),
-        field('arguments', optional(prec.dynamic(1, $.arguments)))
+        field('type_arguments', optional(prec.dynamic(1, $.type_arguments))),
+        field('arguments', $.arguments)
       )),
 
       // If the dialect is regular typescript, we exclude JSX expressions and
