@@ -99,7 +99,7 @@ module.exports = function defineGrammar(dialect) {
 
       new_expression: $ => prec.right(PREC.NEW, seq(
         'new',
-        field('constructor', $._constructable_expression),
+        field('constructor', $._primary_expression),
         field('type_arguments', optional($.type_arguments)),
         field('arguments', optional($.arguments))
       )),
@@ -677,7 +677,6 @@ module.exports = function defineGrammar(dialect) {
         'boolean',
         'string',
         'symbol',
-        'void',
         'export',
         previous
       ),
