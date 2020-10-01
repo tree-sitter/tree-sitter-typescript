@@ -809,18 +809,12 @@ Definite assignment assertions
 ==================================
 
 var a!: b;
-const a!: b;
 let a!: b;
 
 ---
 
 (program
   (variable_declaration
-    (variable_declarator
-      (identifier)
-      (type_annotation
-      (type_identifier))))
-  (lexical_declaration
     (variable_declarator
       (identifier)
       (type_annotation
