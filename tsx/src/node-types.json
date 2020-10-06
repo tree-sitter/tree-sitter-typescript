@@ -3283,7 +3283,7 @@
           "named": true
         },
         {
-          "type": "string",
+          "type": "tsx_string",
           "named": true
         }
       ]
@@ -5079,6 +5079,21 @@
     }
   },
   {
+    "type": "tsx_string",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": false,
+      "types": [
+        {
+          "type": "escape_sequence",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
     "type": "tuple_type",
     "named": true,
     "fields": {},
@@ -6314,11 +6329,11 @@
   },
   {
     "type": "number",
-    "named": false
+    "named": true
   },
   {
     "type": "number",
-    "named": true
+    "named": false
   },
   {
     "type": "of",

@@ -2,6 +2,7 @@ const PREC = {
   ACCESSIBILITY: 1,
   DEFINITION: 1,
   DECLARATION: 1,
+  STRING: 2, // must match the value defined in javascript's grammar.js.
   INTERSECTION: 2,
   UNION: 2,
   PLUS: 4,
@@ -155,6 +156,34 @@ module.exports = function defineGrammar(dialect) {
         repeat(field('attribute', $._jsx_attribute)),
         '>'
       )),
+
+      // Use more tolerant $.tsx_string instead of $.string.
+      _jsx_attribute_value: ($, previous) => choice(
+        ...previous.members.map(member =>
+          member.name == 'string' ? $.tsx_string : member
+      )),
+
+      // Same as $.string defined for javascript, with modified regexp
+      // that allows unescaped newlines.
+      // See https://github.com/Microsoft/TypeScript/issues/13328
+      tsx_string: $ => choice(
+        seq(
+          '"',
+          repeat(choice(
+            token.immediate(prec(PREC.STRING, /[^"\\\n]+|\\?\r?\n/)),
+            $.escape_sequence
+          )),
+          '"'
+        ),
+        seq(
+          "'",
+          repeat(choice(
+            token.immediate(prec(PREC.STRING, /[^'\\\n]+|\\?\r?\n/)),
+            $.escape_sequence
+          )),
+          "'"
+        )
+      ),
 
       _import_export_specifier: ($, previous) => seq(
         optional(choice('type', 'typeof')),
