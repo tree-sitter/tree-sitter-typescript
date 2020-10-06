@@ -676,8 +676,9 @@ module.exports = function defineGrammar(dialect) {
         $.type_annotation
       ),
 
-      array_type: $ => prec.right(PREC.ARRAY_TYPE, seq(
-        $._primary_type, '[', ']'
+      array_type: $ => prec(PREC.ARRAY_TYPE, choice(
+        seq($.readonly, $._primary_type, '[', ']'),
+        prec(PREC.ARRAY_TYPE+1, seq($._primary_type, '[', ']'))
       )),
 
       tuple_type: $ => seq(

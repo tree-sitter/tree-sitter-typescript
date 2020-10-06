@@ -665,3 +665,47 @@ function f(x: any): asserts x is number {
       (identifier) (type_annotation (predefined_type))))
     (asserts (identifier) (predefined_type))
     (statement_block)))
+
+==================================
+Read-only arrays
+==================================
+
+type t = a[]
+type t = readonly a[]
+type t = readonly a[][]
+type t = (readonly a[])[]
+type t = readonly (readonly a[]) []
+
+---
+
+(program
+  (type_alias_declaration
+    (type_identifier)
+    (array_type
+      (type_identifier)))
+  (type_alias_declaration
+    (type_identifier)
+    (array_type
+      (readonly)
+      (type_identifier)))
+  (type_alias_declaration
+    (type_identifier)
+    (array_type
+      (readonly)
+      (array_type
+        (type_identifier))))
+  (type_alias_declaration
+    (type_identifier)
+    (array_type
+      (parenthesized_type
+        (array_type
+          (readonly)
+          (type_identifier)))))
+  (type_alias_declaration
+    (type_identifier)
+    (array_type
+      (readonly)
+      (parenthesized_type
+        (array_type
+          (readonly)
+          (type_identifier))))))
