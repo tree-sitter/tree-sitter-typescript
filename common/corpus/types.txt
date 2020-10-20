@@ -667,6 +667,27 @@ function f(x: any): asserts x is number {
     (statement_block)))
 
 ==================================
+Tuple types
+==================================
+
+type t = [a]
+type t = [a, b]
+type t = readonly [a, b]
+
+---
+
+(program
+   (type_alias_declaration
+     (type_identifier)
+     (tuple_type (type_identifier)))
+   (type_alias_declaration
+     (type_identifier)
+     (tuple_type (type_identifier) (type_identifier)))
+   (type_alias_declaration
+     (type_identifier)
+     (tuple_type (readonly) (type_identifier) (type_identifier))))
+
+==================================
 Read-only arrays
 ==================================
 

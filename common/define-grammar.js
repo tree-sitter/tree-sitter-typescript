@@ -2,6 +2,7 @@ const PREC = {
   ACCESSIBILITY: 1,
   DEFINITION: 1,
   DECLARATION: 1,
+  TUPLE_TYPE: 1,
   INTERSECTION: 2,
   UNION: 2,
   PLUS: 4,
@@ -681,8 +682,9 @@ module.exports = function defineGrammar(dialect) {
         prec(PREC.ARRAY_TYPE+1, seq($._primary_type, '[', ']'))
       )),
 
-      tuple_type: $ => seq(
-        '[', commaSep1($._type), ']'
+      tuple_type: $ => choice(
+        seq($.readonly, '[', commaSep1($._type), ']'),
+        prec(PREC.TUPLE_TYPE, seq('[', commaSep1($._type), ']'))
       ),
 
       union_type: $ => prec.left(PREC.UNION, seq(
