@@ -3046,6 +3046,10 @@
           "named": true
         },
         {
+          "type": "readonly",
+          "named": true
+        },
+        {
           "type": "type_annotation",
           "named": true
         }

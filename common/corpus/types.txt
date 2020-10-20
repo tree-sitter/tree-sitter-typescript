@@ -72,6 +72,31 @@ let MyFunction: {
           (type_annotation (predefined_type))))))))
 
 ====================================================
+Index signatures
+====================================================
+
+type Foo = {
+  [b: string]: any;
+  readonly [c: number]: string;
+}
+
+---
+
+(program
+  (type_alias_declaration
+    (type_identifier)
+    (object_type
+      (index_signature
+        (identifier)
+        (predefined_type)
+        (type_annotation (predefined_type)))
+      (index_signature
+        (readonly)
+        (identifier)
+        (predefined_type)
+        (type_annotation (predefined_type))))))
+
+====================================================
 Object types with automatic semicolon insertion
 ====================================================
 
