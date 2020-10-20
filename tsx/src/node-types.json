@@ -5157,6 +5157,10 @@
           "named": true
         },
         {
+          "type": "readonly",
+          "named": true
+        },
+        {
           "type": "this",
           "named": true
         },
