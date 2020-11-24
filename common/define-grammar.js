@@ -19,7 +19,8 @@ const PREC = {
   MEMBER: 14,
   AS_EXPRESSION: 15,
   TYPE_ASSERTION: 16,
-  TYPE_REFERENCE: 16
+  TYPE_REFERENCE: 16,
+  CONDITIONAL_TYPE: 16
 };
 
 module.exports = function defineGrammar(dialect) {
@@ -66,6 +67,12 @@ module.exports = function defineGrammar(dialect) {
       [$._expression, $._primary_type],
       [$._expression, $.generic_type],
       [$._expression, $.predefined_type],
+
+      [$._conditionable_type, $.type_parameter],
+      [$._parameter_name, $._conditionable_type],
+      [$._conditionable_type, $.generic_type],
+      [$._expression, $._conditionable_type],
+      [$._parameter_name, $._expression, $._conditionable_type],
 
       [$.object, $.object_type],
       [$.object, $._property_name],
@@ -504,24 +511,39 @@ module.exports = function defineGrammar(dialect) {
         $._type
       ),
 
-      _primary_type: $ => choice(
+      _conditionable_type: $ => choice(
         $.parenthesized_type,
         $.predefined_type,
         $._type_identifier,
         $.nested_type_identifier,
         $.generic_type,
-        $.type_predicate,
         $.object_type,
         $.array_type,
         $.tuple_type,
-        $.flow_maybe_type,
         $.type_query,
         $.index_type_query,
         $.this,
         $.existential_type,
         $.literal_type,
-        $.lookup_type
+        $.lookup_type,
+        $.conditional_type,
+        $.flow_maybe_type
       ),
+
+      _primary_type: $ => choice(
+        $._conditionable_type,
+        $.type_predicate,
+      ),
+
+      conditional_type: $ => prec.left(PREC.CONDITIONAL_TYPE, seq(
+        field('left', $._conditionable_type),
+        'extends',
+        field('right', $._conditionable_type),
+        '?',
+        field('consequence', $._conditionable_type),
+        ':',
+        field('alternative', $._conditionable_type)
+      )),
 
       generic_type: $ => seq(
         choice(
