@@ -71,7 +71,7 @@ const lines = new Array<DiffLine>()
       (identifier)
       (new_expression
         (identifier)
-        (type_arguments (type_identifier))
+        (call_type_arguments (type_identifier))
         (arguments)))))
 
 ==================================
@@ -79,6 +79,7 @@ Function calls with optional chaining and type arguments
 ==================================
 
 A?.<B>();
+A<B[]>();
 
 ---
 
@@ -86,7 +87,12 @@ A?.<B>();
   (expression_statement
     (call_expression
       (identifier)
-      (type_arguments (type_identifier))
+      (call_type_arguments (type_identifier))
+      (arguments)))
+  (expression_statement
+    (call_expression
+      (identifier)
+      (call_type_arguments (array_type (type_identifier)))
       (arguments))))
 
 ==================================

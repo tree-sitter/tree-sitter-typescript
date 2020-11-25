@@ -12,7 +12,6 @@ const PREC = {
   PLUS: 4,
   REL: 5,
   TIMES: 6,
-  TYPEOF: 7,
   EXTENDS: 7,
   NEG: 9,
   INC: 10,
@@ -24,7 +23,8 @@ const PREC = {
   MEMBER: 14,
   TYPE_ASSERTION: 16,
   TYPE_REFERENCE: 16,
-  CONSTRUCTOR_TYPE: 17
+  CONSTRUCTOR_TYPE: 17,
+  TYPEOF: 18
 };
 
 module.exports = function defineGrammar(dialect) {
@@ -39,11 +39,20 @@ module.exports = function defineGrammar(dialect) {
       // work.
       '||',
       $._function_signature_automatic_semicolon,
+      $._call_type_arguments_closing_bracket
     ]),
 
     conflicts: ($, previous) => previous.concat([
-      [$.call_expression, $.binary_expression],
-      [$.call_expression, $.binary_expression, $.unary_expression],
+      [$._expression, $.call_expression],
+      [$._expression, $.arrow_function, $.call_expression],
+      [$.arrow_function, $.call_expression, $._property_name],
+      [$._expression, $.arrow_function, $.call_expression, $._property_name],
+      [$.call_expression, $._property_name],
+      [$._expression, $.call_expression, $._property_name],
+      [$._expression, $.call_expression, $.generic_type],
+      [$._expression, $.call_expression, $.new_expression],
+      [$._expression, $.arrow_function, $.call_expression, $.new_expression],
+      [$.call_expression, $.new_expression],
 
       [$.nested_type_identifier, $.nested_identifier],
       [$.nested_type_identifier, $.member_expression],
@@ -105,26 +114,9 @@ module.exports = function defineGrammar(dialect) {
         optional($._initializer)
       ),
 
-      call_expression: ($, previous) => choice(
-        prec(PREC.CALL, seq(
-          field('function', $._expression),
-          field('type_arguments', optional($.type_arguments)),
-          field('arguments', choice($.arguments, $.template_string))
-        )),
-        prec(PREC.MEMBER, seq(
-          field('function', $._primary_expression),
-          '?.',
-          field('type_arguments', optional($.type_arguments)),
-          field('arguments', $.arguments)
-        ))
-      ),
+      call_expression: $ => callExpression($, "function"),
 
-      new_expression: $ => prec.right(PREC.NEW, seq(
-        'new',
-        field('constructor', $._primary_expression),
-        field('type_arguments', optional($.type_arguments)),
-        field('arguments', optional($.arguments))
-      )),
+      new_expression: $ => seq('new', callExpression($, "constructor")),
 
       _augmented_assignment_lhs: ($, previous) => choice(previous, $.non_null_expression),
 
@@ -659,8 +651,10 @@ module.exports = function defineGrammar(dialect) {
         'void'
       ),
 
-      type_arguments: $ => seq(
-        '<', commaSep1($._type), optional(','), '>'
+      type_arguments: $ => typeArguments($),
+      call_type_arguments: $ => typeArguments(
+        $,
+        $._call_type_arguments_closing_bracket
       ),
 
       object_type: $ => seq(
@@ -806,6 +800,21 @@ module.exports = function defineGrammar(dialect) {
       ),
     },
   });
+}
+
+function typeArguments($, closingBracket = '>') {
+  return seq(
+    '<', commaSep1($._type), optional(','), closingBracket
+  )
+}
+
+function callExpression ($, expressionName) {
+  return seq(
+    field(expressionName, $._primary_expression),
+    optional('?.'),
+    field('type_arguments', optional($.call_type_arguments)),
+    field('arguments', choice($.arguments, $.template_string))
+  )
 }
 
 function commaSep1 (rule) {

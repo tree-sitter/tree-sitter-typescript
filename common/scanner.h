@@ -6,6 +6,7 @@ enum TokenType {
   TEMPLATE_CHARS,
   BINARY_OPERATORS,
   FUNCTION_SIGNATURE_AUTOMATIC_SEMICOLON,
+  CALL_TYPE_ARGUMENTS_CLOSING_BRACKET
 };
 
 static void advance(TSLexer *lexer) { lexer->advance(lexer, false); }
@@ -150,7 +151,22 @@ static inline bool external_scanner_scan(void *payload, TSLexer *lexer, const bo
     }
 
     return true;
-  } else {
-    return false;
+  } else if (valid_symbols[CALL_TYPE_ARGUMENTS_CLOSING_BRACKET]) {
+    lexer->mark_end(lexer);
+
+    scan_whitespace_and_comments(lexer);
+    if (lexer->lookahead != '>') {
+      return false;
+    }
+
+    advance(lexer);
+    scan_whitespace_and_comments(lexer);
+    if (lexer->lookahead == '(') {
+      lexer->mark_end(lexer);
+      lexer->result_symbol = CALL_TYPE_ARGUMENTS_CLOSING_BRACKET;
+      return true;
+    }
   }
+
+  return false;
 }
