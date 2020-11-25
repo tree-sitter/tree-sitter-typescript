@@ -68,7 +68,7 @@ module.exports = function defineGrammar(dialect) {
       [$._expression, $.predefined_type],
       [$._expression, $._rest_annotation],
 
-      [$._tuple_type, $.tuple_type],
+      [$.tuple_type_member, $.tuple_type],
 
       [$.object, $.object_type],
       [$.object, $._property_name],
@@ -505,7 +505,7 @@ module.exports = function defineGrammar(dialect) {
 
       optional_tuple_type: $ => seq($._type, '?'),
 
-      _tuple_type: $ => choice($.optional_tuple_type, $._type),
+      tuple_type_member: $ => seq(choice($.optional_tuple_type, $._type), optional($.type_annotation)),
 
       constructor_type: $ => seq(
         'new',
@@ -700,9 +700,19 @@ module.exports = function defineGrammar(dialect) {
           '[',
           choice(
             $.rest_type,
-            seq($._tuple_type, optional(seq(',', $.rest_type))),
-            seq($._tuple_type, optional(repeat(seq(',', $._tuple_type)))),
-            seq($._tuple_type, repeat(seq(',', $._tuple_type)), optional(seq(',', $.rest_type))),
+            seq(
+              $.tuple_type_member,
+              optional(seq(',', $.rest_type))
+            ),
+            seq(
+              $.tuple_type_member,
+              optional(repeat(seq(',', $.tuple_type_member)))
+            ),
+            seq(
+              $.tuple_type_member,
+              repeat(seq(',', $.tuple_type_member)),
+              optional(seq(',', $.rest_type))
+            ),
           ),
           ']'
         ))

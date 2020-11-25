@@ -731,45 +731,59 @@ function f(x: any): asserts x is number {
 Tuple types
 ==================================
 
-type t = [a]
 type t = [a, b]
 type t = readonly [a, b]
 type t = [...b]
 type t = [a, ...b]
 type t = [a, b, ...c]
 type t = [a, b?]
+type t = [a: A, b?: B, ...c: C[]]
 
 ---
 
 (program
   (type_alias_declaration
     (type_identifier)
-    (tuple_type (type_identifier)))
+    (tuple_type
+      (tuple_type_member (type_identifier))
+      (tuple_type_member (type_identifier))))
   (type_alias_declaration
     (type_identifier)
-    (tuple_type (type_identifier) (type_identifier)))
-  (type_alias_declaration
-    (type_identifier)
-    (tuple_type (readonly) (type_identifier) (type_identifier)))
+    (tuple_type
+      (readonly)
+      (type_identifier)
+      (type_identifier)))
   (type_alias_declaration
     (type_identifier)
     (tuple_type (rest_type (identifier))))
   (type_alias_declaration
     (type_identifier)
     (tuple_type
-      (type_identifier)
-      (rest_type (identifier))))
+      (tuple_type_member (type_identifier))
+      (rest_type         (identifier))))
   (type_alias_declaration
     (type_identifier)
     (tuple_type
-      (type_identifier)
-      (type_identifier)
-      (rest_type (identifier))))
+      (tuple_type_member (type_identifier))
+      (tuple_type_member (type_identifier))
+      (rest_type         (identifier))))
   (type_alias_declaration
     (type_identifier)
     (tuple_type
-      (type_identifier)
-      (optional_tuple_type (type_identifier)))))
+      (tuple_type_member (type_identifier))
+      (tuple_type_member (optional_tuple_type (type_identifier)))))
+  (type_alias_declaration
+    (type_identifier)
+    (tuple_type
+      (tuple_type_member
+        (type_identifier)
+        (type_annotation (type_identifier)))
+      (tuple_type_member
+        (optional_tuple_type (type_identifier))
+        (type_annotation     (type_identifier)))
+      (rest_type
+        (identifier)
+        (type_annotation (array_type (type_identifier)))))))
 
 ==================================
 Read-only arrays
