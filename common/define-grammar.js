@@ -66,12 +66,12 @@ module.exports = function defineGrammar(dialect) {
       [$._expression, $._primary_type],
       [$._expression, $.generic_type],
       [$._expression, $.predefined_type],
-      [$._expression, $._rest_annotation],
-
-      [$.tuple_type_member, $.tuple_type],
+      [$._expression, $.rest_type],
 
       [$.object, $.object_type],
       [$.object, $._property_name],
+
+      [$._tuple_type_member, $.tuple_type]
     ]),
 
     inline: ($, previous) => previous
@@ -474,15 +474,20 @@ module.exports = function defineGrammar(dialect) {
         )
       ),
 
-      _rest_annotation: $ => seq(
+      rest_type: $ => seq(
         '...',
         $.identifier,
+      ),
+
+      rest_parameter: $ => seq(
+        $.rest_type,
         optional($.type_annotation)
       ),
 
-      rest_type: $ => $._rest_annotation,
-
-      rest_parameter: $ => $._rest_annotation,
+      annotated_rest_type: $ => seq(
+        $.rest_type,
+        $.type_annotation
+      ),
 
       type_annotation: $ => seq(':', $._type),
 
@@ -505,7 +510,9 @@ module.exports = function defineGrammar(dialect) {
 
       optional_tuple_type: $ => seq($._type, '?'),
 
-      tuple_type_member: $ => seq(choice($.optional_tuple_type, $._type), optional($.type_annotation)),
+      _tuple_type_member: $ => choice($.optional_tuple_type, $._type),
+
+      labeled_tuple_type_member: $ => seq($._tuple_type_member, $.type_annotation),
 
       constructor_type: $ => seq(
         'new',
@@ -699,20 +706,13 @@ module.exports = function defineGrammar(dialect) {
         prec(PREC.TUPLE_TYPE, seq(
           '[',
           choice(
-            $.rest_type,
-            seq(
-              $.tuple_type_member,
-              optional(seq(',', $.rest_type))
-            ),
-            seq(
-              $.tuple_type_member,
-              optional(repeat(seq(',', $.tuple_type_member)))
-            ),
-            seq(
-              $.tuple_type_member,
-              repeat(seq(',', $.tuple_type_member)),
-              optional(seq(',', $.rest_type))
-            ),
+            choice(
+              // Tuple members must all have names or all not have names. (5084)
+              // unlabeled sequence
+              ...tupleTypeContents($._tuple_type_member, $.rest_type),
+              // labeled sequence
+              ...tupleTypeContents($.labeled_tuple_type_member, $.annotated_rest_type)
+            )
           ),
           ']'
         ))
@@ -754,6 +754,25 @@ module.exports = function defineGrammar(dialect) {
       ),
     },
   });
+}
+
+function tupleTypeContents(type_member, rest_type) {
+  return [
+    rest_type,
+    seq(
+      type_member,
+      optional(seq(',', rest_type))
+    ),
+    seq(
+      type_member,
+      optional(repeat(seq(',', type_member)))
+    ),
+    seq(
+      type_member,
+      repeat(seq(',', type_member)),
+      optional(seq(',', rest_type))
+    ),
+  ]
 }
 
 function commaSep1 (rule) {
