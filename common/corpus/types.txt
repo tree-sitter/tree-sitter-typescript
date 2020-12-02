@@ -822,5 +822,5 @@ type t = [a: A, b?: B, ...c: C[]]
         (optional_tuple_type (type_identifier))
         (type_annotation     (type_identifier)))
       (annotated_rest_type
-        (rest_type (identifier))
+        (identifier)
         (type_annotation (array_type (type_identifier)))))))

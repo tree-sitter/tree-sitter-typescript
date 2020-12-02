@@ -66,7 +66,7 @@ module.exports = function defineGrammar(dialect) {
       [$._expression, $._primary_type],
       [$._expression, $.generic_type],
       [$._expression, $.predefined_type],
-      [$._expression, $.rest_type],
+      [$._expression, $._rest_identifier],
 
       [$.object, $.object_type],
       [$.object, $._property_name],
@@ -474,18 +474,20 @@ module.exports = function defineGrammar(dialect) {
         )
       ),
 
-      rest_type: $ => seq(
+      _rest_identifier: $ => seq(
         '...',
         $.identifier,
       ),
 
+      rest_type: $ => $._rest_identifier,
+
       rest_parameter: $ => seq(
-        $.rest_type,
+        $._rest_identifier,
         optional($.type_annotation)
       ),
 
       annotated_rest_type: $ => seq(
-        $.rest_type,
+        $._rest_identifier,
         $.type_annotation
       ),
 
