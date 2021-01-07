@@ -38,6 +38,8 @@ module.exports = function defineGrammar(dialect) {
       // slightly different when parsing types. Any binary-only operator would
       // work.
       '||',
+      $._function_signature_semicolon_before_annotation,
+      $._function_signature_semicolon_after_annotation
     ]),
 
     conflicts: ($, previous) => previous.concat([
@@ -203,7 +205,8 @@ module.exports = function defineGrammar(dialect) {
       export_statement: ($, previous) => prec(PREC.DECLARATION, choice(
         previous,
         seq('export', '=', $.identifier, $._semicolon),
-        seq('export', 'as', 'namespace', $.identifier, $._semicolon)
+        seq('export', 'as', 'namespace', $.identifier, $._semicolon),
+        seq('export', optional("default"), $.function_signature)
       )),
 
       non_null_expression: $ => prec.left(PREC.NON_NULL, seq(
@@ -261,13 +264,27 @@ module.exports = function defineGrammar(dialect) {
         )
       ),
 
-      function_signature: $ => seq(
+      function_signature: $ => prec.right(seq(
         optional('async'),
         'function',
         field('name', $.identifier),
-        $._call_signature,
-        $._semicolon
-      ),
+        field('type_parameters', optional($.type_parameters)),
+        field('parameters', $.formal_parameters),
+        field('return_type', choice(
+          seq(
+            $._function_signature_semicolon_before_annotation,
+            optional(";")
+          ),
+          seq(
+            choice(
+              $.type_annotation,
+              $.asserts,
+              $.type_predicate_annotation
+            ),
+            $._function_signature_semicolon_after_annotation,
+            optional(";")
+          )
+        )))),
 
       class_body: $ => seq(
         '{',
@@ -506,9 +523,12 @@ module.exports = function defineGrammar(dialect) {
       asserts: $ => seq(
         ':',
         'asserts',
-        choice(
-          $.identifier,
-          $.type_predicate
+        choice($.identifier, $.this),
+        optional(
+          seq(
+            'is',
+            $._type
+          )
         )
       ),
 
