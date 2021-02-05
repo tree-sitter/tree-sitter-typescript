@@ -52,9 +52,6 @@ known_failures="$(cat script/known_failures.txt)"
 
 tree-sitter parse -q \
   'examples/**/*.ts*' \
-  '!examples/redux/src/types/middleware.ts' \
-  '!examples/redux/src/types/reducers.ts' \
-  '!examples/redux/src/types/store.ts' \
   $(for failure in $known_failures; do echo "!${failure}"; done)
 
 example_count=$(find examples -name '*.ts*' | wc -l)
