@@ -5,8 +5,7 @@ enum TokenType {
   AUTOMATIC_SEMICOLON,
   TEMPLATE_CHARS,
   BINARY_OPERATORS,
-  FUNCTION_SIGNATURE_SEMICOLON_BEFORE_ANNOTATION,
-  FUNCTION_SIGNATURE_SEMICOLON_AFTER_ANNOTATION
+  FUNCTION_SIGNATURE_AUTOMATIC_SEMICOLON,
 };
 
 static void advance(TSLexer *lexer) { lexer->advance(lexer, false); }
@@ -70,7 +69,10 @@ static inline bool external_scanner_scan(void *payload, TSLexer *lexer, const bo
           advance(lexer);
       }
     }
-  } else if (valid_symbols[AUTOMATIC_SEMICOLON]) {
+  } else if (
+    valid_symbols[AUTOMATIC_SEMICOLON] ||
+    valid_symbols[FUNCTION_SIGNATURE_AUTOMATIC_SEMICOLON]
+  ) {
     lexer->result_symbol = AUTOMATIC_SEMICOLON;
     lexer->mark_end(lexer);
 
@@ -102,6 +104,10 @@ static inline bool external_scanner_scan(void *payload, TSLexer *lexer, const bo
       case '/':
       case ':':
         return false;
+
+      case '{':
+        if (valid_symbols[FUNCTION_SIGNATURE_AUTOMATIC_SEMICOLON]) return false;
+        break;
 
       // Don't insert a semicolon before a '[' or '(', unless we're parsing
       // a type. Detect whether we're parsing a type or an expression using
@@ -144,51 +150,7 @@ static inline bool external_scanner_scan(void *payload, TSLexer *lexer, const bo
     }
 
     return true;
-  } else if (valid_symbols[FUNCTION_SIGNATURE_SEMICOLON_BEFORE_ANNOTATION]) {
-    lexer->mark_end(lexer);
-
-    scan_whitespace_and_comments(lexer);
-    while (iswspace(lexer->lookahead)) {
-      advance(lexer);
-    }
-
-    // if ':', then leave it up to FUNCTION_SIGNATURE_SEMICOLON_AFTER_ANNOTATION
-    // if '{', then this is a function declaration, therefore don't match it
-    if (lexer->lookahead != ':' && lexer->lookahead != '{') {
-      lexer->result_symbol = FUNCTION_SIGNATURE_SEMICOLON_BEFORE_ANNOTATION;
-      return true;
-    }
-  } else if (valid_symbols[FUNCTION_SIGNATURE_SEMICOLON_AFTER_ANNOTATION]) {
-    lexer->mark_end(lexer);
-
-    scan_whitespace_and_comments(lexer);
-    while (iswspace(lexer->lookahead)) {
-      advance(lexer);
-    }
-
-    if (lexer->lookahead == 'i') {
-      advance(lexer);
-      if (lexer->lookahead == 's') {
-        // part of a Type Assertion
-        // the semicolon position has not been reached yet
-        return false;
-      }
-    } else if (
-      // part of a Return Type Signature
-      // the semicolon position has not been reached yet
-      lexer->lookahead == '{' ||
-      lexer->lookahead == '[' ||
-      lexer->lookahead == '<' ||
-      lexer->lookahead == '|' ||
-      lexer->lookahead == '.' ||
-      lexer->lookahead == '&'
-    ) {
-      return false;
-    }
-
-    lexer->result_symbol = FUNCTION_SIGNATURE_SEMICOLON_AFTER_ANNOTATION;
-    return true;
+  } else {
+    return false;
   }
-
-  return false;
 }

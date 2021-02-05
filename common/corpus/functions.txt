@@ -203,7 +203,7 @@ export default function foo(): bar
     (function_signature
       (identifier)
       (formal_parameters)
-      (type_annotation (type_identifier))))) 
+      (type_annotation (type_identifier)))))
 
 =============================================================
 Ambiguity between function signature and function declaration

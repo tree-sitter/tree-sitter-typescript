@@ -2924,13 +2924,9 @@
         ]
       },
       "return_type": {
-        "multiple": true,
-        "required": true,
+        "multiple": false,
+        "required": false,
         "types": [
-          {
-            "type": ";",
-            "named": false
-          },
           {
             "type": "asserts",
             "named": true
