@@ -1265,7 +1265,95 @@
         "required": true,
         "types": [
           {
-            "type": "_expression",
+            "type": "array",
+            "named": true
+          },
+          {
+            "type": "arrow_function",
+            "named": true
+          },
+          {
+            "type": "call_expression",
+            "named": true
+          },
+          {
+            "type": "class",
+            "named": true
+          },
+          {
+            "type": "false",
+            "named": true
+          },
+          {
+            "type": "function",
+            "named": true
+          },
+          {
+            "type": "generator_function",
+            "named": true
+          },
+          {
+            "type": "identifier",
+            "named": true
+          },
+          {
+            "type": "import",
+            "named": true
+          },
+          {
+            "type": "member_expression",
+            "named": true
+          },
+          {
+            "type": "meta_property",
+            "named": true
+          },
+          {
+            "type": "null",
+            "named": true
+          },
+          {
+            "type": "number",
+            "named": true
+          },
+          {
+            "type": "object",
+            "named": true
+          },
+          {
+            "type": "parenthesized_expression",
+            "named": true
+          },
+          {
+            "type": "regex",
+            "named": true
+          },
+          {
+            "type": "string",
+            "named": true
+          },
+          {
+            "type": "subscript_expression",
+            "named": true
+          },
+          {
+            "type": "super",
+            "named": true
+          },
+          {
+            "type": "template_string",
+            "named": true
+          },
+          {
+            "type": "this",
+            "named": true
+          },
+          {
+            "type": "true",
+            "named": true
+          },
+          {
+            "type": "undefined",
             "named": true
           }
         ]
@@ -1275,7 +1363,7 @@
         "required": false,
         "types": [
           {
-            "type": "type_arguments",
+            "type": "call_type_arguments",
             "named": true
           }
         ]
@@ -1324,6 +1412,101 @@
           }
         ]
       }
+    }
+  },
+  {
+    "type": "call_type_arguments",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "array_type",
+          "named": true
+        },
+        {
+          "type": "conditional_type",
+          "named": true
+        },
+        {
+          "type": "constructor_type",
+          "named": true
+        },
+        {
+          "type": "existential_type",
+          "named": true
+        },
+        {
+          "type": "flow_maybe_type",
+          "named": true
+        },
+        {
+          "type": "function_type",
+          "named": true
+        },
+        {
+          "type": "generic_type",
+          "named": true
+        },
+        {
+          "type": "index_type_query",
+          "named": true
+        },
+        {
+          "type": "infer_type",
+          "named": true
+        },
+        {
+          "type": "intersection_type",
+          "named": true
+        },
+        {
+          "type": "literal_type",
+          "named": true
+        },
+        {
+          "type": "lookup_type",
+          "named": true
+        },
+        {
+          "type": "nested_type_identifier",
+          "named": true
+        },
+        {
+          "type": "object_type",
+          "named": true
+        },
+        {
+          "type": "parenthesized_type",
+          "named": true
+        },
+        {
+          "type": "predefined_type",
+          "named": true
+        },
+        {
+          "type": "this",
+          "named": true
+        },
+        {
+          "type": "tuple_type",
+          "named": true
+        },
+        {
+          "type": "type_identifier",
+          "named": true
+        },
+        {
+          "type": "type_query",
+          "named": true
+        },
+        {
+          "type": "union_type",
+          "named": true
+        }
+      ]
     }
   },
   {
@@ -4740,10 +4923,14 @@
     "fields": {
       "arguments": {
         "multiple": false,
-        "required": false,
+        "required": true,
         "types": [
           {
             "type": "arguments",
+            "named": true
+          },
+          {
+            "type": "template_string",
             "named": true
           }
         ]
@@ -4851,7 +5038,7 @@
         "required": false,
         "types": [
           {
-            "type": "type_arguments",
+            "type": "call_type_arguments",
             "named": true
           }
         ]
@@ -7469,11 +7656,11 @@
   },
   {
     "type": "number",
-    "named": false
+    "named": true
   },
   {
     "type": "number",
-    "named": true
+    "named": false
   },
   {
     "type": "of",
