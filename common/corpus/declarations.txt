@@ -682,10 +682,14 @@ Classes with decorators
       (method_definition
         (property_identifier)
         (formal_parameters
-          (decorator (identifier))
-          (required_parameter (identifier) (type_annotation (predefined_type)))
-          (decorator (identifier))
-          (optional_parameter (identifier) (type_annotation (predefined_type))))
+          (required_parameter
+            (decorator (identifier))
+            (identifier)
+            (type_annotation (predefined_type)))
+          (optional_parameter
+            (decorator (identifier))
+            (identifier)
+            (type_annotation (predefined_type))))
         (statement_block)))))
 
 =======================================

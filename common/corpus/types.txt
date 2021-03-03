@@ -779,7 +779,8 @@ function isT(t: T): t is T {
     (formal_parameters
     (required_parameter
       (identifier) (type_annotation (predefined_type))))
-    (asserts (identifier) (predefined_type))
+    (asserts
+      (type_predicate (identifier) (predefined_type)))
     (statement_block))
   (class_declaration
     (type_identifier)
@@ -824,30 +825,33 @@ type t = readonly (readonly a[]) []
       (type_identifier)))
   (type_alias_declaration
     (type_identifier)
-    (array_type
+    (readonly_type
       (readonly)
-      (type_identifier)))
+      (array_type (type_identifier))))
   (type_alias_declaration
     (type_identifier)
-    (array_type
+    (readonly_type
       (readonly)
       (array_type
-        (type_identifier))))
-  (type_alias_declaration
-    (type_identifier)
-    (array_type
-      (parenthesized_type
         (array_type
-          (readonly)
           (type_identifier)))))
   (type_alias_declaration
     (type_identifier)
     (array_type
-      (readonly)
       (parenthesized_type
-        (array_type
+        (readonly_type
           (readonly)
-          (type_identifier))))))
+          (array_type (type_identifier))))))
+  (type_alias_declaration
+    (type_identifier)
+    (readonly_type
+      (readonly)
+      (array_type
+        (parenthesized_type
+          (readonly_type
+            (readonly)
+            (array_type
+              (type_identifier))))))))
 
 ==================================
 Tuple types
@@ -878,12 +882,13 @@ type t = [a: A, b?: B, ...c: C[]]
       (type_identifier)))
   (type_alias_declaration
     (type_identifier)
-    (tuple_type
+    (readonly_type
       (readonly)
-      (array_type (type_identifier))
-      (nested_type_identifier
-        (identifier)
-        (type_identifier))))
+      (tuple_type
+        (array_type (type_identifier))
+        (nested_type_identifier
+          (identifier)
+          (type_identifier)))))
   (comment)
   (type_alias_declaration
     (type_identifier)
@@ -894,14 +899,14 @@ type t = [a: A, b?: B, ...c: C[]]
   (type_alias_declaration
     (type_identifier)
     (tuple_type
-      (labeled_tuple_type_member
+      (required_parameter
         (identifier)
         (type_annotation (type_identifier)))
-      (labeled_tuple_type_member
-        (optional_identifier (identifier))
+      (optional_parameter
+        (identifier)
         (type_annotation     (type_identifier)))
-      (labeled_tuple_type_member
-        (rest_identifier (identifier))
+      (required_parameter
+        (rest_pattern (identifier))
         (type_annotation (array_type (type_identifier)))))))
 
 ==================================
