@@ -1956,6 +1956,10 @@
       "required": false,
       "types": [
         {
+          "type": "class",
+          "named": true
+        },
+        {
           "type": "export_clause",
           "named": true
         },
@@ -1965,6 +1969,10 @@
         },
         {
           "type": "identifier",
+          "named": true
+        },
+        {
+          "type": "interface_declaration",
           "named": true
         }
       ]
@@ -5852,11 +5860,11 @@
   },
   {
     "type": "number",
-    "named": true
+    "named": false
   },
   {
     "type": "number",
-    "named": false
+    "named": true
   },
   {
     "type": "of",

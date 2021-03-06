@@ -1103,6 +1103,14 @@
           {
             "type": "expression",
             "named": true
+          },
+          {
+            "type": "identifier",
+            "named": true
+          },
+          {
+            "type": "member_expression",
+            "named": true
           }
         ]
       },
@@ -1948,6 +1956,10 @@
       "required": false,
       "types": [
         {
+          "type": "class",
+          "named": true
+        },
+        {
           "type": "export_clause",
           "named": true
         },
@@ -1957,6 +1969,10 @@
         },
         {
           "type": "identifier",
+          "named": true
+        },
+        {
+          "type": "interface_declaration",
           "named": true
         }
       ]
@@ -3444,6 +3460,14 @@
         "types": [
           {
             "type": "expression",
+            "named": true
+          },
+          {
+            "type": "identifier",
+            "named": true
+          },
+          {
+            "type": "member_expression",
             "named": true
           }
         ]
