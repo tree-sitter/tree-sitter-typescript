@@ -1103,6 +1103,14 @@
           {
             "type": "expression",
             "named": true
+          },
+          {
+            "type": "identifier",
+            "named": true
+          },
+          {
+            "type": "member_expression",
+            "named": true
           }
         ]
       },
@@ -1994,6 +2002,10 @@
           "named": true
         },
         {
+          "type": "functional_extension",
+          "named": true
+        },
+        {
           "type": "generic_type",
           "named": true
         },
@@ -2416,6 +2428,37 @@
         },
         {
           "type": "union_type",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "functional_extension",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "arguments",
+          "named": true
+        },
+        {
+          "type": "generic_type",
+          "named": true
+        },
+        {
+          "type": "nested_type_identifier",
+          "named": true
+        },
+        {
+          "type": "type_arguments",
+          "named": true
+        },
+        {
+          "type": "type_identifier",
           "named": true
         }
       ]
@@ -3444,6 +3487,14 @@
         "types": [
           {
             "type": "expression",
+            "named": true
+          },
+          {
+            "type": "identifier",
+            "named": true
+          },
+          {
+            "type": "member_expression",
             "named": true
           }
         ]
@@ -5863,11 +5914,11 @@
   },
   {
     "type": "number",
-    "named": false
+    "named": true
   },
   {
     "type": "number",
-    "named": true
+    "named": false
   },
   {
     "type": "of",
