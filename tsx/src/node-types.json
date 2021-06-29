@@ -1972,6 +1972,10 @@
         {
           "type": "identifier",
           "named": true
+        },
+        {
+          "type": "namespace_import",
+          "named": true
         }
       ]
     }

@@ -280,6 +280,24 @@ export async function readFile(filename: string): Promise<Buffer>
     (type_annotation (generic_type (type_identifier) (type_arguments (type_identifier)))))))
 
 ==================================
+Aliased re-exports
+==================================
+
+export * as someIdentifier from "someModule"
+
+export { SomeIdentifier as MyIdentifier } from "someModule"
+
+---
+
+(program
+  (export_statement
+    (namespace_import (identifier))
+    source: (string))
+  (export_statement
+    (export_clause (export_specifier name: (identifier) alias: (identifier)))
+    source: (string)))
+
+==================================
 Typeof types
 ==================================
 
