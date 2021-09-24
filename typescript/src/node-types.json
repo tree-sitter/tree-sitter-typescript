@@ -52,7 +52,7 @@
         "named": true
       },
       {
-        "type": "this",
+        "type": "this_type",
         "named": true
       },
       {
@@ -5146,6 +5146,10 @@
           "named": true
         },
         {
+          "type": "this",
+          "named": true
+        },
+        {
           "type": "union_type",
           "named": true
         }
@@ -5945,6 +5949,10 @@
   },
   {
     "type": "this",
+    "named": true
+  },
+  {
+    "type": "this_type",
     "named": true
   },
   {

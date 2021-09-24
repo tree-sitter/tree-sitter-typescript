@@ -591,7 +591,7 @@ module.exports = function defineGrammar(dialect) {
         $.flow_maybe_type,
         $.type_query,
         $.index_type_query,
-        $.this,
+        alias($.this, $.this_type),
         $.existential_type,
         $.literal_type,
         $.lookup_type,
