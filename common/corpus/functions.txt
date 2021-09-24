@@ -188,7 +188,7 @@ class A extends B {
 (program
   (class_declaration
     name: (type_identifier)
-    (class_heritage (extends_clause (type_identifier)))
+    (class_heritage (extends_clause (identifier)))
     body: (class_body
       (method_definition
         name: (property_identifier)

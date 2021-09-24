@@ -378,6 +378,14 @@ module.exports = function defineGrammar(dialect) {
 
       import_require_clause: $ => seq($.identifier, '=', 'require', '(', $.string, ')'),
 
+      extends_clause: $ => seq(
+        'extends',
+        commaSep1(seq(
+          $.expression,
+          field('type_arguments', optional($.type_arguments))
+        ))
+      ),
+
       implements_clause: $ => seq(
         'implements',
         commaSep1($._type)
@@ -454,20 +462,18 @@ module.exports = function defineGrammar(dialect) {
         'interface',
         field('name', $._type_identifier),
         field('type_parameters', optional($.type_parameters)),
-        optional($.extends_clause),
+        optional($.extends_type_clause),
         field('body', $.object_type)
       ),
 
-      extends_clause: $ => prec('extends_type', seq(
+      extends_type_clause: $ => prec('extends_type', seq(
         'extends',
-        commaSep1(choice(
-          prec('extends_type', choice(
+        commaSep1(prec('extends_type', choice(
             $._type_identifier,
             $.nested_type_identifier,
             $.generic_type
-          )),
-          $.expression
-        ))
+          ))
+        )
       )),
 
       enum_declaration: $ => seq(

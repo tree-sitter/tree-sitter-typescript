@@ -1990,7 +1990,18 @@
   {
     "type": "extends_clause",
     "named": true,
-    "fields": {},
+    "fields": {
+      "type_arguments": {
+        "multiple": true,
+        "required": false,
+        "types": [
+          {
+            "type": "type_arguments",
+            "named": true
+          }
+        ]
+      }
+    },
     "children": {
       "multiple": true,
       "required": true,
@@ -1998,7 +2009,18 @@
         {
           "type": "expression",
           "named": true
-        },
+        }
+      ]
+    }
+  },
+  {
+    "type": "extends_type_clause",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
         {
           "type": "generic_type",
           "named": true
@@ -2919,7 +2941,7 @@
       "required": false,
       "types": [
         {
-          "type": "extends_clause",
+          "type": "extends_type_clause",
           "named": true
         }
       ]
@@ -5861,11 +5883,11 @@
   },
   {
     "type": "number",
-    "named": true
+    "named": false
   },
   {
     "type": "number",
-    "named": false
+    "named": true
   },
   {
     "type": "of",
