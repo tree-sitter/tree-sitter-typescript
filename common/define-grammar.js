@@ -774,21 +774,21 @@ module.exports = function defineGrammar(dialect) {
         '[',
         choice(
           seq(
-            choice(
+            field('name', choice(
               $.identifier,
               alias($._reserved_identifier, $.identifier)
-            ),
+            )),
             ':',
-            $._type,
+            field('index_type', $._type),
           ),
           $.mapped_type_clause
         ),
         ']',
-        choice(
+        field('type', choice(
           $.type_annotation,
           $.omitting_type_annotation,
           $.opting_type_annotation
-        )
+        ))
       ),
 
       array_type: $ => seq($._primary_type, '[', ']'),

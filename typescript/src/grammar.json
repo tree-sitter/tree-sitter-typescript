@@ -9278,30 +9278,38 @@
               "type": "SEQ",
               "members": [
                 {
-                  "type": "CHOICE",
-                  "members": [
-                    {
-                      "type": "SYMBOL",
-                      "name": "identifier"
-                    },
-                    {
-                      "type": "ALIAS",
-                      "content": {
+                  "type": "FIELD",
+                  "name": "name",
+                  "content": {
+                    "type": "CHOICE",
+                    "members": [
+                      {
                         "type": "SYMBOL",
-                        "name": "_reserved_identifier"
+                        "name": "identifier"
                       },
-                      "named": true,
-                      "value": "identifier"
-                    }
-                  ]
+                      {
+                        "type": "ALIAS",
+                        "content": {
+                          "type": "SYMBOL",
+                          "name": "_reserved_identifier"
+                        },
+                        "named": true,
+                        "value": "identifier"
+                      }
+                    ]
+                  }
                 },
                 {
                   "type": "STRING",
                   "value": ":"
                 },
                 {
-                  "type": "SYMBOL",
-                  "name": "_type"
+                  "type": "FIELD",
+                  "name": "index_type",
+                  "content": {
+                    "type": "SYMBOL",
+                    "name": "_type"
+                  }
                 }
               ]
             },
@@ -9316,21 +9324,25 @@
           "value": "]"
         },
         {
-          "type": "CHOICE",
-          "members": [
-            {
-              "type": "SYMBOL",
-              "name": "type_annotation"
-            },
-            {
-              "type": "SYMBOL",
-              "name": "omitting_type_annotation"
-            },
-            {
-              "type": "SYMBOL",
-              "name": "opting_type_annotation"
-            }
-          ]
+          "type": "FIELD",
+          "name": "type",
+          "content": {
+            "type": "CHOICE",
+            "members": [
+              {
+                "type": "SYMBOL",
+                "name": "type_annotation"
+              },
+              {
+                "type": "SYMBOL",
+                "name": "omitting_type_annotation"
+              },
+              {
+                "type": "SYMBOL",
+                "name": "opting_type_annotation"
+              }
+            ]
+          }
         }
       ]
     },

@@ -2854,6 +2854,50 @@
     "type": "index_signature",
     "named": true,
     "fields": {
+      "index_type": {
+        "multiple": false,
+        "required": false,
+        "types": [
+          {
+            "type": "_primary_type",
+            "named": true
+          },
+          {
+            "type": "constructor_type",
+            "named": true
+          },
+          {
+            "type": "function_type",
+            "named": true
+          },
+          {
+            "type": "infer_type",
+            "named": true
+          },
+          {
+            "type": "intersection_type",
+            "named": true
+          },
+          {
+            "type": "readonly_type",
+            "named": true
+          },
+          {
+            "type": "union_type",
+            "named": true
+          }
+        ]
+      },
+      "name": {
+        "multiple": false,
+        "required": false,
+        "types": [
+          {
+            "type": "identifier",
+            "named": true
+          }
+        ]
+      },
       "sign": {
         "multiple": false,
         "required": false,
@@ -2863,58 +2907,32 @@
             "named": false
           }
         ]
+      },
+      "type": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "omitting_type_annotation",
+            "named": true
+          },
+          {
+            "type": "opting_type_annotation",
+            "named": true
+          },
+          {
+            "type": "type_annotation",
+            "named": true
+          }
+        ]
       }
     },
     "children": {
-      "multiple": true,
-      "required": true,
+      "multiple": false,
+      "required": false,
       "types": [
         {
-          "type": "_primary_type",
-          "named": true
-        },
-        {
-          "type": "constructor_type",
-          "named": true
-        },
-        {
-          "type": "function_type",
-          "named": true
-        },
-        {
-          "type": "identifier",
-          "named": true
-        },
-        {
-          "type": "infer_type",
-          "named": true
-        },
-        {
-          "type": "intersection_type",
-          "named": true
-        },
-        {
           "type": "mapped_type_clause",
-          "named": true
-        },
-        {
-          "type": "omitting_type_annotation",
-          "named": true
-        },
-        {
-          "type": "opting_type_annotation",
-          "named": true
-        },
-        {
-          "type": "readonly_type",
-          "named": true
-        },
-        {
-          "type": "type_annotation",
-          "named": true
-        },
-        {
-          "type": "union_type",
           "named": true
         }
       ]
