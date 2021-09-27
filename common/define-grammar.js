@@ -298,7 +298,7 @@ module.exports = function defineGrammar(dialect) {
       parenthesized_expression: ($, previous) => seq(
         '(',
         choice(
-          seq($.expression, optional($.type_annotation)),
+          seq($.expression, field('type', optional($.type_annotation))),
           $.sequence_expression
         ),
         ')'
