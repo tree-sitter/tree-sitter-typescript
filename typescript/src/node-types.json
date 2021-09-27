@@ -4022,6 +4022,30 @@
           }
         ]
       },
+      "pattern": {
+        "multiple": false,
+        "required": false,
+        "types": [
+          {
+            "type": "pattern",
+            "named": true
+          },
+          {
+            "type": "this",
+            "named": true
+          }
+        ]
+      },
+      "type": {
+        "multiple": false,
+        "required": false,
+        "types": [
+          {
+            "type": "type_annotation",
+            "named": true
+          }
+        ]
+      },
       "value": {
         "multiple": false,
         "required": false,
@@ -4035,18 +4059,14 @@
     },
     "children": {
       "multiple": true,
-      "required": true,
+      "required": false,
       "types": [
         {
           "type": "accessibility_modifier",
           "named": true
         },
         {
-          "type": "pattern",
-          "named": true
-        },
-        {
-          "type": "this",
+          "type": "identifier",
           "named": true
         },
         {
@@ -4442,6 +4462,30 @@
           }
         ]
       },
+      "pattern": {
+        "multiple": false,
+        "required": false,
+        "types": [
+          {
+            "type": "pattern",
+            "named": true
+          },
+          {
+            "type": "this",
+            "named": true
+          }
+        ]
+      },
+      "type": {
+        "multiple": false,
+        "required": false,
+        "types": [
+          {
+            "type": "type_annotation",
+            "named": true
+          }
+        ]
+      },
       "value": {
         "multiple": false,
         "required": false,
@@ -4455,18 +4499,18 @@
     },
     "children": {
       "multiple": true,
-      "required": true,
+      "required": false,
       "types": [
         {
           "type": "accessibility_modifier",
           "named": true
         },
         {
-          "type": "pattern",
+          "type": "identifier",
           "named": true
         },
         {
-          "type": "this",
+          "type": "rest_pattern",
           "named": true
         },
         {

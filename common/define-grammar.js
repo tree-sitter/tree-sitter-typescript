@@ -517,14 +517,14 @@ module.exports = function defineGrammar(dialect) {
 
       required_parameter: $ => seq(
         $._parameter_name,
-        optional($.type_annotation),
+        field('type', optional($.type_annotation)),
         optional($._initializer)
       ),
 
       optional_parameter: $ => seq(
         $._parameter_name,
         '?',
-        optional($.type_annotation),
+        field('type', optional($.type_annotation)),
         optional($._initializer)
       ),
 
@@ -532,7 +532,7 @@ module.exports = function defineGrammar(dialect) {
         repeat(field('decorator', $.decorator)),
         optional($.accessibility_modifier),
         optional('readonly'),
-        choice($.pattern, $.this)
+        field('pattern', choice($.pattern, $.this))
       ),
 
       omitting_type_annotation: $ => seq('-?:', $._type),
