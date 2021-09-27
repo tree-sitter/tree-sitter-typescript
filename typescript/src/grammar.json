@@ -494,8 +494,12 @@
               "name": "import_require_clause"
             },
             {
-              "type": "SYMBOL",
-              "name": "string"
+              "type": "FIELD",
+              "name": "source",
+              "content": {
+                "type": "SYMBOL",
+                "name": "string"
+              }
             }
           ]
         },
@@ -7221,8 +7225,12 @@
           "value": "("
         },
         {
-          "type": "SYMBOL",
-          "name": "string"
+          "type": "FIELD",
+          "name": "source",
+          "content": {
+            "type": "SYMBOL",
+            "name": "string"
+          }
         },
         {
           "type": "STRING",

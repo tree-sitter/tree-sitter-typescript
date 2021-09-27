@@ -2764,17 +2764,24 @@
   {
     "type": "import_require_clause",
     "named": true,
-    "fields": {},
+    "fields": {
+      "source": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "string",
+            "named": true
+          }
+        ]
+      }
+    },
     "children": {
-      "multiple": true,
+      "multiple": false,
       "required": true,
       "types": [
         {
           "type": "identifier",
-          "named": true
-        },
-        {
-          "type": "string",
           "named": true
         }
       ]
@@ -2823,7 +2830,7 @@
     },
     "children": {
       "multiple": false,
-      "required": true,
+      "required": false,
       "types": [
         {
           "type": "import_clause",
@@ -2831,10 +2838,6 @@
         },
         {
           "type": "import_require_clause",
-          "named": true
-        },
-        {
-          "type": "string",
           "named": true
         }
       ]

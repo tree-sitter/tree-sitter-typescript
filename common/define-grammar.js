@@ -246,7 +246,7 @@ module.exports = function defineGrammar(dialect) {
         choice(
           seq($.import_clause, $._from_clause),
           $.import_require_clause,
-          $.string
+          field('source', $.string)
         ),
         $._semicolon
       ),
@@ -376,7 +376,14 @@ module.exports = function defineGrammar(dialect) {
         $.implements_clause
       ),
 
-      import_require_clause: $ => seq($.identifier, '=', 'require', '(', $.string, ')'),
+      import_require_clause: $ => seq(
+        $.identifier,
+        '=',
+        'require',
+        '(',
+        field('source', $.string),
+        ')'
+      ),
 
       extends_clause: $ => seq(
         'extends',
