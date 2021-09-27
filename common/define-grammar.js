@@ -761,7 +761,7 @@ module.exports = function defineGrammar(dialect) {
         'new',
         field('type_parameters', optional($.type_parameters)),
         field('parameters', $.formal_parameters),
-        optional($.type_annotation)
+        field('type', optional($.type_annotation))
       ),
 
       index_signature: $ => seq(
