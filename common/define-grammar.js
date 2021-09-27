@@ -579,7 +579,7 @@ module.exports = function defineGrammar(dialect) {
 
       constructor_type: $ => prec.left(seq(
         'new',
-        optional($.type_parameters),
+        field('type_parameters', optional($.type_parameters)),
         $.formal_parameters,
         '=>',
         $._type
@@ -752,7 +752,7 @@ module.exports = function defineGrammar(dialect) {
 
       construct_signature: $ => seq(
         'new',
-        optional($.type_parameters),
+        field('type_parameters', optional($.type_parameters)),
         $.formal_parameters,
         optional($.type_annotation)
       ),
@@ -794,7 +794,7 @@ module.exports = function defineGrammar(dialect) {
       intersection_type: $ => prec.left(seq(optional($._type), '&', $._type)),
 
       function_type: $ => prec.left(seq(
-        optional($.type_parameters),
+        field('type_parameters', optional($.type_parameters)),
         $.formal_parameters,
         '=>',
         choice($._type, $.type_predicate),
