@@ -742,9 +742,9 @@ module.exports = function defineGrammar(dialect) {
       ),
 
       type_parameter: $ => seq(
-        $._type_identifier,
-        optional($.constraint),
-        optional($.default_type)
+        field('name', $._type_identifier),
+        field('constraint', optional($.constraint)),
+        field('value', optional($.default_type))
       ),
 
       default_type: $ => seq(
@@ -804,7 +804,7 @@ module.exports = function defineGrammar(dialect) {
         field('type_parameters', optional($.type_parameters)),
         field('parameters', $.formal_parameters),
         '=>',
-        choice($._type, $.type_predicate),
+        field('type', choice($._type, $.type_predicate)),
       )),
 
       _type_identifier: $ => alias($.identifier, $.type_identifier),
