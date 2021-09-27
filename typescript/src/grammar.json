@@ -8307,8 +8307,12 @@
             }
           },
           {
-            "type": "SYMBOL",
-            "name": "formal_parameters"
+            "type": "FIELD",
+            "name": "parameters",
+            "content": {
+              "type": "SYMBOL",
+              "name": "formal_parameters"
+            }
           },
           {
             "type": "STRING",
@@ -9182,8 +9186,12 @@
           }
         },
         {
-          "type": "SYMBOL",
-          "name": "formal_parameters"
+          "type": "FIELD",
+          "name": "parameters",
+          "content": {
+            "type": "SYMBOL",
+            "name": "formal_parameters"
+          }
         },
         {
           "type": "CHOICE",
@@ -9471,8 +9479,12 @@
             }
           },
           {
-            "type": "SYMBOL",
-            "name": "formal_parameters"
+            "type": "FIELD",
+            "name": "parameters",
+            "content": {
+              "type": "SYMBOL",
+              "name": "formal_parameters"
+            }
           },
           {
             "type": "STRING",

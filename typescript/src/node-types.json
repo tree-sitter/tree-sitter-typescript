@@ -1572,6 +1572,16 @@
     "type": "construct_signature",
     "named": true,
     "fields": {
+      "parameters": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "formal_parameters",
+            "named": true
+          }
+        ]
+      },
       "type_parameters": {
         "multiple": false,
         "required": false,
@@ -1584,13 +1594,9 @@
       }
     },
     "children": {
-      "multiple": true,
-      "required": true,
+      "multiple": false,
+      "required": false,
       "types": [
-        {
-          "type": "formal_parameters",
-          "named": true
-        },
         {
           "type": "type_annotation",
           "named": true
@@ -1602,6 +1608,16 @@
     "type": "constructor_type",
     "named": true,
     "fields": {
+      "parameters": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "formal_parameters",
+            "named": true
+          }
+        ]
+      },
       "type_parameters": {
         "multiple": false,
         "required": false,
@@ -1614,7 +1630,7 @@
       }
     },
     "children": {
-      "multiple": true,
+      "multiple": false,
       "required": true,
       "types": [
         {
@@ -1623,10 +1639,6 @@
         },
         {
           "type": "constructor_type",
-          "named": true
-        },
-        {
-          "type": "formal_parameters",
           "named": true
         },
         {
@@ -2416,6 +2428,16 @@
     "type": "function_type",
     "named": true,
     "fields": {
+      "parameters": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "formal_parameters",
+            "named": true
+          }
+        ]
+      },
       "type_parameters": {
         "multiple": false,
         "required": false,
@@ -2428,7 +2450,7 @@
       }
     },
     "children": {
-      "multiple": true,
+      "multiple": false,
       "required": true,
       "types": [
         {
@@ -2437,10 +2459,6 @@
         },
         {
           "type": "constructor_type",
-          "named": true
-        },
-        {
-          "type": "formal_parameters",
           "named": true
         },
         {
