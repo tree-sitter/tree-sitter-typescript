@@ -494,7 +494,7 @@ module.exports = function defineGrammar(dialect) {
         '{',
         optional(seq(
           sepBy1(',', choice(
-            $._property_name,
+            field('name', $._property_name),
             $.enum_assignment
           )),
           optional(',')
@@ -503,7 +503,7 @@ module.exports = function defineGrammar(dialect) {
       ),
 
       enum_assignment: $ => seq(
-        $._property_name,
+        field('name', $._property_name),
         $._initializer
       ),
 
