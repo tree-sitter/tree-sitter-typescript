@@ -839,8 +839,8 @@ export type Extracted = keyof Pick<Base, "id">
       name: (type_identifier)
       value: (index_type_query
         (generic_type
-          (type_identifier)
-          (type_arguments
+          name: (type_identifier)
+          type_arguments: (type_arguments
             (type_identifier)
             (literal_type
               (string (string_fragment)))))))))

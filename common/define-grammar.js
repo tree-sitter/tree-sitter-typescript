@@ -659,17 +659,17 @@ module.exports = function defineGrammar(dialect) {
       )),
 
       generic_type: $ => prec('call', seq(
-        choice(
+        field('name', choice(
           $._type_identifier,
           $.nested_type_identifier
-        ),
-        $.type_arguments
+        )),
+        field('type_arguments', $.type_arguments)
       )),
 
       type_predicate: $ => seq(
-        choice($.identifier, $.this),
+        field('name', choice($.identifier, $.this)),
         'is',
-        $._type
+        field('type', $._type)
       ),
 
       type_predicate_annotation: $ => seq(
