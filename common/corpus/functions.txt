@@ -46,7 +46,7 @@ function foo<T, U>(this: T[]): U[] {
         type: (type_annotation
           (function_type
             parameters: (formal_parameters (required_parameter pattern: (identifier) type: (type_annotation (type_identifier))))
-            type: (type_identifier)))))
+            return_type: (type_identifier)))))
     return_type: (type_annotation (array_type (type_identifier)))
     body: (statement_block))
   (function_declaration
@@ -271,7 +271,7 @@ function foo(): () => { [key: foo]: bar } {}
     return_type: (type_annotation
       (function_type
         parameters: (formal_parameters)
-        type: (object_type
+        return_type: (object_type
           (index_signature
             name: (identifier)
             index_type: (type_identifier)
@@ -282,7 +282,7 @@ function foo(): () => { [key: foo]: bar } {}
     return_type: (type_annotation
       (function_type
         parameters: (formal_parameters)
-        type: (object_type
+        return_type: (object_type
           (index_signature
             name: (identifier)
             index_type: (type_identifier)

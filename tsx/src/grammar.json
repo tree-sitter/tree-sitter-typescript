@@ -10134,7 +10134,7 @@
           },
           {
             "type": "FIELD",
-            "name": "type",
+            "name": "return_type",
             "content": {
               "type": "CHOICE",
               "members": [

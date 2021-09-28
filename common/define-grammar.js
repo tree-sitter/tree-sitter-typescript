@@ -885,7 +885,7 @@ module.exports = function defineGrammar(dialect) {
         field('type_parameters', optional($.type_parameters)),
         field('parameters', $.formal_parameters),
         '=>',
-        field('type', choice($._type, $.type_predicate)),
+        field('return_type', choice($._type, $.type_predicate)),
       )),
 
       _type_identifier: $ => alias($.identifier, $.type_identifier),
