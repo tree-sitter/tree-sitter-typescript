@@ -15,22 +15,25 @@
 
 global FILE_PATH
 global ROOT_NODE
+global JUMP_TO_SCOPE_NODE
 
 ; Attribute Shorthands
 ; ^^^^^^^^^^^^^^^^^^^^
 
 attribute node_definition = node        => type = "pop_symbol", node_symbol = node, is_definition
-attribute scoped_node_definition = node => type = "pop_scoped_symbol", node_symbol = node, is_definition
 attribute node_reference = node         => type = "push_symbol", node_symbol = node, is_reference
-attribute scoped_node_reference = node  => type = "push_scoped_symbol", node_symbol = node, is_reference
 attribute pop_node = node               => type = "pop_symbol", node_symbol = node
 attribute pop_scoped_node = node        => type = "pop_scoped_symbol", node_symbol = node
+attribute pop_scoped_symbol = symbol    => type = "pop_scoped_symbol", symbol = symbol
+attribute pop_symbol = symbol           => type = "pop_symbol", symbol = symbol
 attribute push_node = node              => type = "push_symbol", node_symbol = node
 attribute push_scoped_node = node       => type = "push_scoped_symbol", node_symbol = node
-attribute pop_symbol = symbol           => type = "pop_symbol", symbol = symbol
-attribute pop_scoped_symbol = symbol    => type = "pop_scoped_symbol", symbol = symbol
-attribute push_symbol = symbol          => type = "push_symbol", symbol = symbol
 attribute push_scoped_symbol = symbol   => type = "push_scoped_symbol", symbol = symbol
+attribute push_symbol = symbol          => type = "push_symbol", symbol = symbol
+attribute scoped_node_definition = node => type = "pop_scoped_symbol", node_symbol = node, is_definition
+attribute scoped_node_reference = node  => type = "push_scoped_symbol", node_symbol = node, is_reference
+attribute symbol_definition = symbol    => type = "pop_symbol", symbol = symbol, is_definition
+attribute symbol_reference = symbol     => type = "push_symbol", symbol = symbol, is_reference
 
 attribute node_symbol = node            => symbol = (source-text node), source_node = node
 
@@ -456,7 +459,7 @@ attribute node_symbol = node            => symbol = (source-text node), source_n
   attr (@export_stmt.default_expr_def__ns_pop) pop_symbol = "%E"
   edge @export_stmt.default_expr_def__ns_pop -> @export_stmt.default_expr_def
   ;
-  attr (@export_stmt.default_expr_def) pop_symbol = "default", is_definition
+  attr (@export_stmt.default_expr_def) pop_symbol = "default"
   edge @export_stmt.default_expr_def -> @export_stmt.default_expr_def__ns_push
   ;
   attr (@export_stmt.default_expr_def__ns_push) push_symbol = "%E"
@@ -468,7 +471,7 @@ attribute node_symbol = node            => symbol = (source-text node), source_n
   attr (@export_stmt.default_type_def__ns_pop) pop_symbol = "%T"
   edge @export_stmt.default_type_def__ns_pop -> @export_stmt.default_type_def
   ;
-  attr (@export_stmt.default_type_def) pop_symbol = "default", is_definition
+  attr (@export_stmt.default_type_def) pop_symbol = "default"
   edge @export_stmt.default_type_def -> @export_stmt.default_type_def__ns_push
   ;
   attr (@export_stmt.default_type_def__ns_push) push_symbol = "%T"
@@ -756,7 +759,7 @@ attribute node_symbol = node            => symbol = (source-text node), source_n
   attr (@name.expr_def) node_definition = @name
   edge @name.expr_def -> @import_clause.default_expr_ref
   ;
-  attr (@import_clause.default_expr_ref) push_symbol = "default", is_reference
+  attr (@import_clause.default_expr_ref) push_symbol = "default"
   edge @import_clause.default_expr_ref -> @import_clause.default_expr_ref__ns
   ;
   attr (@import_clause.default_expr_ref__ns) push_symbol = "%E"
@@ -771,7 +774,7 @@ attribute node_symbol = node            => symbol = (source-text node), source_n
   attr (@name.type_def) node_definition = @name
   edge @name.type_def -> @import_clause.default_type_ref
   ;
-  attr (@import_clause.default_type_ref) push_symbol = "default", is_reference
+  attr (@import_clause.default_type_ref) push_symbol = "default"
   edge @import_clause.default_type_ref -> @import_clause.default_type_ref__ns
   ;
   attr (@import_clause.default_type_ref__ns) push_symbol = "%T"
@@ -1339,7 +1342,7 @@ attribute node_symbol = node            => symbol = (source-text node), source_n
 ; NOTE not for interface_declaration as body is already a type with an endpoint of needed
 ]@class_decl {
   ; mark type scope as endpoint
-  attr (@class_decl.generic_inner_type) endpoint
+  attr (@class_decl.generic_inner_type) is_endpoint
 }
 [
   (abstract_class_declaration name:(_)@name)
@@ -1368,7 +1371,7 @@ attribute node_symbol = node            => symbol = (source-text node), source_n
   edge @class_decl.expr_export -> @class_decl.static_type
 
   ; mark type scope as endpoint
-  attr (@class_decl.static_type) endpoint
+  attr (@class_decl.static_type) is_endpoint
 }
 
 ; type parameters are handled in generics rules below
@@ -2339,7 +2342,7 @@ attribute node_symbol = node            => symbol = (source-text node), source_n
   attr (@name.mod_def__ns) pop_symbol = "%M"
   edge @name.mod_def__ns -> @name.mod_def
   ;
-  attr (@name.mod_def) pop_symbol = (replace (source-text @name) "[\"\']" ""), is_definition, source_node = @name
+  attr (@name.mod_def) symbol_definition = (replace (source-text @name) "[\"\']" ""), source_node = @name
 
   ; exports are reachable via module definition
   edge @name.mod_def -> @body.exports
@@ -2411,8 +2414,8 @@ attribute node_symbol = node            => symbol = (source-text node), source_n
   edge @body.this -> @enum_decl.type
 
   ; mark type scope as endpoint
-  attr (@enum_decl.type) endpoint
-  attr (@enum_decl.static_type) endpoint
+  attr (@enum_decl.type) is_endpoint
+  attr (@enum_decl.static_type) is_endpoint
 }
 
 ; (enum_body
@@ -2442,7 +2445,7 @@ attribute node_symbol = node            => symbol = (source-text node), source_n
   attr (@constant.member) pop_symbol = "."
   edge @constant.member -> @name.expr_def
   ;
-  attr (@name.expr_def) pop_symbol = (replace (source-text @name) "[\"\']" ""), is_definition, source_node = @name
+  attr (@name.expr_def) symbol_definition = (replace (source-text @name) "[\"\']" ""), source_node = @name
 
   ; type of the constant
   edge @name.expr_def -> @name.expr_def__typeof
@@ -2810,7 +2813,7 @@ attribute node_symbol = node            => symbol = (source-text node), source_n
 ; (object (spread_element)@element)@object
 
 (object)@object_expr {
-  attr (@object_expr.type) endpoint
+  attr (@object_expr.type) is_endpoint
 }
 
 (object (_)@entry)@object_expr {
@@ -2837,7 +2840,7 @@ attribute node_symbol = node            => symbol = (source-text node), source_n
   attr (@name.member) pop_symbol = "."
   edge @name.member -> @name.expr_def
   ;
-  attr (@name.expr_def) pop_symbol = (replace (source-text @name) "[\"\']" ""), is_definition, source_node = @name
+  attr (@name.expr_def) symbol_definition = (replace (source-text @name) "[\"\']" ""), source_node = @name
 
   ; type of the property is type of the reference
   edge @name.expr_def -> @name.expr_def__typeof
@@ -2877,7 +2880,7 @@ attribute node_symbol = node            => symbol = (source-text node), source_n
   attr (@pair.member) pop_symbol = "."
   edge @pair.member -> @name.expr_def
   ;
-  attr (@name.expr_def) pop_symbol = (replace (source-text @name) "[\"\']" ""), is_definition, source_node = @name
+  attr (@name.expr_def) symbol_definition = (replace (source-text @name) "[\"\']" ""), source_node = @name
 
   ; type of the property is type of the expression
   edge @name.expr_def -> @name.expr_def__typeof
@@ -3747,8 +3750,8 @@ attribute node_symbol = node            => symbol = (source-text node), source_n
   edge @class_expr.type -> @heritage.static_members
 
   ; mark type scope as endpoint
-  attr (@class_expr.type) endpoint
-  attr (@class_expr.generic_inner_type) endpoint
+  attr (@class_expr.type) is_endpoint
+  attr (@class_expr.generic_inner_type) is_endpoint
 }
 
 ; this
@@ -4009,7 +4012,7 @@ attribute node_symbol = node            => symbol = (source-text node), source_n
   edge @key.expr_ref__typeof -> @key.expr_ref
 
   ; reference name
-  attr (@key.expr_ref) push_symbol = (replace (source-text @key) "[\"\']" ""), reference
+  attr (@key.expr_ref) symbol_reference = (replace (source-text @key) "[\"\']" "")
   edge @key.expr_ref -> @pair_pat.member
 
   ; member projection
@@ -5365,7 +5368,7 @@ attribute node_symbol = node            => symbol = (source-text node), source_n
 
 (object_type)@type {
   ; mark type scope as endpoint
-  attr (@type.type) endpoint
+  attr (@type.type) is_endpoint
 }
 
 (object_type
@@ -5416,7 +5419,6 @@ attribute node_symbol = node            => symbol = (source-text node), source_n
   node @name.type_def__ns
   node @type_param.arg_index
   node @type_param.defs
-  node @type_param.jumpto
 
   ; type definition
   edge @type_param.defs -> @name.type_def__ns
@@ -5430,9 +5432,7 @@ attribute node_symbol = node            => symbol = (source-text node), source_n
   edge @name.type_def -> @type_param.arg_index
   ;
   attr (@type_param.arg_index) push_symbol = (named-child-index @type_param)
-  edge @type_param.arg_index -> @type_param.jumpto
-  ;
-  attr (@type_param.jumpto) JUMP_TO_SCOPE_NODE
+  edge @type_param.arg_index -> JUMP_TO_SCOPE_NODE
 }
 
 (type_parameter
@@ -5593,7 +5593,7 @@ attribute node_symbol = node            => symbol = (source-text node), source_n
   ; propagate lexical inner scope, dropping type arguments
   edge @gen_decl.generic_inner_lexical_scope -> @gen_decl.drop_type_args
   ;
-  attr (@gen_decl.drop_type_args) drop
+  attr (@gen_decl.drop_type_args) type = "drop_scopes"
   edge @gen_decl.drop_type_args -> @gen_decl.lexical_scope
 
   ; inner lexical scope includes type definitions
@@ -5603,7 +5603,7 @@ attribute node_symbol = node            => symbol = (source-text node), source_n
   ; generic type is abstraction over inner type
   edge @gen_decl.generic_type -> @gen_decl.type_abs
   ;
-  attr (@gen_decl.type_abs) pop_symbol = "<>", scoped
+  attr (@gen_decl.type_abs) pop_scoped_symbol = "<>"
   edge @gen_decl.type_abs -> @gen_decl.generic_inner_type
 
   ; FIXME   This edge enables resolving to a member while dropping the type
@@ -5623,7 +5623,7 @@ attribute node_symbol = node            => symbol = (source-text node), source_n
   ;       resolve fine.
   edge @gen_decl.type_abs -> @gen_decl.drop_type_abs
   ;
-  attr (@gen_decl.drop_type_abs) drop
+  attr (@gen_decl.drop_type_abs) type = "drop_scopes"
   edge @gen_decl.drop_type_abs -> @gen_decl.generic_inner_type
 }
 
@@ -5665,7 +5665,7 @@ attribute node_symbol = node            => symbol = (source-text node), source_n
   ; push inferred type arguments
   edge @gen_expr.applied_type -> @gen_expr.type_app
   ;
-  attr (@gen_expr.type_app) push_symbol = "<>", scope = @gen_expr.inferred_type_args
+  attr (@gen_expr.type_app) push_scoped_symbol = "<>", scope = @gen_expr.inferred_type_args
   edge @gen_expr.type_app -> @gen_expr.generic_type
 
   ; FIXME infer type arguments
@@ -5684,7 +5684,7 @@ attribute node_symbol = node            => symbol = (source-text node), source_n
   ; push given type arguments
   edge @gen_expr.applied_type -> @gen_expr.type_app
   ;
-  attr (@gen_expr.type_app) push_symbol = "<>", scope = @type_args.type_args
+  attr (@gen_expr.type_app) push_scoped_symbol = "<>", scope = @type_args.type_args
   edge @gen_expr.type_app -> @gen_expr.generic_type
 }
 
@@ -5895,7 +5895,7 @@ attribute node_symbol = node            => symbol = (source-text node), source_n
   ; type is applied Promise
   edge @async.async_type -> @async.async_type__type_app
   ;
-  attr (@async.async_type__type_app) push_symbol = "<>", scope = @async.async_type__type_args
+  attr (@async.async_type__type_app) push_scoped_symbol = "<>", scope = @async.async_type__type_args
   edge @async.async_type__type_app -> @async.async_type__promise_ref
   ;
   attr (@async.async_type__promise_ref) symbol_reference = "Promise", source_node = @async
