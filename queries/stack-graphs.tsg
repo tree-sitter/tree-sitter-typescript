@@ -5344,7 +5344,7 @@ attribute node_symbol = node            => symbol = (source-text node), source_n
   node @nested_type_id.member
 
   ; type reference into namespace type
-  edge @nested_type_id.type -> @name.type_ref
+  edge @nested_type_id.type -> @name.nested_type_ref
   ;
   attr (@name.nested_type_ref) node_reference = @name
   edge @name.nested_type_ref -> @nested_type_id.member
