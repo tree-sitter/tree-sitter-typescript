@@ -138,7 +138,8 @@ attribute node_symbol = node            => symbol = (source-text node), source_n
   attr (@prog.mod_def__ns) pop_symbol = "%M"
   edge @prog.mod_def__ns -> @prog.mod_def
   ;
-  attr (@prog.mod_def) symbol_definition = (replace (path-normalize FILE_PATH) "\.[^\./]*$" ""), source_node = @prog
+  let mod_name = (path-normalize (path-join (path-dir FILE_PATH) (path-filestem FILE_PATH)))
+  attr (@prog.mod_def) symbol_definition = mod_name, source_node = @prog
 
   ; expose exports via module definition
   edge @prog.mod_def -> @prog.exports
@@ -659,7 +660,8 @@ attribute node_symbol = node            => symbol = (source-text node), source_n
   node @from.mod_ref__ns
 
   ; module reference
-  attr (@from.mod_ref) symbol_reference = (path-normalize (path-join (path-dir FILE_PATH) (replace (source-text @from) "[\"\']" ""))), source_node = @import_stmt
+  let mod_name = (path-normalize (path-join (path-dir FILE_PATH) (replace (source-text @from) "[\"\']" "")))
+  attr (@from.mod_ref) symbol_reference = mod_name, source_node = @import_stmt
   edge @from.mod_ref -> @from.mod_ref__ns
   ;
   attr (@from.mod_ref__ns) push_symbol = "%M"
