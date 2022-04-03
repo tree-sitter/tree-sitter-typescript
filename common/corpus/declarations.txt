@@ -822,7 +822,7 @@ abstract class Foo {
             function: (member_expression
               object: (identifier)
               property: (property_identifier))
-            arguments: (arguments (string (string_fragment)))))))))
+            arguments: (arguments (string (string_fragment) (string_fragment) (string_fragment)))))))))
   (abstract_class_declaration
     decorator: (decorator (identifier))
     name: (type_identifier)

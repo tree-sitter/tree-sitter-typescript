@@ -3,7 +3,7 @@
 
 enum TokenType {
   AUTOMATIC_SEMICOLON,
-  TEMPLATE_CHARS,
+  TEMPLATE_FRAGMENT,
   TERNARY_QMARK,
   BINARY_OPERATORS,
   FUNCTION_SIGNATURE_AUTOMATIC_SEMICOLON,
@@ -12,10 +12,14 @@ enum TokenType {
 static void advance(TSLexer *lexer) { lexer->advance(lexer, false); }
 static void skip(TSLexer *lexer) { lexer->advance(lexer, true); }
 
-static bool scan_template_chars(TSLexer *lexer) {
-  lexer->result_symbol = TEMPLATE_CHARS;
+static bool scan_template_fragment(TSLexer *lexer) {
+  lexer->result_symbol = TEMPLATE_FRAGMENT;
   for (bool has_content = false;; has_content = true) {
     lexer->mark_end(lexer);
+    int lookahead = lexer->lookahead;
+    if(iswspace(lookahead)){
+      return has_content;
+    }
     switch (lexer->lookahead) {
     case '`':
       return has_content;
@@ -196,9 +200,9 @@ static bool scan_ternary_qmark(TSLexer *lexer) {
 }
 
 static inline bool external_scanner_scan(void *payload, TSLexer *lexer, const bool *valid_symbols) {
-  if (valid_symbols[TEMPLATE_CHARS]) {
+  if (valid_symbols[TEMPLATE_FRAGMENT]) {
     if (valid_symbols[AUTOMATIC_SEMICOLON]) return false;
-    return scan_template_chars(lexer);
+    return scan_template_fragment(lexer);
   } else if (
     valid_symbols[AUTOMATIC_SEMICOLON] ||
     valid_symbols[FUNCTION_SIGNATURE_AUTOMATIC_SEMICOLON]

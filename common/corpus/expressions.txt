@@ -9,7 +9,7 @@ T as {} & { [t: T]: T } & { [g: G]: G }
 ---
 
 (program
-  (expression_statement (as_expression (identifier) (template_literal_type)))
+  (expression_statement (as_expression (identifier) (template_literal_type (template_fragment))))
   (expression_statement
     (as_expression
       (identifier)
@@ -175,3 +175,17 @@ foo! += bar;
       (non_null_expression
         (parenthesized_expression (identifier)))
       (identifier))))
+
+====================================
+Template substitution
+====================================
+
+${1 + 1}
+
+---
+
+(program
+  (template_substitution
+    (binary_expression
+      (number)
+      (number))))

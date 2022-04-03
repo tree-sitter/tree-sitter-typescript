@@ -2,18 +2,18 @@
 # yarn lockfile v1
 
 
-"nan@^2.12.1", "nan@^2.14.0":
-  "integrity" "sha512-8ZtvEnA2c5aYCZYd1cvgdnU6cqwixRoYg70xPLWUws5ORTa/lnw+u4amixRS/Ac5U5mQVgp9pnlSUnbNWFaWZQ=="
-  "resolved" "https://registry.npmjs.org/nan/-/nan-2.15.0.tgz"
-  "version" "2.15.0"
+nan@^2.12.1, nan@^2.14.0:
+  version "2.15.0"
+  resolved "https://registry.npmjs.org/nan/-/nan-2.15.0.tgz"
+  integrity sha512-8ZtvEnA2c5aYCZYd1cvgdnU6cqwixRoYg70xPLWUws5ORTa/lnw+u4amixRS/Ac5U5mQVgp9pnlSUnbNWFaWZQ==
 
-"tree-sitter-cli@^0.20.0":
-  "integrity" "sha512-4D1qapWbJXZ5rrSUGM5rcw5Vuq/smzn9KbiFRhlON6KeuuXjra+KAtDYVrDgAoLIG4ku+jbEEGrJxCptUGi3dg=="
-  "resolved" "https://registry.npmjs.org/tree-sitter-cli/-/tree-sitter-cli-0.20.0.tgz"
-  "version" "0.20.0"
+tree-sitter-cli@^0.20.6:
+  version "0.20.6"
+  resolved "https://registry.yarnpkg.com/tree-sitter-cli/-/tree-sitter-cli-0.20.6.tgz#2a7202190d7bd64e112b451f94573dbe40a04f04"
+  integrity sha512-tjbAeuGSMhco/EnsThjWkQbDIYMDmdkWsTPsa/NJAW7bjaki9P7oM9TkLxfdlnm4LXd1wR5wVSM2/RTLtZbm6A==
 
-"tree-sitter-javascript@github:tree-sitter/tree-sitter-javascript#fdeb68a":
-  "resolved" "git+ssh://git@github.com/tree-sitter/tree-sitter-javascript.git#fdeb68ac8d2bd5a78b943528bb68ceda3aade2eb"
-  "version" "0.20.0"
+"tree-sitter-javascript@github:sansarip/tree-sitter-javascript":
+  version "0.20.0"
+  resolved "https://codeload.github.com/sansarip/tree-sitter-javascript/tar.gz/08cd90c739844c90c01b5ac0863b2fb6d769683b"
   dependencies:
-    "nan" "^2.12.1"
+    nan "^2.12.1"
