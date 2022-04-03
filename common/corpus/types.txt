@@ -45,6 +45,7 @@ let thing: { [type: string]: string };
 type T = { [K in keyof T]-?: any }
 type T = { [K in keyof T]?: any }
 type T = { -readonly [K in keyof T]: any }
+type T = { foo: }
 
 ---
 
@@ -81,7 +82,12 @@ type T = { -readonly [K in keyof T]: any }
         (mapped_type_clause
           (type_identifier)
           (index_type_query (type_identifier)))
-        (type_annotation (predefined_type))))))
+        (type_annotation (predefined_type)))))
+  (type_alias_declaration
+    (type_identifier)
+    (object_type
+      (incomplete_property_signature
+        (property_identifier)))))
 
 =======================================
 Object types with call signatures
@@ -440,6 +446,8 @@ Interface declarations
 
 interface A { a: string; }
 
+interface A { a: }
+
 interface B extends A { b: string; }
 
 interface Friend {
@@ -468,6 +476,9 @@ interface Enum extends Bar, Baz, Foo<A> {
   (interface_declaration
     (type_identifier)
     (object_type (property_signature (property_identifier) (type_annotation (predefined_type)))))
+  (interface_declaration
+    (type_identifier)
+    (object_type (incomplete_property_signature (property_identifier))))
   (interface_declaration
     (type_identifier)
     (extends_type_clause (type_identifier))
