@@ -9498,6 +9498,10 @@
                         },
                         {
                           "type": "SYMBOL",
+                          "name": "incomplete_property_signature"
+                        },
+                        {
+                          "type": "SYMBOL",
                           "name": "call_signature"
                         },
                         {
@@ -9542,6 +9546,10 @@
                               {
                                 "type": "SYMBOL",
                                 "name": "property_signature"
+                              },
+                              {
+                                "type": "SYMBOL",
+                                "name": "incomplete_property_signature"
                               },
                               {
                                 "type": "SYMBOL",
@@ -9699,6 +9707,91 @@
               }
             ]
           }
+        }
+      ]
+    },
+    "incomplete_property_signature": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "SYMBOL",
+              "name": "accessibility_modifier"
+            },
+            {
+              "type": "BLANK"
+            }
+          ]
+        },
+        {
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "STRING",
+              "value": "static"
+            },
+            {
+              "type": "BLANK"
+            }
+          ]
+        },
+        {
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "SYMBOL",
+              "name": "override_modifier"
+            },
+            {
+              "type": "BLANK"
+            }
+          ]
+        },
+        {
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "STRING",
+              "value": "readonly"
+            },
+            {
+              "type": "BLANK"
+            }
+          ]
+        },
+        {
+          "type": "FIELD",
+          "name": "name",
+          "content": {
+            "type": "SYMBOL",
+            "name": "_property_name"
+          }
+        },
+        {
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "STRING",
+              "value": "?"
+            },
+            {
+              "type": "BLANK"
+            }
+          ]
+        },
+        {
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "STRING",
+              "value": ":"
+            },
+            {
+              "type": "BLANK"
+            }
+          ]
         }
       ]
     },
@@ -10505,6 +10598,14 @@
     [
       "template_literal_type",
       "template_string"
+    ],
+    [
+      "property_signature",
+      "incomplete_property_signature"
+    ],
+    [
+      "incomplete_pair",
+      "incomplete_property_signature"
     ]
   ],
   "precedences": [
