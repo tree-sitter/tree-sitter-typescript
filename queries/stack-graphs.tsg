@@ -240,7 +240,6 @@ attribute node_symbol = node            => symbol = (source-text node), source_n
     (throw_statement)
     (empty_statement)
     (labeled_statement)
-  ; (declaration) ; FIXME injection, not production?
     (ambient_declaration)
     (module)
     (internal_module)
@@ -2010,28 +2009,6 @@ attribute node_symbol = node            => symbol = (source-text node), source_n
 
 
 
-;; Declaration
-
-; (declaration
-;   (_)@inner
-; )@decl
-
-; FIXME injection, not production?
-; (declaration
-;   (_)@inner
-; )@decl {
-;   ; propagate lexical scope
-;   edge @inner.lexical_scope -> @decl.lexical_scope
-; 
-;   ; lexical definitions escape
-;   edge @decl.lexical_defs -> @inner.lexical_defs
-; 
-;   ; variable definitions escape
-;   edge @decl.var_defs -> @inner.var_defs
-; }
-
-
-
 ;; Ambient Declaration
 
 (ambient_declaration
@@ -2443,7 +2420,6 @@ attribute node_symbol = node            => symbol = (source-text node), source_n
 
 [
   (parenthesized_expression)
-; (expression) ; FIXME injection, not production?
   (string)
   (template_string)
   (number)
