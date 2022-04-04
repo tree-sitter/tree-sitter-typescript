@@ -76,7 +76,6 @@ attribute node_symbol = node            => symbol = (source-text node), source_n
   node @comment.default_export
   node @comment.defs
   node @comment.exports
-  node @comment.globals
   node @comment.lexical_defs
   node @comment.lexical_scope
   node @comment.return_type
@@ -115,7 +114,6 @@ attribute node_symbol = node            => symbol = (source-text node), source_n
 (program)@prog {
   node @prog.defs
   node @prog.exports
-  node @prog.globals
   node @prog.lexical_scope
   node @prog.mod_def
   node @prog.mod_def__ns
@@ -128,9 +126,6 @@ attribute node_symbol = node            => symbol = (source-text node), source_n
 
   ; expose definitions
   edge @prog.lexical_scope -> @prog.defs
-
-  ; expose global definitions in ROOT_NODE
-  edge ROOT_NODE -> @prog.globals
 
   ; module definition in ROOT_NODE scope
   edge ROOT_NODE -> @prog.mod_def__ns
@@ -159,93 +154,12 @@ attribute node_symbol = node            => symbol = (source-text node), source_n
   edge @prog.exports -> @stmt.exports
 }
 
-; .globals is threaded through all statements, except import/export statements
-; FIXME this would be better expressed using negative matches
-;       (program ^[(import_statement) (export_statement)])@prog {
-;         edge @ROOT_NODE -> @prog.defs
-;       }
-(program
-  .
-  (_)@first_stmt
-)@prog {
-  edge @prog.globals -> @first_stmt.globals
+(program [(import_statement) (export_statement)]* @imexs)@prog {
+  if (is-empty @imexs) {
+    ; expose global definitions in ROOT_NODE
+    edge ROOT_NODE -> @prog.defs
+  }
 }
-(program
-  [
-    (hash_bang_line)
-    (comment)
-    (debugger_statement)
-    (expression_statement)
-    (variable_declaration)
-    (lexical_declaration)
-    (function_declaration)
-    (generator_function_declaration)
-    (function_signature)
-    (abstract_class_declaration)
-    (class_declaration)
-    (interface_declaration)
-    (statement_block)
-    (if_statement)
-    (switch_statement)
-    (for_statement)
-    (for_in_statement)
-    (while_statement)
-    (do_statement)
-    (try_statement)
-    (with_statement)
-    (break_statement)
-    (continue_statement)
-    (return_statement)
-    (throw_statement)
-    (empty_statement)
-    (labeled_statement)
-    (declaration)
-    (ambient_declaration)
-    (module)
-    (internal_module)
-    (enum_declaration)
-    (type_alias_declaration)
-  ]@left_stmt
-  .
-  (_)@right_stmt
-) {
-  edge @left_stmt.globals -> @right_stmt.globals
-}
-; FIXME anchors and alternatives seems to be broken, I wanted to write the following
-;       (program [ ... ]@last_stmt .)@prog, but that matches all statements
-(program (hash_bang_line)@last_stmt .)@prog { edge @last_stmt.globals -> @prog.defs }
-(program (comment)@last_stmt .)@prog { edge @last_stmt.globals -> @prog.defs }
-(program (debugger_statement)@last_stmt .)@prog { edge @last_stmt.globals -> @prog.defs }
-(program (expression_statement)@last_stmt .)@prog { edge @last_stmt.globals -> @prog.defs }
-(program (variable_declaration)@last_stmt .)@prog { edge @last_stmt.globals -> @prog.defs }
-(program (lexical_declaration)@last_stmt .)@prog { edge @last_stmt.globals -> @prog.defs }
-(program (function_declaration)@last_stmt .)@prog { edge @last_stmt.globals -> @prog.defs }
-(program (generator_function_declaration)@last_stmt .)@prog { edge @last_stmt.globals -> @prog.defs }
-(program (function_signature)@last_stmt .)@prog { edge @last_stmt.globals -> @prog.defs }
-(program (abstract_class_declaration)@last_stmt .)@prog { edge @last_stmt.globals -> @prog.defs }
-(program (class_declaration)@last_stmt .)@prog { edge @last_stmt.globals -> @prog.defs }
-(program (interface_declaration)@last_stmt .)@prog { edge @last_stmt.globals -> @prog.defs }
-(program (statement_block)@last_stmt .)@prog { edge @last_stmt.globals -> @prog.defs }
-(program (if_statement)@last_stmt .)@prog { edge @last_stmt.globals -> @prog.defs }
-(program (switch_statement)@last_stmt .)@prog { edge @last_stmt.globals -> @prog.defs }
-(program (for_statement)@last_stmt .)@prog { edge @last_stmt.globals -> @prog.defs }
-(program (for_in_statement)@last_stmt .)@prog { edge @last_stmt.globals -> @prog.defs }
-(program (while_statement)@last_stmt .)@prog { edge @last_stmt.globals -> @prog.defs }
-(program (do_statement)@last_stmt .)@prog { edge @last_stmt.globals -> @prog.defs }
-(program (try_statement)@last_stmt .)@prog { edge @last_stmt.globals -> @prog.defs }
-(program (with_statement)@last_stmt .)@prog { edge @last_stmt.globals -> @prog.defs }
-(program (break_statement)@last_stmt .)@prog { edge @last_stmt.globals -> @prog.defs }
-(program (continue_statement)@last_stmt .)@prog { edge @last_stmt.globals -> @prog.defs }
-(program (return_statement)@last_stmt .)@prog { edge @last_stmt.globals -> @prog.defs }
-(program (throw_statement)@last_stmt .)@prog { edge @last_stmt.globals -> @prog.defs }
-(program (empty_statement)@last_stmt .)@prog { edge @last_stmt.globals -> @prog.defs }
-(program (labeled_statement)@last_stmt .)@prog { edge @last_stmt.globals -> @prog.defs }
-(program (ambient_declaration)@last_stmt .)@prog { edge @last_stmt.globals -> @prog.defs }
-(program (module)@last_stmt .)@prog { edge @last_stmt.globals -> @prog.defs }
-(program (internal_module)@last_stmt .)@prog { edge @last_stmt.globals -> @prog.defs }
-(program (enum_declaration)@last_stmt .)@prog { edge @last_stmt.globals -> @prog.defs }
-(program (type_alias_declaration)@last_stmt .)@prog { edge @last_stmt.globals -> @prog.defs }
-
 
 
 ;; hashbang
@@ -335,7 +249,6 @@ attribute node_symbol = node            => symbol = (source-text node), source_n
 ]@stmt {
   node @stmt.default_export
   node @stmt.exports
-  node @stmt.globals
   node @stmt.lexical_defs
   node @stmt.lexical_scope
   node @stmt.return_type
