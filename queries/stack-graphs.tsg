@@ -298,14 +298,16 @@ attribute node_symbol = node            => symbol = (source-text node), source_n
 ; )@export_stmt
 
 (export_statement
-; ^"type"
+  "type"?@is_type
   (export_clause)@clause
 )@export_stmt {
+if none @is_type {
   ; propagate lexical scope
   edge @clause.lexical_scope -> @export_stmt.lexical_scope
 
   ; propagate exports
   edge @export_stmt.exports -> @clause.exports
+}
 }
 
 ; FIXME type export
@@ -318,9 +320,10 @@ attribute node_symbol = node            => symbol = (source-text node), source_n
 ; )@export_stmt
 
 (export_statement
-  ; FIXME ^"default"
+  "default"?@is_default
   declaration:(_)@decl
 )@export_stmt {
+if none @is_default {
   ; propagate lexical scope
   edge @decl.lexical_scope -> @export_stmt.lexical_scope
 
@@ -333,6 +336,7 @@ attribute node_symbol = node            => symbol = (source-text node), source_n
   ; export the definitions
   edge @export_stmt.exports -> @decl.lexical_defs
   edge @export_stmt.exports -> @decl.var_defs
+}
 }
 
 ; export default DECL
@@ -394,16 +398,13 @@ attribute node_symbol = node            => symbol = (source-text node), source_n
   declaration:(_)@decl
 )@export_stmt {
   ; propagate lexical scope
-  ; FIXME re-enable when ^"default" above works
-  ; edge @decl.lexical_scope -> @export_stmt.lexical_scope
+  edge @decl.lexical_scope -> @export_stmt.lexical_scope
 
   ; expose lexical definitions
-  ; FIXME re-enable when ^"default" above works
-  ; edge @export_stmt.lexical_defs -> @decl.lexical_defs
+  edge @export_stmt.lexical_defs -> @decl.lexical_defs
 
   ; expose variable definitions
-  ; FIXME re-enable when ^"default" above works
-  ; edge @export_stmt.var_defs -> @decl.var_defs
+  edge @export_stmt.var_defs -> @decl.var_defs
 
   ; export as default
   edge @export_stmt.default_def -> @decl.default_export
@@ -593,28 +594,31 @@ attribute node_symbol = node            => symbol = (source-text node), source_n
 ; )@import_stmt
 
 (import_statement
-; ^["type" "typeof"]
+  ["type" "typeof"]?@is_type
   (import_clause)@clause
   source:(_)@from
 )@import_stmt {
+if none @is_type {
   ; use module for lexical scope of import clause
   edge @clause.lexical_scope -> @from.mod_ref
 
   ; expose imported definitions
   edge @import_stmt.lexical_defs -> @clause.lexical_defs
 }
+}
 
 (import_statement
-; ^["type" "typeof"]
+  ["type" "typeof"]?@is_type
   (import_require_clause)@clause
 )@import_stmt {
+if none @is_type {
   ; propagate lexical scope
   edge @clause.lexical_scope -> @import_stmt.lexical_scope
 
   ; expose imported definitions
   edge @import_stmt.lexical_defs -> @clause.lexical_defs
 }
-
+}
 ; FIXME type/typeof import
 
 
@@ -1160,11 +1164,13 @@ attribute node_symbol = node            => symbol = (source-text node), source_n
 }
 
 [
-  (function_declaration           !return_type body:(_)@body) ; FIXME ^"async"
-  (generator_function_declaration !return_type body:(_)@body) ; FIXME ^"async"
+  (function_declaration           "async"?@is_async !return_type body:(_)@body)
+  (generator_function_declaration "async"?@is_async !return_type body:(_)@body)
 ]@fun_decl {
+if none @is_async {
   ; function returns body return type
   edge @fun_decl.callable__return -> @body.return_type
+}
 }
 
 [
@@ -2552,7 +2558,7 @@ attribute node_symbol = node            => symbol = (source-text node), source_n
 [
   (primary_expression/identifier)@name
   ; FIXME expansion of _lhs_expression/identifier and _augmented_assignment_lhs
-  (for_in_statement left:(identifier)@name) ; FIXME ^["var" "let" "const"]
+  (for_in_statement ["var" "let" "const"]?@is_def left:(identifier)@name)
   (assignment_expression left:(identifier)@name)
   (augmented_assignment_expression left:(identifier)@name)
   ; FIXME type_query has its own restricted expression production
@@ -2561,22 +2567,25 @@ attribute node_symbol = node            => symbol = (source-text node), source_n
   (type_query (subscript_expression object:(identifier)@name))
   (type_query (call_expression function:(identifier)@name))
 ] {
+if none @is_def {
   node @name.cotype
   node @name.lexical_defs
   node @name.lexical_scope
   node @name.type
   node @name.var_defs
 }
+}
 
 [
   (primary_expression/identifier)@name
   ; FIXME expansion of _lhs_expression/identifier and _augmented_assignment_lhs
-  (for_in_statement left:(identifier)@name) ; FIXME ^["var" "let" "const"]
+  (for_in_statement ["var" "let" "const"]?@is_def left:(identifier)@name)
   (assignment_expression left:(identifier)@name)
   (augmented_assignment_expression left:(identifier)@name)
   ; FIXME type_query has its own restricted expression production
   (type_query (identifier)@name)
 ] {
+if none @is_def {
   node @name.expr_ref
   node @name.expr_ref__ns
   node @name.expr_ref__typeof
@@ -2593,6 +2602,7 @@ attribute node_symbol = node            => symbol = (source-text node), source_n
   ;
   attr (@name.expr_ref__typeof) push_symbol = ":"
   edge @name.expr_ref__typeof -> @name.expr_ref
+}
 }
 
 
@@ -3068,16 +3078,20 @@ attribute node_symbol = node            => symbol = (source-text node), source_n
 ;;;; inferred return type
 
 [
-  (function       !return_type body:(_)@body) ; FIXME ^"async"
-  (arrow_function !return_type body:(statement_block)@body) ; FIXME ^"async"
+  (function       "async"?@is_async !return_type body:(_)@body)
+  (arrow_function "async"?@is_async !return_type body:(statement_block)@body)
 ]@fun {
+if none @is_async {
   ; callable is type of return statement
   edge @fun.callable__return -> @body.return_type
 }
+}
 
-(arrow_function body:(expression)@expr)@fun { ; FIXME ^"async"
+(arrow_function "async"?@is_async body:(expression)@expr)@fun {
+if none @is_async {
   ; callable return type is type of body
   edge @fun.callable__return -> @expr.type
+}
 }
 
 ;;;; inferred async return type
@@ -3793,6 +3807,7 @@ attribute node_symbol = node            => symbol = (source-text node), source_n
 }
 
 [ ; NOTE these are the ones not also variables
+  (for_in_statement ["var" "let" "const"] left:(identifier)@name)
   (variable_declarator name:(identifier)@name)
   (pattern/identifier)@name
   (rest_pattern (_)@name)
@@ -4262,10 +4277,11 @@ attribute node_symbol = node            => symbol = (source-text node), source_n
 ;;;; regular members (not 'get' and 'set', not constructors)
 
 [
-  (method_signature          name:(_)@name) ; FIXME ^["get" "set"] name:^("constructor")
-  (abstract_method_signature name:(_)@name) ; FIXME ^["get" "set"] name:^("constructor")
-  (method_definition         name:(_)@name) ; FIXME ^["get" "set"] name:^("constructor")
+  (method_signature          ["get" "set"]?@is_acc name:(_)@name) ; FIXME name:^("constructor")
+  (abstract_method_signature ["get" "set"]?@is_acc name:(_)@name) ; FIXME name:^("constructor")
+  (method_definition         ["get" "set"]?@is_acc name:(_)@name) ; FIXME name:^("constructor")
 ]@mem {
+if none @is_acc {
   node @mem.member
   node @mem.callable
   node @mem.callable__params
@@ -4293,14 +4309,16 @@ attribute node_symbol = node            => symbol = (source-text node), source_n
   ;
   attr (@mem.callable__return) pop_symbol = "<return>"
 }
+}
 
 ; type parameters are handled by generics rules below
 
 [
-  (method_signature          parameters:(_)@params)
-  (abstract_method_signature parameters:(_)@params)
-  (method_definition         parameters:(_)@params)
+  (method_signature          ["get" "set"]?@is_acc parameters:(_)@params)
+  (abstract_method_signature ["get" "set"]?@is_acc parameters:(_)@params)
+  (method_definition         ["get" "set"]?@is_acc parameters:(_)@params)
 ]@mem {
+if none @is_acc {
   ; propagate lexical scope
   edge @params.lexical_scope -> @mem.generic_inner_lexical_scope
 
@@ -4311,24 +4329,29 @@ attribute node_symbol = node            => symbol = (source-text node), source_n
   ; connect paarams to type
   edge @mem.callable__params -> @params.params
 }
+}
 
 [
-  (method_signature          return_type:(_)@return_type)
-  (abstract_method_signature return_type:(_)@return_type)
-  (method_definition         return_type:(_)@return_type)
+  (method_signature          ["get" "set"]?@is_acc return_type:(_)@return_type)
+  (abstract_method_signature ["get" "set"]?@is_acc return_type:(_)@return_type)
+  (method_definition         ["get" "set"]?@is_acc return_type:(_)@return_type)
 ]@mem {
+if none @is_acc {
   ; propagate lexical scope
   edge @return_type.lexical_scope -> @mem.generic_inner_lexical_scope
 
   ; inner type is return type
   edge @mem.callable__return -> @return_type.type
 }
+}
 
 [
-  (method_definition !return_type body:(_)@body) ; FIXME ^"async"
+  (method_definition ["get" "set" "async"]?@is_acc !return_type body:(_)@body)
 ]@mem {
+if none @is_acc {
   ; inner type is type of return statement
   edge @mem.callable__return -> @body.return_type
+}
 }
 
 [
@@ -4340,14 +4363,6 @@ attribute node_symbol = node            => symbol = (source-text node), source_n
   edge @mem.await_type -> @body.return_type
 }
 
-
-[
-  (method_definition body:(_)@body)
-]@mem {
-  ; propagate lexical scope
-  edge @body.lexical_scope -> @mem.generic_inner_lexical_scope
-}
-
 ;;;; 'get' and 'set' methods
 
 [
@@ -4355,16 +4370,15 @@ attribute node_symbol = node            => symbol = (source-text node), source_n
   (abstract_method_signature ["get" "set"] name:(_)@name)
   (method_definition         ["get" "set"] name:(_)@name)
 ]@mem {
+  node @mem.member
+
   ; member definition
-  ; FIXME re-enable when ^["get" "set"] above works
-; edge @mem.type_members -> @mem.member
+  edge @mem.type_members -> @mem.member
   ;
-  ; FIXME re-enable when ^["get" "set"] above works
-; attr (@mem.member) pop_symbol = "."
-; edge @mem.member -> @name.expr_def
+  attr (@mem.member) pop_symbol = "."
+  edge @mem.member -> @name.expr_def
   ;
-  ; FIXME re-enable when ^["get" "set"] above works
-; attr (@name.expr_def) node_definition = @name
+  attr (@name.expr_def) node_definition = @name
 }
 
 [
@@ -4377,11 +4391,9 @@ attribute node_symbol = node            => symbol = (source-text node), source_n
   edge @return_type.lexical_scope -> @mem.lexical_scope
 
   ; type of field is return type
-  ; FIXME re-enable when ^["get" "set"] above works
-; edge @name.expr_def -> @name.expr_def__typeof
+  edge @name.expr_def -> @name.expr_def__typeof
   ;
-  ; FIXME re-enable when ^["get" "set"] above works
-; attr (@name.expr_def__typeof) pop_symbol = ":"
+  attr (@name.expr_def__typeof) pop_symbol = ":"
   edge @name.expr_def__typeof -> @return_type.type
 }
 
@@ -4395,13 +4407,22 @@ attribute node_symbol = node            => symbol = (source-text node), source_n
   edge @param_type.lexical_scope -> @mem.lexical_scope
 
   ; type of field is parameter type
-  ; FIXME re-enable when ^["get" "set"] above works
-; edge @name.expr_def -> @name.expr_def__typeof
+  edge @name.expr_def -> @name.expr_def__typeof
   ;
-  ; FIXME re-enable when ^["get" "set"] above works
-; attr (@name.expr_def__typeof) pop_symbol = ":"
+  attr (@name.expr_def__typeof) pop_symbol = ":"
   edge @name.expr_def__typeof -> @param_type.type
 }
+
+;;;; method body
+
+[
+  (method_definition body:(_)@body)
+]@mem {
+  ; propagate lexical scope
+  edge @body.lexical_scope -> @mem.generic_inner_lexical_scope
+}
+
+
 
 ;;;; FIXME constructor methods
 
