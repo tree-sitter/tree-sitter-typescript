@@ -1583,7 +1583,7 @@ if none @is_async {
 
 (switch_case
   value:(_)@value
-  (_)@stmt
+  body: (_)@stmt
 )@switch_case {
   ; propagate lexical scope
   edge @stmt.lexical_scope -> @switch_case.lexical_scope
@@ -1599,7 +1599,7 @@ if none @is_async {
 }
 
 (switch_default
-  (_)@stmt
+  body: (_)@stmt
 )@switch_default {
   ; propagate lexical scope
   edge @stmt.lexical_scope -> @switch_default.lexical_scope
