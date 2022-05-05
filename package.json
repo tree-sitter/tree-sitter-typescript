@@ -30,7 +30,7 @@
     "test-typescript": "npm run install-tree-sitter-stack-graphs && cd typescript && tree-sitter test && ../bin/tree-sitter-stack-graphs test --grammar .. --scope source.ts test/stack-graphs",
     "test-tsx": "cd tsx && tree-sitter test",
     "test-windows": "pushd typescript && tree-sitter test && popd && pushd tsx && tree-sitter test",
-    "install-tree-sitter-stack-graphs": "cargo install --quiet --root . --git https://github.com/github/stack-graphs --branch includes-and-builtins --features cli"
+    "install-tree-sitter-stack-graphs": "cargo install --quiet --root . --git https://github.com/github/stack-graphs --features cli"
   },
   "tree-sitter": [
     {
