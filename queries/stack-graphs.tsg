@@ -254,63 +254,251 @@ attribute node_symbol = node            => symbol = (source-text node), source_n
 }
 
 
+;; Imports & Exports (The Many Faced God)
+;
+; TypeScript has many import / export forms. Below is a condensed presentation that can be used as a reference
+; for the sections below where the actual rules are defined. One has to be careful with the queries to ensure
+; that cases do not overlap, even if their syntactic forms (partially) do. This must be done by adding negative
+; matches to some queries. This overview should make it easier to spot where negative are required.
+;
+;;;; Exports
+;
+; export_statement :=
+;    (export_statement "*"                                source:(_)@from) ; export * from MODULE              ; re-export everything from MODULE
+;  | (export_statement (namespace_export (identifier)@ns) source:(_)@from) ; export * as NAMESPACE from MODULE ; re-export MODULE as NAMESPACE
+;  | (export_statement  "default" value:(_)@value)                         ; export default EXPRESSION         ; export EXPRESSION as default
+;  | (export_statement  "default" declaration:(_)@decl)                    ; export default DECLARATION        ; export DECLARATION as default
+;  | (export_statement ^"default" declaration:(_)@decl)                    ; export DECL                       ; export DECLARATION
+;  | (export_statement "type"? (export_clause)@clause  source:(_)@from)    ; export (type) CLAUSE from MODULE  ; re-export (type) identifiers from MODULE
+;  | (export_statement "type"? (export_clause)@clause !source         )    ; export (type) CLAUSE              ; export (type) identifiers
+;  | (export_statement "=" . (expression)@value)                           ; export = EXPRESSION               ; export EXPRESSION as exports object
+;  | (export_statement "as" "namespace" . (_)@ns)                          ; export as namespace NAMESPACE     ; export this module as global NAMESPACE
+;
+; export_clause :=
+;    (export_clause (export_specifier)*)                                   ; { EXPORT_SPECIFIER* }
+;
+; export_specifier :=
+;    (export_specifier name:(_)  alias:(_))                                ; NAME
+;  | (export_specifier name:(_) !alias    )                                ; NAME as ALIAS
+;
+;;;; Imports
+;
+; import_statement :=
+;    ; note that the first case overlaps with the two after it, but the behaviour is orthogonal
+;    (import_statement "type"?  (import_clause (identifier)@name                                   ) source:(_)@from)  ; import (type) NAME from MODULE           ; import default (type) from MODULE as NAME
+;  | (import_statement "type"?  (import_clause                   (namespace_import (identifier)@ns)) source:(_)@from)  ; import (type) * as NAMESPACE from MODULE ; import all (type) identifiers from MODULE in NAMESPACE
+;  | (import_statement "type"?  (import_clause                   (named_imports)@named_imports     ) source:(_)@from)  ; import (type) NAMED_IMPORTS from MODULE  ; import named (type) identifiers from MODULE
+;  | (import_statement "type"? ^(import_clause)                                                      source:(_)@from)  ; import (type) MODULE                     ; do not import any identifiers from MODULE
+;  | (import_statement "type"?  (import_require_clause (identifier)@name                             source:(_)@from)) ; import (type) NAME = require(MODULE)     ; import exports object (type) as NAME from MODULE
+;
+; named_imports :=
+;    (named_imports (import_specifier)*)                                                              ; { IMPORT_SPECIFIER* }
+;
+; import_specifier :=
+;    (import_specifier name:(_)  alias:(_))                                                           ; NAME
+;    (import_specifier name:(_) !alias    )                                                           ; NAME as ALIAS
+;
+; Note that the grammar productions for imports and exports are factored slightly
+; different. The statements above are inlined such that corresponding import and
+; export statements all live in the top-level list. Be mindful that (export_clause)
+; corresponds to (import_clause (named_imports)) and not to (import_cluase)!
+;
+; The presence of a "type" modifier does not fundamentally change the way a certain
+; export/import variant works, only which identifiers are included in the import/export.
+; Therefore, we do not handle that as different export/export variants, but deal with that
+; in the rules for the various clauses, which already determine the identifiers involved.
 
-;; Exports (The Many Faced God)
+;; Module References
 
-; export * from FROM
+[
+  (export_statement                        source:(_)@from )
+  (import_statement                        source:(_)@from )
+  (import_statement (import_require_clause source:(_)@from))
+]@import_stmt {
+  node @from.mod_ref
+  node @from.mod_ref__ns
+
+  ; module reference
+  let mod_name = (path-normalize (path-join (path-dir FILE_PATH) (replace (source-text @from) "[\"\']" "")))
+  attr (@from.mod_ref) symbol_reference = mod_name, source_node = @import_stmt
+  edge @from.mod_ref -> @from.mod_ref__ns
+  ;
+  attr (@from.mod_ref__ns) push_symbol = "%M"
+  edge @from.mod_ref__ns -> ROOT_NODE
+}
+
+;; Named Clauses
+
+[
+  (export_statement "type"? (export_clause               )@clause)
+  (import_statement "type"? (import_clause (named_imports)@clause))
+] {
+  node @clause.defs
+  node @clause.exports
+  node @clause.lexical_defs
+  node @clause.lexical_scope
+}
+
+;;;; Types
+
+[
+  (export_statement "type"? (export_clause                (export_specifier name:(_)@name))@clause)
+  (import_statement "type"? (import_clause (named_imports (import_specifier name:(_)@name))@clause))
+] {
+  node @name.type_def
+  node @name.type_def__ns
+  node @name.type_ref
+  node @name.type_ref__ns
+
+  ; type reference
+  attr (@name.type_ref) node_reference = @name
+  edge @name.type_ref -> @name.type_ref__ns
+  ;
+  attr (@name.type_ref__ns) push_symbol = "%T"
+  edge @name.type_ref__ns -> @clause.lexical_scope
+}
+
+[
+  (export_statement "type"? (export_clause                (export_specifier name:(_)@name !alias))@clause)
+  (import_statement "type"? (import_clause (named_imports (import_specifier name:(_)@name !alias))@clause))
+] {
+  ; type definition
+  edge @clause.defs -> @name.type_def__ns ; FIXME defs, lexical_defs?
+  ;
+  attr (@name.type_def__ns) pop_symbol = "%T"
+  edge @name.type_def__ns -> @name.type_def
+  ;
+  attr (@name.type_def) node_definition = @name
+  edge @name.type_def -> @name.type_ref
+}
+
+[
+  (export_statement "type"? (export_clause                (export_specifier name:(_)@name alias:(_)@alias))@clause)
+  (import_statement "type"? (import_clause (named_imports (import_specifier name:(_)@name alias:(_)@alias))@clause))
+] {
+  node @alias.type_def
+  node @alias.type_def__ns
+  node @alias.type_ref
+
+  ; type definition
+  edge @clause.defs -> @alias.type_def__ns
+  ;
+  attr (@alias.type_def__ns) pop_symbol = "%T"
+  edge @alias.type_def__ns -> @alias.type_def
+  ;
+  attr (@alias.type_def) node_definition = @alias
+  edge @alias.type_def -> @name.type_ref
+}
+
+
+;;;; Expressions
+
+[
+  (export_statement "type"?@is_type (export_clause                (export_specifier name:(_)@name))@clause)
+  (import_statement "type"?@is_type (import_clause (named_imports (import_specifier name:(_)@name))@clause))
+] {
+if none @is_type {
+  node @name.expr_def
+  node @name.expr_def__ns
+  node @name.expr_ref
+  node @name.expr_ref__ns
+
+  ; expr reference
+  attr (@name.expr_ref) node_reference = @name
+  edge @name.expr_ref -> @name.expr_ref__ns
+  ;
+  attr (@name.expr_ref__ns) push_symbol = "%E"
+  edge @name.expr_ref__ns -> @clause.lexical_scope
+}  
+}
+
+[
+  (export_statement "type"?@is_type (export_clause                (export_specifier name:(_)@name !alias))@clause)
+  (import_statement "type"?@is_type (import_clause (named_imports (import_specifier name:(_)@name !alias))@clause))
+] {
+if none @is_type {
+  ; expr definition
+  edge @clause.defs -> @name.expr_def__ns ; FIXME defs, lexical_defs?
+  ;
+  attr (@name.expr_def__ns) pop_symbol = "%E"
+  edge @name.expr_def__ns -> @name.expr_def
+  ;
+  attr (@name.expr_def) node_definition = @name
+  edge @name.expr_def -> @name.expr_ref
+}  
+}
+
+[
+  (export_statement "type"?@is_type (export_clause                (export_specifier name:(_)@name alias:(_)@alias))@clause)
+  (import_statement "type"?@is_type (import_clause (named_imports (import_specifier name:(_)@name alias:(_)@alias))@clause))
+] {
+if none @is_type {
+  node @alias.expr_def
+  node @alias.expr_def__ns
+  node @alias.expr_ref
+
+  ; expr definition
+  edge @clause.defs -> @alias.expr_def__ns
+  ;
+  attr (@alias.expr_def__ns) pop_symbol = "%E"
+  edge @alias.expr_def__ns -> @alias.expr_def
+  ;
+  attr (@alias.expr_def) node_definition = @alias
+  edge @alias.expr_def -> @name.expr_ref
+}  
+}
+
+;; Exports
+
+; export * from from MODULE
 ;
 ; (export_statement
 ;   "*" source:(string)@name
 ; )@export_stmt
 
-; export CLAUSE FROM
-;
-; (export_statement
-;   (export_clause)@clause source:(string)@name
-; )@export_stmt
-
-; .mod_ref defined together with import_statement below
-
 (export_statement
-  "*" source:(string)@name
+  "*" source:(_)@name
 )@export_stmt {
   ; export everything from source module
   edge @export_stmt.exports -> @name.mod_ref
 }
 
+; export CLAUSE from MODULE
+; export type CLAUSE from MODULE
+;
+; (export_statement
+;   "type"? (export_clause)@clause source:(_)@name
+; )@export_stmt
+
 (export_statement
-  (export_clause)@clause source:(string)@name
+  "type"? (export_clause)@clause source:(_)@name
 )@export_stmt {
   ; propagate lexical scope
   edge @clause.lexical_scope -> @name.mod_ref
 
   ; propagate exports
-  ; FIXME also covered by (export_statement (export_clause)) below
-  ; edge @export_stmt.exports -> @clause.exports
+  edge @export_stmt.exports -> @clause.defs
 }
 
 ; export CLAUSE
 ; export type CLAUSE
 ;
 ; (export_statement
-;   "type" ; opt
+;   "type"?
 ;   (export_clause)@clause
 ; )@export_stmt
 
 (export_statement
-  "type"?@is_type
+  "type"?
   (export_clause)@clause
+  !source
 )@export_stmt {
-if none @is_type {
   ; propagate lexical scope
   edge @clause.lexical_scope -> @export_stmt.lexical_scope
 
   ; propagate exports
-  edge @export_stmt.exports -> @clause.exports
+  edge @export_stmt.exports -> @clause.defs
 }
-}
-
-; FIXME type export
 
 ; export DECL
 ;
@@ -353,12 +541,22 @@ if none @is_default {
 ;   value:(_)@expr
 ; )@export_stmt
 
+; export = NAME
+;
+; (export_statement
+;   "="
+;   (expression)@expr
+; )@export_stmt
+
 ; NOTE Default exports are modeled as variables named "default", because the grammar
 ;      treats "default" as a regular identifier instead of a keyword. This approach
 ;      ensures renaming imports such as `import { default as X } from ...` work correctly.
+;
+;      Default exports are generally expressions. However, if the export is specified as
+;      an identifier, the type with that name is also exported.
 
 (export_statement
-  "default"
+  ["default" "="]
 )@export_stmt {
   node @export_stmt.default_def
   node @export_stmt.default_expr_def
@@ -374,7 +572,7 @@ if none @is_default {
   attr (@export_stmt.default_expr_def__ns_pop) pop_symbol = "%E"
   edge @export_stmt.default_expr_def__ns_pop -> @export_stmt.default_expr_def
   ;
-  attr (@export_stmt.default_expr_def) pop_symbol = "default"
+  ;; @export_stmt.default_expr_def pop_symbol set below for "default" and "="
   edge @export_stmt.default_expr_def -> @export_stmt.default_expr_def__ns_push
   ;
   attr (@export_stmt.default_expr_def__ns_push) push_symbol = "%E"
@@ -386,11 +584,25 @@ if none @is_default {
   attr (@export_stmt.default_type_def__ns_pop) pop_symbol = "%T"
   edge @export_stmt.default_type_def__ns_pop -> @export_stmt.default_type_def
   ;
-  attr (@export_stmt.default_type_def) pop_symbol = "default"
+  ;; @export_stmt.default_expr_def pop_symbol set below for "default" and "="
   edge @export_stmt.default_type_def -> @export_stmt.default_type_def__ns_push
   ;
   attr (@export_stmt.default_type_def__ns_push) push_symbol = "%T"
   edge @export_stmt.default_type_def__ns_push -> @export_stmt.default_def
+}
+
+(export_statement
+  "default"
+)@export_stmt {
+  attr (@export_stmt.default_expr_def) symbol_definition = "default", source_node = @export_stmt
+  attr (@export_stmt.default_type_def) symbol_definition = "default", source_node = @export_stmt
+}
+
+(export_statement
+  "="
+)@export_stmt {
+  attr (@export_stmt.default_expr_def) symbol_definition = "<exports>", source_node = @export_stmt
+  attr (@export_stmt.default_type_def) symbol_definition = "<exports>", source_node = @export_stmt
 }
 
 (export_statement
@@ -410,10 +622,10 @@ if none @is_default {
   edge @export_stmt.default_def -> @decl.default_export
 }
 
-(export_statement
-  "default"
-  value:(_)@expr
-)@export_stmt {
+[
+  (export_statement "default" value:(_)@expr)@export_stmt
+  (export_statement "=" . (_)@expr)@export_stmt
+] {
   node @export_stmt.default_expr__ns
   node @export_stmt.default_expr__typeof
 
@@ -437,10 +649,10 @@ if none @is_default {
 }
 
 ; NOTE an identifier in a default export can also be a type reference
-(export_statement
-  "default"
-  value:(identifier)@name
-)@export_stmt {
+[
+  (export_statement "default" value:(identifier)@name)@export_stmt
+  (export_statement "=" . (identifier)@name)@export_stmt
+] {
   node @export_stmt.default_type__ns
   node @name.type_ref
   node @name.type_ref__ns
@@ -458,55 +670,26 @@ if none @is_default {
   edge @name.type_ref__ns -> @export_stmt.lexical_scope 
 }
 
-; export = NAME
-;
-; (export_statement
-;   "="
-;   (identifier)@name
-; )@export_stmt
+; export * as namespace NAME
 
-; FIXME TypeScript allows arbitrary expressions, not just identifiers
+; (export_statement
+;   (namespace_export (identifier)@ns)
+;   source:(_)@from
+; )
 
 (export_statement
-  "="
-  (identifier)@name
+  (namespace_export (identifier)@ns)
+  source:(_)@name
 )@export_stmt {
-  node @export_stmt.exports_def
-  node @export_stmt.exports_def__expr_ns
-  node @export_stmt.exports_def__type_ns
-  node @name.expr_ref
-  node @name.expr_ref__ns
-  node @name.type_ref
-  node @name.type_ref__ns
+  ; namespace definitions are specified together with (module) and (internal_module)
 
-  ; exports definiton
-  edge @export_stmt.exports -> @export_stmt.exports_def
-  ;
-  attr (@export_stmt.exports_def) symbol_definition = "<exports>", source_node = @export_stmt
+  ; export definitions
+  edge @export_stmt.exports -> @name.expr_def__ns
+  edge @export_stmt.exports -> @name.type_def__ns
 
-  ; export expression as exports
-  edge @export_stmt.exports_def -> @export_stmt.exports_def__expr_ns
-  ;
-  attr (@export_stmt.exports_def__expr_ns) pop_symbol = "%E"
-  edge @export_stmt.exports_def__expr_ns -> @name.expr_ref
-  ;
-  attr (@name.expr_ref) node_reference = @name
-  edge @name.expr_ref -> @name.expr_ref__ns
-  ;
-  attr (@name.expr_ref__ns) push_symbol = "%E"
-  edge @name.expr_ref__ns -> @export_stmt.lexical_scope
-
-  ; export type as exports
-  edge @export_stmt.exports_def -> @export_stmt.exports_def__type_ns
-  ;
-  attr (@export_stmt.exports_def__type_ns) pop_symbol = "%T"
-  edge @export_stmt.exports_def__type_ns -> @name.type_ref
-  ;
-  attr (@name.type_ref) node_reference = @name
-  edge @name.type_ref -> @name.type_ref__ns
-  ;
-  attr (@name.type_ref__ns) push_symbol = "%T"
-  edge @name.type_ref__ns -> @export_stmt.lexical_scope
+  ; connect definitions to exports
+  edge @export_stmt.expr_member__ns -> @name.mod_ref
+  edge @export_stmt.type_member__ns -> @name.mod_ref
 }
 
 ; export as namespace NAME
@@ -518,9 +701,7 @@ if none @is_default {
 ; )@export_stmt
 
 (program (export_statement
-  "as"
-  "namespace"
-  (identifier)@name
+  "as" "namespace" . (_)@name
 )@export_stmt)@program {
   ; namespace definitions are specified together with (module) and (internal_module)
 
@@ -533,283 +714,141 @@ if none @is_default {
   edge @export_stmt.type_member__ns -> @program.exports
 }
 
-; (export_clause
-;   (export_specifier)@spec ; commaSep
-; )@export_clause
-
-(export_clause)@export_clause {
-  node @export_clause.exports
-  node @export_clause.lexical_scope
-}
-
-(export_clause
-  (export_specifier)@spec ; commaSep
-)@export_clause {
-  ; propagate lexical scope
-  edge @spec.lexical_scope -> @export_clause.lexical_scope
-
-  ; propagate exported definitions
-  edge @export_clause.exports -> @spec.exports
-}
-
-
-
 ;; Imports
 
-; import NAME
+; import MODULE
 ;
 ; (import_statement
-;   . source:(_)@from
-; )@import_stmt
-
-[
-  (import_statement                        source:(_)@from)
-  (import_require_clause                   source:(_)@from)
-  (export_statement "*"                    source:(string)@from)
-  (export_statement (export_clause)@clause source:(string)@from)
-]@import_stmt {
-  node @from.mod_ref
-  node @from.mod_ref__ns
-
-  ; module reference
-  let mod_name = (path-normalize (path-join (path-dir FILE_PATH) (replace (source-text @from) "[\"\']" "")))
-  attr (@from.mod_ref) symbol_reference = mod_name, source_node = @import_stmt
-  edge @from.mod_ref -> @from.mod_ref__ns
-  ;
-  attr (@from.mod_ref__ns) push_symbol = "%M"
-  edge @from.mod_ref__ns -> ROOT_NODE
-}
-
-; import CLAUSE from NAME
-;
-; (import_statement
-;   ["type" "typeof"] ; opt
-;   (import_clause)@clause
-;   source:(string)@from
-; )@import_stmt
-
-; (import_statement
-;   ["type" "typeof"] ; opt
-;   (import_require_clause)@clause
+;   ^(import_clause)
+;   source:(_)@from
 ; )@import_stmt
 
 (import_statement
-  ["type" "typeof"]?@is_type
-  (import_clause)@clause
+  "type"?
+  (import_clause)?@has_clause
   source:(_)@from
 )@import_stmt {
-if none @is_type {
+if none @has_clause {
+  ; do nothing, imported for side-effect only
+}
+}
+
+; import (type) NAMED_IMPORTS from MODULE
+
+(import_statement
+  "type"?
+  (import_clause (named_imports)@clause)
+  source:(_)@from
+)@import_stmt {
   ; use module for lexical scope of import clause
   edge @clause.lexical_scope -> @from.mod_ref
 
   ; expose imported definitions
-  edge @import_stmt.lexical_defs -> @clause.lexical_defs
+  edge @import_stmt.lexical_defs -> @clause.defs
+}
+
+; import (type) NAME from MODULE
+; import (type) NAME = require(MODULE)
+
+[
+  (import_statement "type"? (import_clause         (identifier)) source:(_)@from)@import_stmt
+  (import_statement "type"? (import_require_clause (identifier)  source:(_)@from))@import_stmt
+] {
+  node @import_stmt.default_ref
+
+  ; connect default refererence to module
+  edge @import_stmt.default_ref -> @from.mod_ref
+}
+
+;;;; Types
+
+[
+  (import_statement "type"? (import_clause         (identifier)@name))@import_stmt
+  (import_statement "type"? (import_require_clause (identifier)@name))@import_stmt
+] {
+  node @import_stmt.type_def
+  node @import_stmt.type_def__ns
+  node @import_stmt.default_type_ref
+  node @import_stmt.default_type_ref__ns
+
+  ; type definition
+  edge @import_stmt.lexical_defs -> @import_stmt.type_def__ns
+  ;
+  attr (@import_stmt.type_def__ns) pop_symbol = "%T"
+  edge @import_stmt.type_def__ns -> @import_stmt.type_def
+  ;
+  attr (@import_stmt.type_def) node_definition = @name
+  edge @import_stmt.type_def -> @import_stmt.default_type_ref
+  ;
+  ;; @import_stmt.default_type_ref pop_symbol set below for "default" and "=" 
+  edge @import_stmt.default_type_ref -> @import_stmt.default_type_ref__ns
+  ;
+  attr (@import_stmt.default_type_ref__ns) push_symbol = "%T"
+  edge @import_stmt.default_type_ref__ns -> @import_stmt.default_ref
+}
+
+(import_statement "type"? (import_clause (identifier)))@import_stmt {
+  attr (@import_stmt.default_type_ref) symbol_reference = "default", source_node = @import_stmt
+}
+
+(import_statement "type"? (import_require_clause (identifier)))@import_stmt {
+  attr (@import_stmt.default_type_ref) symbol_reference = "<exports>", source_node = @import_stmt
+}
+
+;;;; Expressions
+
+[
+  (import_statement "type"?@is_type (import_clause         (identifier)@name))@import_stmt
+  (import_statement "type"?@is_type (import_require_clause (identifier)@name))@import_stmt
+] {
+if none @is_type {
+  node @import_stmt.expr_def
+  node @import_stmt.expr_def__ns
+  node @import_stmt.default_expr_ref
+  node @import_stmt.default_expr_ref__ns
+
+  ; expr definition
+  edge @import_stmt.lexical_defs -> @import_stmt.expr_def__ns
+  ;
+  attr (@import_stmt.expr_def__ns) pop_symbol = "%E"
+  edge @import_stmt.expr_def__ns -> @import_stmt.expr_def
+  ;
+  attr (@import_stmt.expr_def) node_definition = @name
+  edge @import_stmt.expr_def -> @import_stmt.default_expr_ref
+  ;
+  ;; @import_stmt.default_expr_ref pop_symbol set below for "default" and "=" 
+  edge @import_stmt.default_expr_ref -> @import_stmt.default_expr_ref__ns
+  ;
+  attr (@import_stmt.default_expr_ref__ns) push_symbol = "%E"
+  edge @import_stmt.default_expr_ref__ns -> @import_stmt.default_ref
 }
 }
+
+(import_statement "type"?@is_type (import_clause (identifier)))@import_stmt {
+if none @is_type {
+  attr (@import_stmt.default_expr_ref) symbol_reference = "default", source_node = @import_stmt
+} 
+}
+
+(import_statement "type"?@is_type (import_require_clause (identifier)))@import_stmt {
+if none @is_type {
+  attr (@import_stmt.default_expr_ref) symbol_reference = "<exports>", source_node = @import_stmt
+}
+}
+
+; import (type) * as NAMESPACE from MODULE
 
 (import_statement
-  ["type" "typeof"]?@is_type
-  (import_require_clause)@clause
+  "type"?
+  (import_clause (namespace_import (identifier)@name))
+  source:(_)@from
 )@import_stmt {
-if none @is_type {
-  ; propagate lexical scope
-  edge @clause.lexical_scope -> @import_stmt.lexical_scope
+  ; namespace definitions are specified together with (module) and (internal_module)
 
-  ; expose imported definitions
-  edge @import_stmt.lexical_defs -> @clause.lexical_defs
+  ; connect definitions to import
+  edge @import_stmt.expr_member__ns -> @from.mod_ref
+  edge @import_stmt.type_member__ns -> @from.mod_ref
 }
-}
-; FIXME type/typeof import
-
-
-
-;;;; Import Clauses
-
-; * as NAME
-;
-; (import_clause
-;   (namespace_import)@ns_imp
-; )@import_stmt
-;
-;
-; { SPEC* }
-;
-; (import_clause
-;   (named_imports)@named_imports
-; )@import_stmt
-;
-;
-; NAME
-; NAME, * as NAME
-; NAME, { SPEC* }
-;
-; (import_clause
-;   (identifier)@name
-;   [(namespace_import) (named_imports)] ; opt
-; )@import_stmt
-
-(import_clause)@import_clause {
-  node @import_clause.lexical_defs
-  node @import_clause.lexical_scope
-  node @import_clause.default_ref
-  node @import_clause.default_expr_ref
-  node @import_clause.default_expr_ref__ns
-  node @import_clause.default_type_ref
-  node @import_clause.default_type_ref__ns
-}
-
-(import_clause
-  (identifier)@name
-)@import_clause {
-  node @name.expr_def
-  node @name.expr_def__ns
-  node @name.type_def
-  node @name.type_def__ns
-
-  ; expression definition
-  edge @import_clause.lexical_defs -> @name.expr_def__ns
-  ;
-  attr (@name.expr_def__ns) pop_symbol = "%E"
-  edge @name.expr_def__ns -> @name.expr_def
-  ;
-  attr (@name.expr_def) node_definition = @name
-  edge @name.expr_def -> @import_clause.default_expr_ref
-  ;
-  attr (@import_clause.default_expr_ref) push_symbol = "default"
-  edge @import_clause.default_expr_ref -> @import_clause.default_expr_ref__ns
-  ;
-  attr (@import_clause.default_expr_ref__ns) push_symbol = "%E"
-  edge @import_clause.default_expr_ref__ns -> @import_clause.lexical_scope
-
-  ; type definition
-  edge @import_clause.lexical_defs -> @name.type_def__ns
-  ;
-  attr (@name.type_def__ns) pop_symbol = "%T"
-  edge @name.type_def__ns -> @name.type_def
-  ;
-  attr (@name.type_def) node_definition = @name
-  edge @name.type_def -> @import_clause.default_type_ref
-  ;
-  attr (@import_clause.default_type_ref) push_symbol = "default"
-  edge @import_clause.default_type_ref -> @import_clause.default_type_ref__ns
-  ;
-  attr (@import_clause.default_type_ref__ns) push_symbol = "%T"
-  edge @import_clause.default_type_ref__ns -> @import_clause.lexical_scope
-
-  ; reference to default export
-  attr (@import_clause.default_ref) symbol_reference = "<default>", source_node = @import_clause
-  edge @import_clause.default_ref -> @import_clause.lexical_scope
-}
-
-(import_clause
-  [(namespace_import) (named_imports)]@import
-)@import_clause {
-  ; propagate lexical scope
-  edge @import.lexical_scope -> @import_clause.lexical_scope
-
-  ; expose imported definitions
-  edge @import_clause.lexical_defs -> @import.lexical_defs
-}
-
-; (namespace_import
-;   (_)@name
-; )@ns_import
-
-; NOTE namespace definitions are specified together with (module) and
-;      (internal_module)
-
-(namespace_import)@ns_import {
-  node @ns_import.lexical_defs
-  node @ns_import.lexical_scope
-}
-
-(namespace_import
-  (_)@name
-)@ns_import {
-  ; connect object to exports
-  edge @ns_import.expr_member__ns -> @ns_import.lexical_scope
-
-  ; connect type to exports
-  edge @ns_import.type_member__ns -> @ns_import.lexical_scope
-}
-
-; (named_imports
-;   (_)@spec
-; )@named_imports
-
-(named_imports)@named_imports {
-  node @named_imports.lexical_defs
-  node @named_imports.lexical_scope
-}
-
-(named_imports
-  (_)@spec ; commaSep
-)@named_imports {
-  ; propagate lexical scope
-  edge @spec.lexical_scope -> @named_imports.lexical_scope
-
-  ; expose imported definitions
-  edge @named_imports.lexical_defs -> @spec.lexical_defs
-}
-
-
-
-;;;; Import Require Clause
-
-; NAME = require(STRING)
-;
-; (import_require_clause
-;   (identifier)
-;   (string)
-; )
-
-(import_require_clause)@clause {
-  node @clause.exports_ref
-  node @clause.exports_ref__expr_ns
-  node @clause.exports_ref__type_ns
-  node @clause.lexical_defs
-  node @clause.lexical_scope
-}
-
-(import_require_clause
-  (identifier)@name
-  (string)@from
-)@import_clause {
-  node @name.expr_def
-  node @name.expr_def__ns
-  node @name.type_def
-  node @name.type_def__ns
-
-  ; expression definition
-  edge @import_clause.lexical_defs -> @name.expr_def__ns
-  ;
-  attr (@name.expr_def__ns) pop_symbol = "%E"
-  edge @name.expr_def__ns -> @name.expr_def
-  ;
-  attr (@name.expr_def) node_definition = @name
-  edge @name.expr_def -> @import_clause.exports_ref__expr_ns
-  ;
-  attr (@import_clause.exports_ref__expr_ns) push_symbol = "%E"
-  edge @import_clause.exports_ref__expr_ns -> @import_clause.exports_ref
-
-  ; type definition
-  edge @import_clause.lexical_defs -> @name.type_def__ns
-  ;
-  attr (@name.type_def__ns) pop_symbol = "%T"
-  edge @name.type_def__ns -> @name.type_def
-  ;
-  attr (@name.type_def) node_definition = @name
-  edge @name.type_def -> @import_clause.exports_ref__type_ns
-  ;
-  attr (@import_clause.exports_ref__type_ns) push_symbol = "%T"
-  edge @import_clause.exports_ref__type_ns -> @import_clause.exports_ref
-
-  ; reference to default export
-  attr (@import_clause.exports_ref) symbol_reference = "<exports>", source_node = @import_clause
-  edge @import_clause.exports_ref -> @from.mod_ref
-
-}
-
 
 ;; Import Alias
 
@@ -819,124 +858,6 @@ if none @is_type {
 ;   (identifier)
 ;   [(identifier) (nested_identifier)]
 ; ) {}
-
-
-
-;; Import / Export Specifiers
-
-; NAME
-; NAME as NAME
-
-; (export_specifier
-;   name:(_)@name
-;   alias:(_)@name ; opt
-; )@export_spec
-
-; (import_specifier
-;   name:(_)@name
-;   alias:(_)@alias ; opt
-; )
-
-[
-  (export_specifier)
-  (import_specifier)
-]@spec {
-  node @spec.defs
-  node @spec.exports
-  node @spec.lexical_defs
-  node @spec.lexical_scope
-}
-
-(export_specifier)@spec {
-  ; specifier definitions are export definitions
-  edge @spec.exports -> @spec.defs
-}
-
-(import_specifier)@spec {
-  ; specifier definitions are local definitions
-  edge @spec.lexical_defs -> @spec.defs
-}
-
-[
-  (export_specifier name:(_)@name)
-  (import_specifier name:(_)@name)
-]@spec {
-  node @name.expr_def
-  node @name.expr_def__ns
-  node @name.expr_ref
-  node @name.expr_ref__ns
-  node @name.type_def
-  node @name.type_def__ns
-  node @name.type_ref
-  node @name.type_ref__ns
-
-  ; expr reference
-  attr (@name.expr_ref) node_reference = @name
-  edge @name.expr_ref -> @name.expr_ref__ns
-  ;
-  attr (@name.expr_ref__ns) push_symbol = "%E"
-  edge @name.expr_ref__ns -> @spec.lexical_scope
-
-  ; type reference
-  attr (@name.type_ref) node_reference = @name
-  edge @name.type_ref -> @name.type_ref__ns
-  ;
-  attr (@name.type_ref__ns) push_symbol = "%T"
-  edge @name.type_ref__ns -> @spec.lexical_scope
-}
-
-[
-  (export_specifier name:(_)@name !alias)
-  (import_specifier name:(_)@name !alias)
-]@spec {
-  ; expr definition
-  edge @spec.defs -> @name.expr_def__ns
-  ;
-  attr (@name.expr_def__ns) pop_symbol = "%E"
-  edge @name.expr_def__ns -> @name.expr_def
-  ;
-  attr (@name.expr_def) node_definition = @name
-  edge @name.expr_def -> @name.expr_ref
-
-  ; type definition
-  edge @spec.defs -> @name.type_def__ns
-  ;
-  attr (@name.type_def__ns) pop_symbol = "%T"
-  edge @name.type_def__ns -> @name.type_def
-  ;
-  attr (@name.type_def) node_definition = @name
-  edge @name.type_def -> @name.type_ref
-}
-
-[
-  (export_specifier name:(_)@name alias:(_)@alias)
-  (import_specifier name:(_)@name alias:(_)@alias)
-]@spec {
-  node @alias.expr_def
-  node @alias.expr_def__ns
-  node @alias.expr_ref
-  node @alias.type_def
-  node @alias.type_def__ns
-  node @alias.type_ref
-
-  ; expr definition
-  edge @spec.defs -> @alias.expr_def__ns
-  ;
-  attr (@alias.expr_def__ns) pop_symbol = "%E"
-  edge @alias.expr_def__ns -> @alias.expr_def
-  ;
-  attr (@alias.expr_def) node_definition = @alias
-  edge @alias.expr_def -> @name.expr_ref
-
-  ; type definition
-  edge @spec.defs -> @alias.type_def__ns
-  ;
-  attr (@alias.type_def__ns) pop_symbol = "%T"
-  edge @alias.type_def__ns -> @alias.type_def
-  ;
-  attr (@alias.type_def) node_definition = @alias
-  edge @alias.type_def -> @name.type_ref
-}
 
 
 
@@ -2072,10 +1993,11 @@ if none @is_async {
 
 [
   ; X
-  (module                                name:(identifier)@name @mod)
-  (internal_module                       name:(identifier)@name @mod)
-  (namespace_import                           (identifier)@name)@mod
-  (export_statement "as" "namespace"          (identifier)@name)@mod
+  (module                                name:(identifier)@name  @mod)
+  (internal_module                       name:(identifier)@name  @mod)
+  (export_statement "as" "namespace" .        (identifier)@name) @mod
+  (export_statement (namespace_export         (identifier)@name))@mod
+  (import_statement (import_clause (namespace_import (identifier)@name)))@mod
   ; X._
   (module                                name:(nested_identifier . (identifier)@name @mod))
   (internal_module                       name:(nested_identifier . (identifier)@name @mod))
@@ -2584,6 +2506,9 @@ if none @is_def {
   (augmented_assignment_expression left:(identifier)@name)
   ; FIXME type_query has its own restricted expression production
   (type_query (identifier)@name)
+  (type_query (member_expression object:(identifier)@name))
+  (type_query (subscript_expression object:(identifier)@name))
+  (type_query (call_expression function:(identifier)@name))
 ] {
 if none @is_def {
   node @name.expr_ref

@@ -2,18 +2,14 @@
 
 export = A;
 
-class A {
-    f = 42;
+let A = {
+    f: 42
 };
 
 /*--- path: ModB.ts ---*/
 
-import A = require('./ModA');
-
-let a: A = new A();
-//     ^ defined: 11, 5
-//             ^ defined: 11, 5
+import a = require('./ModA');
 
   a.f;
-//^ defined: 13
+//^ defined: 11, 3
 //  ^ defined: 6
