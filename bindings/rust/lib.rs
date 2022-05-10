@@ -55,6 +55,12 @@ pub const LOCALS_QUERY: &str = include_str!("../../queries/locals.scm");
 /// The symbol tagging query for this language.
 pub const TAGGING_QUERY: &str = include_str!("../../queries/tags.scm");
 
+/// The stack graphs query for this language.
+pub const STACK_GRAPHS_QUERY: &str = include_str!("../../queries/stack-graphs.tsg");
+
+/// The stack graphs builtins for this language.
+pub const STACK_GRAPHS_BUILTINS: &str = include_str!("../../queries/builtins.ts");
+
 /// The content of the [`node-types.json`][] file for this grammar.
 ///
 /// [`node-types.json`]: https://tree-sitter.github.io/tree-sitter/using-parsers#static-node-types
