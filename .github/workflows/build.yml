@@ -31,7 +31,7 @@ jobs:
           script/check-generated-files
 
       - name: Run parse tests
-        run: npm test-parse
+        run: npm run test-parse
 
       - name: Run stack graph tests
-        run: npm test-stack-graphs
+        run: npm run test-stack-graphs
