@@ -30,5 +30,8 @@ jobs:
           npm run build
           script/check-generated-files
 
-      - name: Run tests
-        run: npm test
+      - name: Run parse tests
+        run: npm test-parse
+
+      - name: Run stack graph tests
+        run: npm test-stack-graphs
