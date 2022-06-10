@@ -22,6 +22,9 @@
     "tree-sitter-javascript": "github:tree-sitter/tree-sitter-javascript#fdeb68a"
   },
   "scripts": {
+    "build:wasm": "npm run build-typescript:wasm && npm run build-tsx:wasm",
+    "build-typescript:wasm": "npx tree-sitter build-wasm ./typescript",
+    "build-tsx:wasm": "npx tree-sitter build-wasm ./tsx",
     "build": "npm run build-typescript && npm run build-tsx",
     "build-typescript": "cd typescript && npx tree-sitter generate --no-bindings",
     "build-tsx": "cd tsx && npx tree-sitter generate --no-bindings",
