@@ -31,7 +31,7 @@
     "test-tsx": "cd tsx && tree-sitter test",
     "test-load": "node -e \"console.log(require('./typescript').name, require('./tsx').name)\"",
     "test-stack-graphs": "npm run install-tree-sitter-stack-graphs && cd typescript && ../bin/tree-sitter-stack-graphs test --grammar .. --scope source.ts test/stack-graphs",
-    "install-tree-sitter-stack-graphs": "cargo install --quiet --root . --version 0.1.0 --features cli tree-sitter-stack-graphs",
+    "install-tree-sitter-stack-graphs": "cargo install --quiet --root . --version 0.3.0 --features cli tree-sitter-stack-graphs",
     "test-windows": "pushd typescript && tree-sitter test && popd && pushd tsx && tree-sitter test"
   },
   "tree-sitter": [
