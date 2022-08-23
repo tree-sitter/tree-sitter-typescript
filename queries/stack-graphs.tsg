@@ -3450,9 +3450,9 @@ if none @is_async {
 ; (augmented_assignment_expression
 ;   (identifier)
 ;   (identifier))
-;   (augmented_assignment_expression
-;     (member_expression (identifier) (identifier))
-;     (identifier))
+; (augmented_assignment_expression
+;   (member_expression (identifier) (identifier))
+;   (identifier))
 
 (augmented_assignment_expression
   left: (_)@left
@@ -3729,9 +3729,11 @@ if none @is_async {
   node @pat.defs
   node @pat.lexical_scope
 }
-; `this` is also a pattern, but already gets some nodes from other rules
+; these also appear in pattern positions, but already gets some nodes from other rules
 [
   (this)
+  (member_expression)
+  (subscript_expression)
 ]@pat {
   node @pat.defs
 }
