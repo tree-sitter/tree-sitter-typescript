@@ -3099,9 +3099,14 @@ if none @is_async {
 )@call_expr {
   ; propagate lexical scope
   edge @args.lexical_scope -> @call_expr.lexical_scope
+}
 
+(call_expression
+  function:(_)@fun
+  arguments: (arguments)@args
+)@call_expr {
   ; connect cotype to function params
-  edge @args.coargs -> @call_expr.callable__params
+  edge @args.coargs -> @call_expr.callable__params ;; FIXME
   ;
   edge @call_expr.callable__params -> @call_expr.applied_type
 }
@@ -3895,7 +3900,7 @@ if none @is_async {
   edge @pat.comp_index -> @array_pat.indexable
   
   ; propagate defs
-  edge @array_pat.defs -> @pat.defs
+  edge @array_pat.defs -> @pat.defs ;; FIXME
 }
 
 
