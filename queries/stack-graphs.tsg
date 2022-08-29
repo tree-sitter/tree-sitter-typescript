@@ -4488,6 +4488,10 @@ if none @is_acc {
 ;   [(type_identifier) (nested_type_identifier) (generic_type)]@type ; commaSep1
 ; )@extends
 
+(extends_type_clause)@extends {
+  edge @extends.type_members -> @extends.alias_type
+}
+
 (extends_type_clause
   (_)@type ; commaSep1
 )@extends {
@@ -4495,8 +4499,6 @@ if none @is_acc {
   edge @type.lexical_scope -> @extends.lexical_scope
   
   ; type members from the super interface
-  edge @extends.type_members -> @extends.alias_type
-  ;
   edge @extends.aliased_type -> @type.type
 }
  
