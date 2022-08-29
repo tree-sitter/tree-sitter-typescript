@@ -2424,6 +2424,7 @@ if none @is_async {
   (type_assertion)
   (as_expression)
   (meta_property)
+  (import)
 ]@expr {
   node @expr.cotype
   node @expr.lexical_defs
