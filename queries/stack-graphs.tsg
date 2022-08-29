@@ -2502,9 +2502,16 @@ if none @is_async {
   (type_query (subscript_expression object:(identifier)@name))
   (type_query (call_expression function:(identifier)@name))
   ; FIXME decorator has its own restricted expression production
-  (decorator                           (identifier)@name)
+  ;       we need to do this for every (identifier) inside a decorator
+  ;       this cannot be expressed, so we manually unroll three levels here
+  (decorator (identifier)@name)
   (decorator (member_expression object:(identifier)@name))
+  (decorator (member_expression object:(member_expression object:(identifier)@name)))
+  (decorator (member_expression object:(member_expression object:(member_expression object:(identifier)@name))))
   (decorator (call_expression function:(identifier)@name))
+  (decorator (call_expression function:(member_expression object:(identifier)@name)))
+  (decorator (call_expression function:(member_expression object:(member_expression object:(identifier)@name))))
+  (decorator (call_expression function:(member_expression object:(member_expression object:(member_expression object:(identifier)@name)))))
 ] {
 if none @is_def {
   node @name.cotype
@@ -2528,9 +2535,16 @@ if none @is_def {
   (type_query (subscript_expression object:(identifier)@name))
   (type_query (call_expression function:(identifier)@name))
   ; FIXME decorator has its own restricted expression production
+  ;       we need to do this for every (identifier) inside a decorator
+  ;       this cannot be expressed, so we manually unroll three levels here
   (decorator                           (identifier)@name)
   (decorator (member_expression object:(identifier)@name))
+  (decorator (member_expression object:(member_expression object:(identifier)@name)))
+  (decorator (member_expression object:(member_expression object:(member_expression object:(identifier)@name))))
   (decorator (call_expression function:(identifier)@name))
+  (decorator (call_expression function:(member_expression object:(identifier)@name)))
+  (decorator (call_expression function:(member_expression object:(member_expression object:(identifier)@name))))
+  (decorator (call_expression function:(member_expression object:(member_expression object:(member_expression object:(identifier)@name)))))
 ] {
 if none @is_def {
   node @name.expr_ref
