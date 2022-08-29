@@ -4483,6 +4483,10 @@ if none @is_acc {
 ;   (_)@type ; commaSep1
 ; )@implements
 
+(implements_clause)@implements {
+  edge @implements.type_members -> @implements.alias_type
+}
+
 (implements_clause
   (_)@type ; commaSep1
 )@implements {
@@ -4490,8 +4494,6 @@ if none @is_acc {
   edge @type.lexical_scope -> @implements.lexical_scope
 
   ; type members from type of interface
-  edge @implements.type_members -> @implements.alias_type
-  ;
   edge @implements.aliased_type -> @type.type
 }
 
