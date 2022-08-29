@@ -1150,6 +1150,15 @@ if none @is_async {
 ;   body:(_)@body
 ; )@decl
 
+; decorators
+[
+  (abstract_class_declaration decorator:(_)@dec)
+  (class_declaration          decorator:(_)@dec)
+]@class_decl {
+  ; connect lexical scope
+  edge @dec.lexical_scope -> @class_decl.lexical_scope
+}
+
 ; definitions
 [
   (abstract_class_declaration name:(_)@name)
@@ -2492,6 +2501,10 @@ if none @is_async {
   (type_query (member_expression object:(identifier)@name))
   (type_query (subscript_expression object:(identifier)@name))
   (type_query (call_expression function:(identifier)@name))
+  ; FIXME decorator has its own restricted expression production
+  (decorator                           (identifier)@name)
+  (decorator (member_expression object:(identifier)@name))
+  (decorator (call_expression function:(identifier)@name))
 ] {
 if none @is_def {
   node @name.cotype
@@ -2504,6 +2517,7 @@ if none @is_def {
 
 [
   (primary_expression/identifier)@name
+  (decorator (identifier)@name)
   ; FIXME expansion of _lhs_expression/identifier and _augmented_assignment_lhs
   (for_in_statement ["var" "let" "const"]?@is_def left:(identifier)@name)
   (assignment_expression left:(identifier)@name)
@@ -2513,6 +2527,10 @@ if none @is_def {
   (type_query (member_expression object:(identifier)@name))
   (type_query (subscript_expression object:(identifier)@name))
   (type_query (call_expression function:(identifier)@name))
+  ; FIXME decorator has its own restricted expression production
+  (decorator                           (identifier)@name)
+  (decorator (member_expression object:(identifier)@name))
+  (decorator (call_expression function:(identifier)@name))
 ] {
 if none @is_def {
   node @name.expr_ref
@@ -3098,16 +3116,14 @@ if none @is_async {
 ; type application is handled by the generics rules below
 
 (call_expression
-  function:(_)@fun
-  arguments: (_)@args
+  function:(_)@fun arguments: (_)@args
 )@call_expr {
   ; propagate lexical scope
   edge @args.lexical_scope -> @call_expr.lexical_scope
 }
 
 (call_expression
-  function:(_)@fun
-  arguments: (arguments)@args
+  function:(_)@fun arguments: (arguments)@args
 )@call_expr {
   ; connect cotype to function params
   edge @args.coargs -> @call_expr.callable__params ;; FIXME
@@ -3965,6 +3981,7 @@ if none @is_async {
 ;     Scope representing the declared static members.
 
 [
+  (decorator) ; not strictly a member, but appears in same positions
   (construct_signature)
   (index_signature)
   (call_signature)
@@ -3978,6 +3995,15 @@ if none @is_async {
   node @mem.type_members
   node @mem.static_members
 }
+
+
+
+;; Decorator
+
+(decorator (_)@expr)@dec {
+  edge @expr.lexical_scope -> @dec.lexical_scope
+}
+
 
 
 ;; Construct Signature
