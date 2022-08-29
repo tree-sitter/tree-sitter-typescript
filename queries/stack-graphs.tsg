@@ -82,7 +82,6 @@ attribute node_symbol = node            => symbol = (source-text node), source_n
   node @comment.async_type
   node @comment.await_type
   node @comment.callable
-  node @comment.coarg
   node @comment.coargs
   node @comment.cocallable
   node @comment.comp_index
