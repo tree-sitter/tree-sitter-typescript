@@ -73,17 +73,48 @@ attribute node_symbol = node            => symbol = (source-text node), source_n
 ; comments can appear almost everywhere, so we simply make sure all
 ; possible nodes are defined on comments
 (comment)@comment {
+  node @comment.alias_type
+  node @comment.aliased_type
+  node @comment.applied_type
+  node @comment.arg
+  node @comment.arg_index
+  node @comment.args
+  node @comment.async_type
+  node @comment.await_type
+  node @comment.callable
+  node @comment.coarg
+  node @comment.coargs
+  node @comment.cocallable
+  node @comment.comp_index
+  node @comment.coparam
+  node @comment.coparams
+  node @comment.cotype
   node @comment.default_export
   node @comment.defs
   node @comment.exports
+  node @comment.expr_def
+  node @comment.expr_def__ns
+  node @comment.expr_ref
+  node @comment.expr_ref__ns
   node @comment.lexical_defs
   node @comment.lexical_scope
+  node @comment.member
+  node @comment.mod_def
+  node @comment.mod_def__ns
+  node @comment.mod_ref
+  node @comment.mod_ref__ns
+  node @comment.param
+  node @comment.params
   node @comment.return_type
   node @comment.static_members
-  node @comment.type_members
-  node @comment.var_defs
+  node @comment.static_type
   node @comment.type
-  node @comment.cotype
+  node @comment.type_def
+  node @comment.type_def__ns
+  node @comment.type_members
+  node @comment.type_ref
+  node @comment.type_ref__ns
+  node @comment.var_defs
 }
 
  
