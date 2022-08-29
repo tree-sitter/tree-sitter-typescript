@@ -2528,10 +2528,22 @@ if none @is_async {
   (assignment_expression left:(identifier)@name)
   (augmented_assignment_expression left:(identifier)@name)
   ; FIXME type_query has its own restricted expression production
+  ;       we need to do this for every (identifier) inside a type query
+  ;       this cannot be expressed, so we manually unroll three levels here
   (type_query (identifier)@name)
   (type_query (member_expression object:(identifier)@name))
+  (type_query (member_expression object:(member_expression object:(identifier)@name)))
+  (type_query (member_expression object:(member_expression object:(member_expression object:(identifier)@name))))
   (type_query (subscript_expression object:(identifier)@name))
+  (type_query (subscript_expression object:(member_expression object:(identifier)@name)))
+  (type_query (subscript_expression object:(member_expression object:(member_expression object:(identifier)@name))))
   (type_query (call_expression function:(identifier)@name))
+  (type_query (call_expression function:(member_expression object:(identifier)@name)))
+  (type_query (call_expression function:(member_expression object:(member_expression object:(identifier)@name))))
+  (type_query (call_expression function:(member_expression object:(member_expression object:(member_expression object:(identifier)@name)))))
+  (type_query (call_expression function:(subscript_expression object:(identifier)@name)))
+  (type_query (call_expression function:(subscript_expression object:(member_expression object:(identifier)@name))))
+  (type_query (call_expression function:(subscript_expression object:(member_expression object:(member_expression object:(identifier)@name)))))
   ; FIXME decorator has its own restricted expression production
   ;       we need to do this for every (identifier) inside a decorator
   ;       this cannot be expressed, so we manually unroll three levels here
@@ -2557,14 +2569,26 @@ if none @is_def {
   (primary_expression/identifier)@name
   (decorator (identifier)@name)
   ; FIXME expansion of _lhs_expression/identifier and _augmented_assignment_lhs
+  ;       we need to do this for every (identifier) inside a type query
+  ;       this cannot be expressed, so we manually unroll three levels here
   (for_in_statement ["var" "let" "const"]?@is_def left:(identifier)@name)
   (assignment_expression left:(identifier)@name)
   (augmented_assignment_expression left:(identifier)@name)
   ; FIXME type_query has its own restricted expression production
   (type_query (identifier)@name)
   (type_query (member_expression object:(identifier)@name))
+  (type_query (member_expression object:(member_expression object:(identifier)@name)))
+  (type_query (member_expression object:(member_expression object:(member_expression object:(identifier)@name))))
   (type_query (subscript_expression object:(identifier)@name))
+  (type_query (subscript_expression object:(member_expression object:(identifier)@name)))
+  (type_query (subscript_expression object:(member_expression object:(member_expression object:(identifier)@name))))
   (type_query (call_expression function:(identifier)@name))
+  (type_query (call_expression function:(member_expression object:(identifier)@name)))
+  (type_query (call_expression function:(member_expression object:(member_expression object:(identifier)@name))))
+  (type_query (call_expression function:(member_expression object:(member_expression object:(member_expression object:(identifier)@name)))))
+  (type_query (call_expression function:(subscript_expression object:(identifier)@name)))
+  (type_query (call_expression function:(subscript_expression object:(member_expression object:(identifier)@name))))
+  (type_query (call_expression function:(subscript_expression object:(member_expression object:(member_expression object:(identifier)@name)))))
   ; FIXME decorator has its own restricted expression production
   ;       we need to do this for every (identifier) inside a decorator
   ;       this cannot be expressed, so we manually unroll three levels here
