@@ -2721,8 +2721,8 @@ if none @is_def {
 }
 
 (pair
-  (_)@name
-  (_)@expr
+  key:(_)@name
+  value:(_)@expr
 )@pair {
   node @pair.lexical_scope
   node @pair.member
