@@ -4640,6 +4640,8 @@ if none @is_acc {
   (default_type)
   (constraint)
   (this_type)
+  (template_literal_type)
+  (template_type)
 ]@type {
   node @type.lexical_scope
   node @type.type
@@ -5450,6 +5452,34 @@ if none @is_acc {
 
   ; type is the definition
   edge @this.type -> @this.expr_ref
+}
+
+
+
+;; Template literal type
+
+; (template_literal_type)
+
+(template_literal_type (_)@inner)@type {
+  ; propagate lexical scope
+  edge @inner.lexical_scope -> @type.lexical_scope
+
+  ; type is type of inner
+  edge @type.type -> @inner.type
+}
+
+
+
+;; Template type
+
+; (template_type)
+
+(template_type (_)@inner)@type {
+  ; propagate lexical scope
+  edge @inner.lexical_scope -> @type.lexical_scope
+
+  ; type is type of inner
+  edge @type.type -> @inner.type
 }
 
 
