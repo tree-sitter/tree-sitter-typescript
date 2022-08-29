@@ -2424,6 +2424,7 @@ if none @is_async {
   (non_null_expression)
   (type_assertion)
   (as_expression)
+  (meta_property)
 ]@expr {
   node @expr.cotype
   node @expr.lexical_defs
@@ -2595,6 +2596,15 @@ if none @is_def {
   attr (@name.expr_ref__typeof) push_symbol = ":"
   edge @name.expr_ref__typeof -> @name.expr_ref
 }
+}
+
+
+
+;; Meta property
+
+; new.target
+
+(meta_property)@new_target {
 }
 
 
