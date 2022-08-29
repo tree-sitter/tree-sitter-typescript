@@ -1993,11 +1993,12 @@ if none @is_async {
 
 [
   ; X
-  (module                                name:(identifier)@name  @mod)
-  (internal_module                       name:(identifier)@name  @mod)
-  (export_statement "as" "namespace" .        (identifier)@name) @mod
-  (export_statement (namespace_export         (identifier)@name))@mod
+  (module                                       name:(identifier)@name  @mod)
+  (internal_module                              name:(identifier)@name  @mod)
+  (export_statement "as" "namespace" .               (identifier)@name) @mod
+  (export_statement (namespace_export                (identifier)@name))@mod
   (import_statement (import_clause (namespace_import (identifier)@name)))@mod
+  (ambient_declaration (module                      name:(string)@name      @mod))
   ; X._
   (module                                name:(nested_identifier . (identifier)@name @mod))
   (internal_module                       name:(nested_identifier . (identifier)@name @mod))
@@ -2151,6 +2152,9 @@ if none @is_async {
 (ambient_declaration
   (module name:(string)@name body:(_)@body)
 )@amb_decl {
+  node @name.mod_def
+  node @name.mod_def__ns
+
   ; propagate lexical scope
   edge @body.lexical_scope -> @amb_decl.lexical_scope
 
