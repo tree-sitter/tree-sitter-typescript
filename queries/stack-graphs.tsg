@@ -4527,6 +4527,7 @@ if none @is_acc {
   (type_annotation)
   (type_predicate_annotation)
   (omitting_type_annotation)
+  (opting_type_annotation)
   (asserts)
   (optional_type)
   (rest_type)
