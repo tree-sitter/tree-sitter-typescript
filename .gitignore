@@ -11,6 +11,7 @@ examples/desktop
 examples/redux
 examples/vscode
 log.html
+yarn.lock
 /.crates.toml
 /.crates2.json
 /bin/
