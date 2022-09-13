@@ -162,11 +162,22 @@ attribute node_symbol = node            => symbol = (source-text node), source_n
   attr (@prog.mod_def__ns) pop_symbol = "%M"
   edge @prog.mod_def__ns -> @prog.mod_def
   ;
-  let mod_name = (path-normalize (path-join (path-dir FILE_PATH) (path-filestem FILE_PATH)))
-  attr (@prog.mod_def) symbol_definition = mod_name, source_node = @prog
-
+  let mod_name = (path-filestem FILE_PATH)
+  let mod_path = (path-normalize (path-join (path-dir FILE_PATH) mod_name))
+  attr (@prog.mod_def) symbol_definition = mod_path, source_node = @prog
   ; expose exports via module definition
   edge @prog.mod_def -> @prog.exports
+
+  ; if this is an index.ts, also add a definition for the directory of this file
+  scan mod_name {
+    "index" {
+      node mod_index_def
+      edge @prog.mod_def__ns -> mod_index_def
+      let mod_dir = (path-normalize (path-dir FILE_PATH))
+      attr (mod_index_def) symbol_definition = mod_dir, source_node = @prog
+      edge mod_index_def -> @prog.exports
+    }
+  }
 }
 
 (program
