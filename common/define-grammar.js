@@ -834,6 +834,7 @@ module.exports = function defineGrammar(dialect) {
         'boolean',
         'string',
         'symbol',
+        'unique symbol',
         'void',
         'unknown',
         'string',

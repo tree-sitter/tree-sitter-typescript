@@ -9568,6 +9568,10 @@
         },
         {
           "type": "STRING",
+          "value": "unique symbol"
+        },
+        {
+          "type": "STRING",
           "value": "void"
         },
         {

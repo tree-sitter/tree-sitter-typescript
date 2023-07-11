@@ -6333,11 +6333,11 @@
   },
   {
     "type": "number",
-    "named": true
+    "named": false
   },
   {
     "type": "number",
-    "named": false
+    "named": true
   },
   {
     "type": "object",
@@ -6474,6 +6474,10 @@
   {
     "type": "undefined",
     "named": true
+  },
+  {
+    "type": "unique symbol",
+    "named": false
   },
   {
     "type": "unknown",
