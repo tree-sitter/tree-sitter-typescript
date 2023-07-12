@@ -3613,7 +3613,7 @@
                   },
                   {
                     "type": "SYMBOL",
-                    "name": "asserts"
+                    "name": "asserts_annotation"
                   },
                   {
                     "type": "SYMBOL",
@@ -8557,10 +8557,6 @@
       "members": [
         {
           "type": "STRING",
-          "value": ":"
-        },
-        {
-          "type": "STRING",
           "value": "asserts"
         },
         {
@@ -8577,6 +8573,24 @@
             {
               "type": "SYMBOL",
               "name": "this"
+            }
+          ]
+        }
+      ]
+    },
+    "asserts_annotation": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "SEQ",
+          "members": [
+            {
+              "type": "STRING",
+              "value": ":"
+            },
+            {
+              "type": "SYMBOL",
+              "name": "asserts"
             }
           ]
         }
@@ -10396,6 +10410,10 @@
                 {
                   "type": "SYMBOL",
                   "name": "_type"
+                },
+                {
+                  "type": "SYMBOL",
+                  "name": "asserts"
                 },
                 {
                   "type": "SYMBOL",
