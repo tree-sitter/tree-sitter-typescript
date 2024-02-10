@@ -12,7 +12,8 @@ T as {} & { [t: T]: T } & { [g: G]: G }
   (expression_statement
     (as_expression
       (identifier)
-      (template_literal_type)))
+      (template_literal_type
+        (string_fragment))))
   (expression_statement
     (as_expression
       (identifier)
@@ -57,7 +58,8 @@ T satisfies {} & { [t: T]: T } & { [g: G]: G }
   (expression_statement
     (satisfies_expression
       (identifier)
-      (template_literal_type)))
+      (template_literal_type
+        (string_fragment))))
   (expression_statement
     (satisfies_expression
       (identifier)

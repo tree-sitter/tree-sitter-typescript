@@ -5385,6 +5385,10 @@
       "required": false,
       "types": [
         {
+          "type": "string_fragment",
+          "named": true
+        },
+        {
           "type": "template_type",
           "named": true
         }
