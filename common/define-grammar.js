@@ -749,7 +749,7 @@ module.exports = function defineGrammar(dialect) {
       template_literal_type: ($) => seq(
         '`',
         repeat(choice(
-          $._template_chars,
+          alias($._template_chars, $.string_fragment),
           $.template_type,
         )),
         '`',

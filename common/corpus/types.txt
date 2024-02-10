@@ -1765,8 +1765,10 @@ type StringToNumber<S extends string> = S extends `${infer N extends number}` ? 
           (type_identifier)
           (literal_type
             (number))))
+      (string_fragment)
       (template_type
         (type_identifier))
+      (string_fragment)
       (template_type
         (generic_type
           (type_identifier)
@@ -1776,13 +1778,15 @@ type StringToNumber<S extends string> = S extends `${infer N extends number}` ? 
   (type_alias_declaration
     (type_identifier)
     (template_literal_type
+      (string_fragment)
       (template_type
         (literal_type
           (string
             (string_fragment))))
       (template_type
         (literal_type
-          (number)))))
+          (number)))
+      (string_fragment)))
   (type_alias_declaration
     (type_identifier)
     (type_parameters
@@ -1886,6 +1890,7 @@ type A<B> = { [B in keyof C & string as `${P}1` | `${P}2`]: A[B] }
               (type_identifier))
             (predefined_type))
           (template_literal_type
+            (string_fragment)
             (template_type
               (generic_type
                 (type_identifier)
@@ -1913,10 +1918,12 @@ type A<B> = { [B in keyof C & string as `${P}1` | `${P}2`]: A[B] }
           (union_type
             (template_literal_type
               (template_type
-                (type_identifier)))
+                (type_identifier))
+              (string_fragment))
             (template_literal_type
               (template_type
-                (type_identifier)))))
+                (type_identifier))
+              (string_fragment))))
         (type_annotation
           (lookup_type
             (type_identifier)
