@@ -6,6 +6,7 @@ module.exports = function defineGrammar(dialect) {
 
     externals: ($, previous) => previous.concat([
       $._function_signature_automatic_semicolon,
+      $.__error_recovery,
     ]),
 
     supertypes: ($, previous) => previous.concat([

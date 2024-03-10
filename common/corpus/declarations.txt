@@ -172,7 +172,6 @@ declare module Foo {
           body: (statement_block)
           condition: (parenthesized_expression
             (true)))
-        (empty_statement)
         (for_in_statement
           left: (identifier)
           right: (null)
