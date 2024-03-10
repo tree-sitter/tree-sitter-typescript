@@ -1,7 +1,7 @@
 [package]
 name = "tree-sitter-typescript"
 description = "Typescript grammar for tree-sitter"
-version = "0.20.5"
+version = "0.20.6"
 authors = ["Max Brunsfeld <maxbrunsfeld@gmail.com>"]
 license = "MIT"
 readme = "bindings/rust/README.md"
@@ -29,4 +29,4 @@ path = "bindings/rust/lib.rs"
 tree-sitter = "~0.20.10"
 
 [build-dependencies]
-cc = "~1.0.83"
+cc = "~1.0.90"
