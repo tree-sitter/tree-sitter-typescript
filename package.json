@@ -3,11 +3,20 @@
   "version": "0.20.6",
   "description": "TypeScript grammar for tree-sitter",
   "main": "./bindings/node",
+  "types": "./bindings/node",
   "keywords": [
     "parser",
     "tree-sitter",
     "typescript",
     "tsx"
+  ],
+  "files": [
+    "grammar.js",
+    "binding.gyp",
+    "prebuilds/**",
+    "bindings/node/*",
+    "queries/*",
+    "src/**"
   ],
   "repository": {
     "type": "git",
@@ -16,12 +25,20 @@
   "author": "Max Brunsfeld",
   "license": "MIT",
   "dependencies": {
-    "nan": "^2.19.0",
-    "tree-sitter": "^0.20.6"
+    "node-gyp-build": "^4.8.0"
+  },
+  "peerDependencies": {
+    "tree-sitter": "^0.21.0"
+  },
+  "peerDependenciesMeta": {
+    "tree_sitter": {
+      "optional": true
+    }
   },
   "devDependencies": {
     "eslint": ">=8.57.0",
     "eslint-config-google": "^0.14.0",
+    "prebuildify": "^6.0.0",
     "tree-sitter-cli": "^0.21.0",
     "tree-sitter-javascript": "^0.20.4"
   },
@@ -34,7 +51,9 @@
     "test": "npm run test-typescript && npm run test-tsx && npm run test-load && script/parse-examples",
     "test-typescript": "cd typescript && npx tree-sitter test",
     "test-tsx": "cd tsx && npx tree-sitter test",
-    "test-windows": "pushd typescript && npx tree-sitter test && popd && pushd tsx && npx tree-sitter test"
+    "test-windows": "pushd typescript && npx tree-sitter test && popd && pushd tsx && npx tree-sitter test",
+    "install": "node-gyp-build",
+    "prebuildify": "prebuildify --napi --strip"
   },
   "tree-sitter": [
     {
