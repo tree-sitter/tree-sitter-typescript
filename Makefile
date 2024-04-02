@@ -5,9 +5,10 @@ VERSION := 0.0.1
 LANGUAGE_NAME := tree-sitter-typescript
 
 # repository
-SRC_DIR := src
+TYPESCRIPT_SRC_DIR := typescript/src
+TSX_SRC_DIR := tsx/src
 
-PARSER_REPO_URL := $(shell git -C $(SRC_DIR) remote get-url origin 2>/dev/null)
+PARSER_REPO_URL := $(shell git -C $(TYPESCRIPT_SRC_DIR) remote get-url origin 2>/dev/null)
 
 ifeq ($(PARSER_URL),)
 	PARSER_URL := $(subst .git,,$(PARSER_REPO_URL))
@@ -30,11 +31,11 @@ LIBDIR ?= $(PREFIX)/lib
 PCLIBDIR ?= $(LIBDIR)/pkgconfig
 
 # object files
-OBJS := $(patsubst %.c,%.o,$(wildcard $(SRC_DIR)/*.c))
+OBJS := $(patsubst %.c,%.o,$(wildcard $(TYPESCRIPT_SRC_DIR)/*.c) $(wildcard $(TSX_SRC_DIR)/*.c))
 
 # flags
 ARFLAGS := rcs
-override CFLAGS += -I$(SRC_DIR) -std=c11 -fPIC
+override CFLAGS += -I$(TYPESCRIPT_SRC_DIR) -std=c11 -fPIC
 
 # OS-specific bits
 ifeq ($(OS),Windows_NT)
@@ -83,7 +84,10 @@ $(LANGUAGE_NAME).pc: bindings/c/$(LANGUAGE_NAME).pc.in
 		-e 's|=$(PREFIX)|=$${prefix}|' \
 		-e 's|@PREFIX@|$(PREFIX)|' $< > $@
 
-$(SRC_DIR)/parser.c: grammar.js
+$(TYPESCRIPT_SRC_DIR)/parser.c: typescript/grammar.js
+	$(TS) generate --no-bindings
+
+$(TSX_SRC_DIR)/parser.c: tsx/grammar.js
 	$(TS) generate --no-bindings
 
 install: all
