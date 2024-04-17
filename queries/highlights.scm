@@ -3,9 +3,6 @@
 (type_identifier) @type
 (predefined_type) @type.builtin
 
-((identifier) @type
- (#match? @type "^[A-Z]"))
-
 (type_arguments
   "<" @punctuation.bracket
   ">" @punctuation.bracket)
