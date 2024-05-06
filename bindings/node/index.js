@@ -1,20 +1,8 @@
-try {
-  module.exports = require("../../build/Release/tree_sitter_typescript_binding");
-} catch (error1) {
-  if (error1.code !== 'MODULE_NOT_FOUND') {
-    throw error1;
-  }
-  try {
-    module.exports = require("../../build/Debug/tree_sitter_typescript_binding");
-  } catch (error2) {
-    if (error2.code !== 'MODULE_NOT_FOUND') {
-      throw error2;
-    }
-    throw error1
-  }
-}
+const root = require("path").join(__dirname, "..", "..");
+
+module.exports = require("node-gyp-build")(root);
 
 try {
   module.exports.typescript.nodeTypeInfo = require("../../typescript/src/node-types.json");
   module.exports.tsx.nodeTypeInfo = require("../../tsx/src/node-types.json");
-} catch (_) {}
+} catch (_) { }

@@ -1,40 +1,63 @@
 {
   "name": "tree-sitter-typescript",
   "version": "0.20.6",
-  "description": "TypeScript grammar for tree-sitter",
-  "main": "./bindings/node",
+  "description": "TypeScript and TSX grammars for tree-sitter",
+  "repository": "github:tree-sitter/tree-sitter-typescript",
+  "license": "MIT",
+  "author": "Max Brunsfeld <maxbrunsfeld@gmail.com>",
+  "maintainers": [
+    "Amaan Qureshi <amaanq12@gmail.com>"
+  ],
+  "main": "bindings/node",
+  "types": "bindings/node",
   "keywords": [
-    "parser",
+    "incremental",
+    "parsing",
     "tree-sitter",
     "typescript",
     "tsx"
   ],
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/tree-sitter/tree-sitter-typescript.git"
-  },
-  "author": "Max Brunsfeld",
-  "license": "MIT",
+  "files": [
+    "binding.gyp",
+    "prebuilds/**",
+    "bindings/node/*",
+    "queries/*",
+    "typescript/grammar.js",
+    "tsx/grammar.js",
+    "typescript/package.json",
+    "tsx/package.json",
+    "typescript/src/**",
+    "tsx/src/**",
+    "common/**"
+  ],
   "dependencies": {
-    "nan": "^2.19.0",
-    "tree-sitter": "^0.20.6"
+    "node-addon-api": "^8.0.0",
+    "node-gyp-build": "^4.8.1"
+  },
+  "peerDependencies": {
+    "tree-sitter": "^0.21.0"
+  },
+  "peerDependenciesMeta": {
+    "tree_sitter": {
+      "optional": true
+    }
   },
   "devDependencies": {
     "eslint": ">=8.57.0",
     "eslint-config-google": "^0.14.0",
-    "tree-sitter-cli": "^0.21.0",
-    "tree-sitter-javascript": "^0.20.4"
+    "tree-sitter-cli": "^0.22.6",
+    "tree-sitter-javascript": "^0.21.2",
+    "prebuildify": "^6.0.1"
   },
   "scripts": {
+    "install": "node-gyp-build",
+    "prebuildify": "prebuildify --napi --strip",
     "build": "npm run build-typescript && npm run build-tsx",
     "build-typescript": "cd typescript && npx tree-sitter generate --no-bindings",
     "build-tsx": "cd tsx && npx tree-sitter generate --no-bindings",
     "lint": "eslint common/define-grammar.js",
-    "test-load": "node -e \"console.log(require('./typescript').name, require('./tsx').name)\"",
-    "test": "npm run test-typescript && npm run test-tsx && npm run test-load && script/parse-examples",
-    "test-typescript": "cd typescript && npx tree-sitter test",
-    "test-tsx": "cd tsx && npx tree-sitter test",
-    "test-windows": "pushd typescript && npx tree-sitter test && popd && pushd tsx && npx tree-sitter test"
+    "parse": "tree-sitter parse",
+    "test": "tree-sitter test"
   },
   "tree-sitter": [
     {
@@ -96,5 +119,47 @@
       "injections": "node_modules/tree-sitter-javascript/queries/injections.scm",
       "content-regex": "@flow"
     }
-  ]
+  ],
+  "eslintConfig": {
+    "env": {
+      "commonjs": true,
+      "es2021": true
+    },
+    "extends": "google",
+    "parserOptions": {
+      "ecmaVersion": "latest",
+      "sourceType": "module"
+    },
+    "rules": {
+      "arrow-parens": "off",
+      "camel-case": "off",
+      "indent": [
+        "error",
+        2,
+        {
+          "SwitchCase": 1
+        }
+      ],
+      "max-len": [
+        "error",
+        {
+          "code": 160,
+          "ignoreComments": true,
+          "ignoreUrls": true,
+          "ignoreStrings": true
+        }
+      ],
+      "spaced-comment": [
+        "warn",
+        "always",
+        {
+          "line": {
+            "markers": [
+              "/"
+            ]
+          }
+        }
+      ]
+    }
+  }
 }

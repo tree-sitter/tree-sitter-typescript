@@ -5,6 +5,7 @@
 [![matrix][matrix]](https://matrix.to/#/#tree-sitter-chat:matrix.org)
 [![crates][crates]](https://crates.io/crates/tree-sitter-typescript)
 [![npm][npm]](https://www.npmjs.com/package/tree-sitter-typescript)
+[![pypi][pypi]](https://pypi.org/project/tree-sitter-typescript)
 
 TypeScript and TSX grammars for [tree-sitter][].
 
@@ -15,7 +16,7 @@ require("tree-sitter-typescript").typescript; // TypeScript grammar
 require("tree-sitter-typescript").tsx; // TSX grammar
 ```
 
-For Javascript files with [flow] type annotations you can use the the `tsx` parser.
+For Javascript files with [flow] type annotations you can use the `tsx` parser.
 
 [tree-sitter]: https://github.com/tree-sitter/tree-sitter
 [flow]: https://flow.org/en/
@@ -29,3 +30,4 @@ References
 [matrix]: https://img.shields.io/matrix/tree-sitter-chat%3Amatrix.org?logo=matrix&label=matrix
 [npm]: https://img.shields.io/npm/v/tree-sitter-typescript?logo=npm
 [crates]: https://img.shields.io/crates/v/tree-sitter-typescript?logo=rust
+[pypi]: https://img.shields.io/pypi/v/tree-sitter-typescript?logo=pypi&logoColor=ffd242
