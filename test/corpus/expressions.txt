@@ -357,3 +357,51 @@ const ErrorMap = Map<string, Error>;
         (type_arguments
           (predefined_type)
           (type_identifier))))))
+
+==========================
+Type assertions
+:language(typescript)
+==========================
+
+<A>b;
+<C<D>>e.f;
+
+---
+
+(program
+  (expression_statement (type_assertion
+    (type_arguments (type_identifier))
+    (identifier)))
+  (expression_statement (type_assertion
+    (type_arguments (generic_type
+      (type_identifier)
+      (type_arguments (type_identifier))))
+    (member_expression
+      (identifier)
+      (property_identifier)))))
+
+==========================================================
+Type arguments in JSX
+:language(tsx)
+==========================================================
+
+<Element<T>>hi</Element>;
+<Element<T> />;
+<>fragment</>;
+
+---
+
+(program
+  (expression_statement
+    (jsx_element
+      (jsx_opening_element (identifier) (type_arguments (type_identifier)))
+      (jsx_text)
+      (jsx_closing_element (identifier))))
+  (expression_statement
+    (jsx_self_closing_element
+       (identifier) (type_arguments (type_identifier))))
+  (expression_statement
+    (jsx_element
+      (jsx_opening_element)
+      (jsx_text)
+      (jsx_closing_element))))

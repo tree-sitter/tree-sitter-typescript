@@ -1,1 +1,1 @@
-module.exports = require('./index').tsx;
+module.exports = require('.').tsx;

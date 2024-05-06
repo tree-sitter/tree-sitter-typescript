@@ -1,1 +1,1 @@
-module.exports = require('./index').typescript;
+module.exports = require('.').typescript;
