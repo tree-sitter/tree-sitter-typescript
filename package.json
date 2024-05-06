@@ -1,6 +1,6 @@
 {
   "name": "tree-sitter-typescript",
-  "version": "0.21.0",
+  "version": "0.21.1",
   "description": "TypeScript and TSX grammars for tree-sitter",
   "repository": "github:tree-sitter/tree-sitter-typescript",
   "license": "MIT",
