@@ -1,4 +1,14 @@
 {
+  "0": "j",
+  "1": "a",
+  "2": "v",
+  "3": "a",
+  "4": "s",
+  "5": "c",
+  "6": "r",
+  "7": "i",
+  "8": "p",
+  "9": "t",
   "name": "typescript",
   "word": "identifier",
   "rules": {
@@ -6791,6 +6801,18 @@
           "value": "static"
         },
         {
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "SYMBOL",
+              "name": "_automatic_semicolon"
+            },
+            {
+              "type": "BLANK"
+            }
+          ]
+        },
+        {
           "type": "FIELD",
           "name": "body",
           "content": {
@@ -11099,6 +11121,10 @@
       "_initializer"
     ],
     [
+      "class_static_block",
+      "_property_name"
+    ],
+    [
       "call_expression",
       "instantiation_expression",
       "binary_expression"
@@ -11869,7 +11895,6 @@
     }
   ],
   "inline": [
-    "statement",
     "_expressions",
     "_semicolon",
     "_identifier",
