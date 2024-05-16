@@ -405,3 +405,22 @@ Type arguments in JSX
       (jsx_opening_element)
       (jsx_text)
       (jsx_closing_element))))
+
+==================================
+Ternary expression
+==================================
+
+a ? function(){ return true } : b;
+
+---
+
+(program
+  (expression_statement
+    (ternary_expression
+      (identifier)
+      (function_expression
+        (formal_parameters)
+        (statement_block
+          (return_statement
+            (true))))
+      (identifier))))
