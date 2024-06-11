@@ -379,6 +379,15 @@ module.exports = function defineGrammar(dialect) {
         choice($._semicolon, $._function_signature_automatic_semicolon),
       ),
 
+      decorator_call_expression: $ => prec('call', seq(
+        field('function', choice(
+          $.identifier,
+          alias($.decorator_member_expression, $.member_expression),
+        )),
+        optional(field('type_arguments', $.type_arguments)),
+        field('arguments', $.arguments),
+      )),
+
       class_body: ($) => seq(
         '{',
         repeat(choice(

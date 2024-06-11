@@ -1,15 +1,6 @@
 {
-  "0": "j",
-  "1": "a",
-  "2": "v",
-  "3": "a",
-  "4": "s",
-  "5": "c",
-  "6": "r",
-  "7": "i",
-  "8": "p",
-  "9": "t",
   "name": "tsx",
+  "inherits": "javascript",
   "word": "identifier",
   "rules": {
     "program": {
@@ -6548,6 +6539,22 @@
                 }
               ]
             }
+          },
+          {
+            "type": "CHOICE",
+            "members": [
+              {
+                "type": "FIELD",
+                "name": "type_arguments",
+                "content": {
+                  "type": "SYMBOL",
+                  "name": "type_arguments"
+                }
+              },
+              {
+                "type": "BLANK"
+              }
+            ]
           },
           {
             "type": "FIELD",
