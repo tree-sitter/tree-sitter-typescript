@@ -1115,6 +1115,27 @@ declare global {
     (statement_block)))
 
 =======================================
+Ambient global namespace declarations
+=======================================
+
+declare module "foo" {
+  global {
+  }
+}
+
+---
+
+(program
+  (ambient_declaration
+    (module
+      (string
+        (string_fragment))
+      (statement_block
+        (expression_statement
+          (global_namespace
+            (statement_block)))))))
+
+=======================================
 Abstract classes
 =======================================
 

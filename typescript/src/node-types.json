@@ -176,6 +176,10 @@
         "named": true
       },
       {
+        "type": "global_namespace",
+        "named": true
+      },
+      {
         "type": "instantiation_expression",
         "named": true
       },
@@ -2878,6 +2882,22 @@
         "types": [
           {
             "type": "glimmer_opening_tag",
+            "named": true
+          }
+        ]
+      }
+    }
+  },
+  {
+    "type": "global_namespace",
+    "named": true,
+    "fields": {
+      "body": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "statement_block",
             "named": true
           }
         ]
@@ -6569,11 +6589,11 @@
   },
   {
     "type": "number",
-    "named": true
+    "named": false
   },
   {
     "type": "number",
-    "named": false
+    "named": true
   },
   {
     "type": "object",
