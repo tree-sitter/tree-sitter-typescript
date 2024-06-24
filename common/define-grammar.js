@@ -210,6 +210,7 @@ module.exports = function defineGrammar(dialect) {
           $.satisfies_expression,
           $.instantiation_expression,
           $.internal_module,
+          $.global_namespace,
         ];
 
         if (dialect === 'typescript') {
@@ -263,6 +264,11 @@ module.exports = function defineGrammar(dialect) {
       export_specifier: (_, previous) => seq(
         optional(choice('type', 'typeof')),
         previous,
+      ),
+
+      global_namespace: ($) => seq(
+        'global',
+        field('body', $.statement_block)
       ),
 
       _import_identifier: ($) => choice($.identifier, alias('type', $.identifier)),
