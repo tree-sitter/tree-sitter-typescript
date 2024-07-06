@@ -2100,7 +2100,7 @@ type X2 = (typeof Y)[keyof typeof Z];
           (identifier))))))
 
 =========================
-Type of instantiation expressions
+Typeof instantiation expressions
 =========================
 
 // This is a special construct, different from both "typeof (f<T>)" and
@@ -2119,3 +2119,51 @@ type T = typeof f<T>;
         (identifier)
         (type_arguments
           (type_identifier))))))
+
+=========================
+Typeof this
+=========================
+
+class A {
+  colors: [ { color: "green", code: "#E5F8F2" } ]
+  color: (typeof this.colors)[number] = this.colors[0]
+}
+
+---
+
+(program
+  (class_declaration
+    (type_identifier)
+    (class_body
+      (public_field_definition
+        (property_identifier)
+        (type_annotation
+          (tuple_type
+            (object_type
+              (property_signature
+                (property_identifier)
+                (type_annotation
+                  (literal_type
+                    (string
+                      (string_fragment)))))
+              (property_signature
+                (property_identifier)
+                (type_annotation
+                  (literal_type
+                    (string
+                      (string_fragment)))))))))
+      (public_field_definition
+        (property_identifier)
+        (type_annotation
+          (lookup_type
+            (parenthesized_type
+              (type_query
+                (member_expression
+                  (this)
+                  (property_identifier))))
+            (predefined_type)))
+        (subscript_expression
+          (member_expression
+            (this)
+            (property_identifier))
+          (number))))))
