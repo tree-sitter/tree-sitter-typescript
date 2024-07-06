@@ -5,7 +5,7 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "tree-sitter-typescript"
 description = "TypeScript and TSX grammars for tree-sitter"
-version = "0.21.1"
+version = "0.21.2"
 keywords = ["incremental", "parsing", "tree-sitter", "typescript", "tsx"]
 classifiers = [
   "Intended Audience :: Developers",
