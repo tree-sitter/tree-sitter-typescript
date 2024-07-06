@@ -142,6 +142,7 @@ module.exports = function defineGrammar(dialect) {
           seq(optional('abstract'), optional('readonly')),
           seq(optional('readonly'), optional('abstract')),
         ),
+        optional('accessor'),
         field('name', $._property_name),
         optional(choice('?', '!')),
         field('type', optional($.type_annotation)),
