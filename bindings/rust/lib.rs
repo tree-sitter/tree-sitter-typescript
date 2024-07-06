@@ -45,10 +45,14 @@ pub fn language_tsx() -> Language {
     unsafe { tree_sitter_tsx() }
 }
 
-/// The content of the [`node-types.json`][] file for this grammar.
+/// The content of the [`node-types.json`][] file for TypeScript.
 ///
 /// [`node-types.json`]: https://tree-sitter.github.io/tree-sitter/using-parsers#static-node-types
 pub const TYPESCRIPT_NODE_TYPES: &str = include_str!("../../typescript/src/node-types.json");
+
+/// The content of the [`node-types.json`][] file for TSX.
+///
+/// [`node-types.json`]: https://tree-sitter.github.io/tree-sitter/using-parsers#static-node-types
 pub const TSX_NODE_TYPES: &str = include_str!("../../tsx/src/node-types.json");
 
 /// The syntax highlighting query for TypeScript.
