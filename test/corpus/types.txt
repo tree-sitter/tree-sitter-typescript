@@ -2167,3 +2167,29 @@ class A {
             (this)
             (property_identifier))
           (number))))))
+
+=========================
+Import in type
+=========================
+
+type Foo = import('node:fs').ReadStream & {
+  bar();
+};
+
+---
+
+(program
+  (type_alias_declaration
+    (type_identifier)
+    (intersection_type
+      (member_expression
+        (call_expression
+          (import)
+          (arguments
+            (string
+              (string_fragment))))
+        (property_identifier))
+      (object_type
+        (method_signature
+          (property_identifier)
+          (formal_parameters))))))

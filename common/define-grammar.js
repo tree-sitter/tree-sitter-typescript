@@ -654,11 +654,7 @@ module.exports = function defineGrammar(dialect) {
       opting_type_annotation: $ => seq('?:', $.type),
       type_annotation: $ => seq(
         ':',
-        choice(
-          $.type,
-          alias($._type_query_member_expression_in_type_annotation, $.member_expression),
-          alias($._type_query_call_expression_in_type_annotation, $.call_expression),
-        ),
+        $.type,
       ),
 
       // Oh boy
@@ -702,6 +698,8 @@ module.exports = function defineGrammar(dialect) {
         $.readonly_type,
         $.constructor_type,
         $.infer_type,
+        prec(-1, alias($._type_query_member_expression_in_type_annotation, $.member_expression)),
+        prec(-1, alias($._type_query_call_expression_in_type_annotation, $.call_expression)),
       ),
 
       tuple_parameter: $ => seq(
@@ -927,11 +925,7 @@ module.exports = function defineGrammar(dialect) {
 
       type_arguments: $ => seq(
         '<',
-        commaSep1(choice(
-          $.type,
-          alias($._type_query_member_expression_in_type_annotation, $.member_expression),
-          alias($._type_query_call_expression_in_type_annotation, $.call_expression),
-        )),
+        commaSep1($.type),
         optional(','),
         '>',
       ),
