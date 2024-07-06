@@ -46,7 +46,7 @@
     "eslint": ">=8.57.0",
     "eslint-config-google": "^0.14.0",
     "tree-sitter-cli": "^0.22.6",
-    "tree-sitter-javascript": "^0.21.2",
+    "tree-sitter-javascript": "^0.21.4",
     "prebuildify": "^6.0.1"
   },
   "scripts": {

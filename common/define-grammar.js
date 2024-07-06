@@ -10,7 +10,7 @@ module.exports = function defineGrammar(dialect) {
     ]),
 
     supertypes: ($, previous) => previous.concat([
-      $._primary_type,
+      $.primary_type,
     ]),
 
     precedences: ($, previous) => previous.concat([
@@ -48,8 +48,8 @@ module.exports = function defineGrammar(dialect) {
       [$.readonly_type, $.primary_expression],
       [$.type_query, $.subscript_expression, $.expression],
       [$.type_query, $._type_query_subscript_expression],
-      [$.nested_type_identifier, $.generic_type, $._primary_type, $.lookup_type, $.index_type_query, $._type],
-      [$.as_expression, $.satisfies_expression, $._primary_type],
+      [$.nested_type_identifier, $.generic_type, $.primary_type, $.lookup_type, $.index_type_query, $._type],
+      [$.as_expression, $.satisfies_expression, $.primary_type],
       [$._type_query_member_expression, $.member_expression],
       [$.member_expression, $._type_query_member_expression_in_type_annotation],
       [$._type_query_member_expression, $.primary_expression],
@@ -84,24 +84,20 @@ module.exports = function defineGrammar(dialect) {
       [$._call_signature, $.function_type],
       [$._call_signature, $.constructor_type],
 
-      [$._primary_type, $.type_parameter],
-      [$.jsx_opening_element, $.type_parameter],
-      [$.jsx_namespace_name, $._primary_type],
-
       [$.primary_expression, $._parameter_name],
-      [$.primary_expression, $._parameter_name, $._primary_type],
+      [$.primary_expression, $._parameter_name, $.primary_type],
       [$.primary_expression, $.literal_type],
       [$.primary_expression, $.literal_type, $.rest_pattern],
       [$.primary_expression, $.predefined_type, $.rest_pattern],
-      [$.primary_expression, $._primary_type],
+      [$.primary_expression, $.primary_type],
       [$.primary_expression, $.generic_type],
       [$.primary_expression, $.predefined_type],
-      [$.primary_expression, $.pattern, $._primary_type],
-      [$._parameter_name, $._primary_type],
-      [$.pattern, $._primary_type],
+      [$.primary_expression, $.pattern, $.primary_type],
+      [$._parameter_name, $.primary_type],
+      [$.pattern, $.primary_type],
 
-      [$.optional_tuple_parameter, $._primary_type],
-      [$.rest_pattern, $._primary_type, $.primary_expression],
+      [$.optional_tuple_parameter, $.primary_type],
+      [$.rest_pattern, $.primary_type, $.primary_expression],
 
       [$.object, $.object_type],
       [$.object, $.object_pattern, $.object_type],
@@ -114,7 +110,14 @@ module.exports = function defineGrammar(dialect) {
       [$.array_pattern, $.tuple_type],
 
       [$.template_literal_type, $.template_string],
-    ]),
+    ]).concat(
+      dialect === 'typescript' ? [
+        [$.primary_type, $.type_parameter],
+      ] : [
+        [$.jsx_opening_element, $.type_parameter],
+        [$.jsx_namespace_name, $.primary_type],
+      ],
+    ),
 
     inline: ($, previous) => previous
       .filter((rule) => ![
@@ -693,7 +696,7 @@ module.exports = function defineGrammar(dialect) {
       ),
 
       _type: ($) => choice(
-        $._primary_type,
+        $.primary_type,
         $.function_type,
         $.readonly_type,
         $.constructor_type,
@@ -731,7 +734,7 @@ module.exports = function defineGrammar(dialect) {
         field('type', $._type),
       )),
 
-      _primary_type: ($) => choice(
+      primary_type: ($) => choice(
         $.parenthesized_type,
         $.predefined_type,
         $._type_identifier,
@@ -754,7 +757,7 @@ module.exports = function defineGrammar(dialect) {
         'const',
       ),
 
-      template_type: ($) => seq('${', choice($._primary_type, $.infer_type), '}'),
+      template_type: ($) => seq('${', choice($.primary_type, $.infer_type), '}'),
 
       template_literal_type: ($) => seq(
         '`',
@@ -866,11 +869,11 @@ module.exports = function defineGrammar(dialect) {
 
       index_type_query: ($) => seq(
         'keyof',
-        $._primary_type,
+        $.primary_type,
       ),
 
       lookup_type: ($) => seq(
-        $._primary_type,
+        $.primary_type,
         '[',
         $._type,
         ']',
@@ -900,7 +903,7 @@ module.exports = function defineGrammar(dialect) {
 
       existential_type: (_) => '*',
 
-      flow_maybe_type: ($) => prec.right(seq('?', $._primary_type)),
+      flow_maybe_type: ($) => prec.right(seq('?', $.primary_type)),
 
       parenthesized_type: ($) => seq('(', $._type, ')'),
 
@@ -1026,7 +1029,7 @@ module.exports = function defineGrammar(dialect) {
         )),
       ),
 
-      array_type: ($) => seq($._primary_type, '[', ']'),
+      array_type: ($) => seq($.primary_type, '[', ']'),
       tuple_type: ($) => seq(
         '[', commaSep($._tuple_type_member), optional(','), ']',
       ),
