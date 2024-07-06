@@ -1,15 +1,35 @@
-// swift-tools-version: 5.6
+// swift-tools-version:5.3
 import PackageDescription
 
 let package = Package(
     name: "TreeSitterTypeScript",
-    platforms: [.macOS(.v10_13), .iOS(.v11)],
-    products: [.library(name: "TreeSitterTypeScript", targets: ["TreeSitterTypeScript"])],
+    products: [
+        .library(name: "TreeSitterTypeScript", targets: ["TreeSitterTypeScript"])
+    ],
+    dependencies: [],
     targets: [
         .target(
             name: "TreeSitterTypeScript",
             path: ".",
             exclude: [
+                "Cargo.toml",
+                "Makefile",
+                "binding.gyp",
+                "bindings/go",
+                "bindings/node",
+                "bindings/python",
+                "bindings/rust",
+                "common/common.mak",
+                "common/define-grammar.js",
+                "package.json",
+                "package-lock.json",
+                "pyproject.toml",
+                "setup.py",
+                "test",
+                ".editorconfig",
+                ".github",
+                ".gitignore",
+                ".gitattributes",
             ],
             sources: [
                 "typescript/src/parser.c",
