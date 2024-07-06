@@ -819,6 +819,7 @@ module.exports = function defineGrammar(dialect) {
       _type_query_member_expression: $ => seq(
         field('object', choice(
           $.identifier,
+          $.this,
           alias($._type_query_subscript_expression, $.subscript_expression),
           alias($._type_query_member_expression, $.member_expression),
           alias($._type_query_call_expression, $.call_expression),
@@ -832,6 +833,7 @@ module.exports = function defineGrammar(dialect) {
       _type_query_subscript_expression: $ => seq(
         field('object', choice(
           $.identifier,
+          $.this,
           alias($._type_query_subscript_expression, $.subscript_expression),
           alias($._type_query_member_expression, $.member_expression),
           alias($._type_query_call_expression, $.call_expression),
@@ -865,6 +867,7 @@ module.exports = function defineGrammar(dialect) {
           alias($._type_query_call_expression, $.call_expression),
           alias($._type_query_instantiation_expression, $.instantiation_expression),
           $.identifier,
+          $.this,
         ),
       )),
 
