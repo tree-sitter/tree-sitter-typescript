@@ -281,7 +281,10 @@ module.exports = function defineGrammar(dialect) {
             'as',
             field('alias', $._import_identifier),
           ),
-        )),
+        ),
+      ),
+
+      import_attribute: $ => seq(choice('with', 'assert'), $.object),
 
       import_clause: $ => choice(
         $.namespace_import,

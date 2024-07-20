@@ -2193,3 +2193,24 @@ type Foo = import('node:fs').ReadStream & {
         (method_signature
           (property_identifier)
           (formal_parameters))))))
+
+=========================
+Import assert
+=========================
+
+import something from 'foo.css' assert { type: 'css' }
+
+---
+
+(program
+  (import_statement
+    (import_clause
+      (identifier))
+    (string
+      (string_fragment))
+    (import_attribute
+      (object
+        (pair
+          (property_identifier)
+          (string
+            (string_fragment)))))))
