@@ -1189,6 +1189,31 @@ abstract class Foo {
     name: (type_identifier)
     body: (class_body)))
 
+=======================================
+Decorator with parenthesized expression
+=======================================
+
+class C {
+    @(super.decorate)
+    method2() { }
+}
+
+---
+
+(program
+  (class_declaration
+    (type_identifier)
+    (class_body
+      (decorator
+        (parenthesized_expression
+          (member_expression
+            (identifier)
+            (property_identifier))))
+      (method_definition
+        (property_identifier)
+        (formal_parameters)
+        (statement_block)))))
+
 ==================================
 Index type queries
 ==================================
