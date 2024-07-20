@@ -784,8 +784,17 @@
       "type": "SEQ",
       "members": [
         {
-          "type": "STRING",
-          "value": "with"
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "STRING",
+              "value": "with"
+            },
+            {
+              "type": "STRING",
+              "value": "assert"
+            }
+          ]
         },
         {
           "type": "SYMBOL",
@@ -6445,6 +6454,15 @@
               },
               "named": true,
               "value": "call_expression"
+            },
+            {
+              "type": "ALIAS",
+              "content": {
+                "type": "SYMBOL",
+                "name": "decorator_parenthesized_expression"
+              },
+              "named": true,
+              "value": "parenthesized_expression"
             }
           ]
         }
@@ -7825,6 +7843,46 @@
               "name": "_function_signature_automatic_semicolon"
             }
           ]
+        }
+      ]
+    },
+    "decorator_parenthesized_expression": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "STRING",
+          "value": "("
+        },
+        {
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "SYMBOL",
+              "name": "identifier"
+            },
+            {
+              "type": "ALIAS",
+              "content": {
+                "type": "SYMBOL",
+                "name": "decorator_member_expression"
+              },
+              "named": true,
+              "value": "member_expression"
+            },
+            {
+              "type": "ALIAS",
+              "content": {
+                "type": "SYMBOL",
+                "name": "decorator_call_expression"
+              },
+              "named": true,
+              "value": "call_expression"
+            }
+          ]
+        },
+        {
+          "type": "STRING",
+          "value": ")"
         }
       ]
     },
