@@ -45,16 +45,17 @@
   "devDependencies": {
     "eslint": ">=8.57.0",
     "eslint-config-google": "^0.14.0",
+    "prebuildify": "^6.0.1",
     "tree-sitter-cli": "^0.22.6",
-    "tree-sitter-javascript": "^0.21.4",
-    "prebuildify": "^6.0.1"
+    "tree-sitter-javascript": "^0.21.4"
   },
   "scripts": {
     "install": "node-gyp-build",
     "prebuildify": "prebuildify --napi --strip",
-    "build": "npm run build-typescript && npm run build-tsx",
+    "build": "npm run build-typescript && npm run build-tsx && npm run build-gts",
     "build-typescript": "cd typescript && npx tree-sitter generate --no-bindings",
     "build-tsx": "cd tsx && npx tree-sitter generate --no-bindings",
+    "build-gts": "cd gts && npx tree-sitter generate --no-bindings",
     "lint": "eslint common/define-grammar.js",
     "parse": "tree-sitter parse",
     "test": "tree-sitter test"
