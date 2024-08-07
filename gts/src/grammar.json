@@ -1,6 +1,5 @@
 {
-  "name": "tsx",
-  "inherits": "javascript",
+  "name": "gts",
   "word": "identifier",
   "rules": {
     "program": {
@@ -2017,15 +2016,19 @@
         },
         {
           "type": "SYMBOL",
+          "name": "glimmer_template"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "type_assertion"
+        },
+        {
+          "type": "SYMBOL",
           "name": "primary_expression"
         },
         {
           "type": "SYMBOL",
           "name": "glimmer_template"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "_jsx_element"
         },
         {
           "type": "SYMBOL",
@@ -6583,6 +6586,14 @@
           "content": {
             "type": "CHOICE",
             "members": [
+              {
+                "type": "FIELD",
+                "name": "template",
+                "content": {
+                  "type": "SYMBOL",
+                  "name": "glimmer_template"
+                }
+              },
               {
                 "type": "SEQ",
                 "members": [
@@ -11296,12 +11307,10 @@
       "template_string"
     ],
     [
-      "jsx_opening_element",
-      "type_parameter"
-    ],
-    [
-      "jsx_namespace_name",
-      "primary_type"
+      "glimmer_template",
+      "primary_type",
+      "type_parameter",
+      "glimmer_template"
     ]
   ],
   "precedences": [
