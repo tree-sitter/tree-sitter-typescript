@@ -222,6 +222,11 @@ module.exports = function defineGrammar(dialect) {
           choices.push(...previous.members.filter((member) =>
             member.name !== '_jsx_element',
           ));
+        } else if (dialect === 'gts') {
+          choices.push($.type_assertion);
+          choices.push(...previous.members.filter((member) =>
+            member.name !== '_jsx_element',
+          ));
         } else if (dialect === 'tsx') {
           choices.push(...previous.members);
         } else {
