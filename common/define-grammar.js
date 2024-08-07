@@ -114,10 +114,12 @@ module.exports = function defineGrammar(dialect) {
     ]).concat(
       dialect === 'typescript' ? [
         [$.primary_type, $.type_parameter],
-      ] : [
+      ] : dialect === 'tsx' ? [
         [$.jsx_opening_element, $.type_parameter],
         [$.jsx_namespace_name, $.primary_type],
-      ],
+      ] : dialect === 'gts' ? [
+        [$.glimmer_template, $.primary_type, $.type_parameter],
+      ] : [],
     ),
 
     inline: ($, previous) => previous
@@ -215,21 +217,49 @@ module.exports = function defineGrammar(dialect) {
           $.satisfies_expression,
           $.instantiation_expression,
           $.internal_module,
+          $.glimmer_template,
         ];
 
         if (dialect === 'typescript') {
+          choices.push($.type_assertion);
+          choices.push(...previous.members.filter((member) => {
+            return member.name !== '_jsx_element' && member.name !== 'glimmer_template';
+          },
+          ));
+        } else if (dialect === 'gts') {
           choices.push($.type_assertion);
           choices.push(...previous.members.filter((member) =>
             member.name !== '_jsx_element',
           ));
         } else if (dialect === 'tsx') {
-          choices.push(...previous.members);
+          choices.push(...previous.members.filter(member => {
+            return member.name !== 'glimmer_template';
+          }));
         } else {
           throw new Error(`Unknown dialect ${dialect}`);
         }
 
         return choice(...choices);
       },
+
+      // This rule is only referenced by expression when the dialect is 'gts'
+      // glimmer_template: $ => choice(
+      //   seq(
+      //     field('open_tag', $.glimmer_opening_tag),
+      //     field('content', repeat($._glimmer_template_content)),
+      //     field('close_tag', $.glimmer_closing_tag),
+      //   ),
+      //   // empty template has no content
+      //   // <template></template>
+      //   seq(
+      //     field('open_tag', $.glimmer_opening_tag),
+      //     field('close_tag', $.glimmer_closing_tag),
+      //   ),
+      // ),
+      //
+      // _glimmer_template_content: _ => /.{1,}/,
+      // glimmer_opening_tag: _ => '<template>',
+      // glimmer_closing_tag: _ => '</template>',
 
       _jsx_start_opening_element: $ => seq(
         '<',
@@ -419,6 +449,7 @@ module.exports = function defineGrammar(dialect) {
       class_body: $ => seq(
         '{',
         repeat(choice(
+          field('template', $.glimmer_template),
           seq(
             repeat(field('decorator', $.decorator)),
             $.method_definition,

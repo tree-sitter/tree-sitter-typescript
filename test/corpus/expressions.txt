@@ -424,3 +424,28 @@ a ? function(){ return true } : b;
           (return_statement
             (true))))
       (identifier))))
+
+==========================================================
+Class Component with content
+:language(gts)
+==========================================================
+
+export class Menu extends Component<{
+  Args: {
+    /* args here */
+  }
+}> {
+  <template>
+    {{#let (IsOpen) (TriggerElement) as |isOpen triggerEl|}}
+    {{/let}}
+  </template>
+}
+
+----
+
+(program
+  (expression_statement
+    (glimmer_template
+      (glimmer_opening_tag)
+      (glimmer_closing_tag)
+    )))

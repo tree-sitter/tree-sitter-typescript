@@ -5,4 +5,5 @@ module.exports = require("node-gyp-build")(root);
 try {
   module.exports.typescript.nodeTypeInfo = require("../../typescript/src/node-types.json");
   module.exports.tsx.nodeTypeInfo = require("../../tsx/src/node-types.json");
+  module.exports.gts.nodeTypeInfo = require("../../gts/src/node-types.json");
 } catch (_) { }
