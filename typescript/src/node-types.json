@@ -1403,18 +1403,7 @@
   {
     "type": "class_body",
     "named": true,
-    "fields": {
-      "decorator": {
-        "multiple": true,
-        "required": false,
-        "types": [
-          {
-            "type": "decorator",
-            "named": true
-          }
-        ]
-      }
-    },
+    "fields": {},
     "children": {
       "multiple": true,
       "required": false,
@@ -3678,6 +3667,16 @@
         "types": [
           {
             "type": "statement_block",
+            "named": true
+          }
+        ]
+      },
+      "decorator": {
+        "multiple": true,
+        "required": false,
+        "types": [
+          {
+            "type": "decorator",
             "named": true
           }
         ]

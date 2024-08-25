@@ -6587,17 +6587,6 @@
                 "type": "SEQ",
                 "members": [
                   {
-                    "type": "REPEAT",
-                    "content": {
-                      "type": "FIELD",
-                      "name": "decorator",
-                      "content": {
-                        "type": "SYMBOL",
-                        "name": "decorator"
-                      }
-                    }
-                  },
-                  {
                     "type": "SYMBOL",
                     "name": "method_definition"
                   },
@@ -6873,6 +6862,17 @@
       "content": {
         "type": "SEQ",
         "members": [
+          {
+            "type": "REPEAT",
+            "content": {
+              "type": "FIELD",
+              "name": "decorator",
+              "content": {
+                "type": "SYMBOL",
+                "name": "decorator"
+              }
+            }
+          },
           {
             "type": "CHOICE",
             "members": [

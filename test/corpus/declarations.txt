@@ -938,13 +938,13 @@ class Foo {
   (class_declaration
     (type_identifier)
     (class_body
-      (decorator
-        (call_expression
-          (identifier)
-          (type_arguments
-            (type_identifier))
-          (arguments)))
       (method_definition
+        (decorator
+          (call_expression
+            (identifier)
+            (type_arguments
+              (type_identifier))
+            (arguments)))
         (property_identifier)
         (formal_parameters)
         (statement_block)))))
@@ -1000,9 +1000,9 @@ Classes with decorators
           (type_identifier))
         (string
           (string_fragment)))
-      (decorator
-        (identifier))
       (method_definition
+        (decorator
+          (identifier))
         (property_identifier)
         (formal_parameters
           (required_parameter
@@ -1204,12 +1204,12 @@ class C {
   (class_declaration
     (type_identifier)
     (class_body
-      (decorator
-        (parenthesized_expression
-          (member_expression
-            (identifier)
-            (property_identifier))))
       (method_definition
+        (decorator
+          (parenthesized_expression
+            (member_expression
+              (identifier)
+              (property_identifier))))
         (property_identifier)
         (formal_parameters)
         (statement_block)))))
