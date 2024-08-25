@@ -1407,18 +1407,7 @@
   {
     "type": "class_body",
     "named": true,
-    "fields": {
-      "decorator": {
-        "multiple": true,
-        "required": false,
-        "types": [
-          {
-            "type": "decorator",
-            "named": true
-          }
-        ]
-      }
-    },
+    "fields": {},
     "children": {
       "multiple": true,
       "required": false,
@@ -3682,6 +3671,16 @@
         "types": [
           {
             "type": "statement_block",
+            "named": true
+          }
+        ]
+      },
+      "decorator": {
+        "multiple": true,
+        "required": false,
+        "types": [
+          {
+            "type": "decorator",
             "named": true
           }
         ]
@@ -6097,11 +6096,11 @@
   },
   {
     "type": "number",
-    "named": true
+    "named": false
   },
   {
     "type": "number",
-    "named": false
+    "named": true
   },
   {
     "type": "object",

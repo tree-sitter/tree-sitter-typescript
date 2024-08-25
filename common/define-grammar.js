@@ -420,7 +420,6 @@ module.exports = function defineGrammar(dialect) {
         '{',
         repeat(choice(
           seq(
-            repeat(field('decorator', $.decorator)),
             $.method_definition,
             optional($._semicolon),
           ),
@@ -449,6 +448,7 @@ module.exports = function defineGrammar(dialect) {
       ),
 
       method_definition: $ => prec.left(seq(
+        repeat(field('decorator', $.decorator)),
         optional($.accessibility_modifier),
         optional('static'),
         optional($.override_modifier),
