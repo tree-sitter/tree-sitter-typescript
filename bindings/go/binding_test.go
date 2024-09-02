@@ -3,8 +3,8 @@ package tree_sitter_typescript_test
 import (
 	"testing"
 
-	tree_sitter "github.com/smacker/go-tree-sitter"
-	"github.com/tree-sitter-grammars/tree-sitter-typescript"
+	tree_sitter "github.com/tree-sitter/go-tree-sitter"
+	tree_sitter_typescript "github.com/tree-sitter/tree-sitter-typescript/bindings/go"
 )
 
 func TestCanLoadTypescriptGrammar(t *testing.T) {

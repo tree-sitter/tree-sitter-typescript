@@ -3,7 +3,7 @@ libdir=@LIBDIR@
 includedir=@INCLUDEDIR@
 
 Name: tree-sitter-typescript
-Description: Typescript grammar for tree-sitter
+Description: TypeScript grammar for tree-sitter
 URL: @URL@
 Version: @VERSION@
 Requires: @REQUIRES@

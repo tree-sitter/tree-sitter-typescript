@@ -1,3 +1,5 @@
+TS ?= tree-sitter
+
 all install uninstall clean:
 	$(MAKE) -C typescript $@
 	$(MAKE) -C tsx $@
