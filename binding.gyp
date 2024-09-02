@@ -15,10 +15,18 @@
         "tsx/src/scanner.c",
         "bindings/node/binding.cc",
       ],
-      "cflags_c": [
-        "-std=c11",
-        "-Wno-unused-value",
-      ]
+      "conditions": [
+        ["OS!='win'", {
+          "cflags_c": [
+            "-std=c11",
+          ],
+        }, { # OS == "win"
+          "cflags_c": [
+            "/std:c11",
+            "/utf-8",
+          ],
+        }],
+      ],
     }
   ]
 }
