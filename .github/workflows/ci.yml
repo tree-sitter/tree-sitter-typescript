@@ -45,6 +45,7 @@ jobs:
         uses: tree-sitter/parser-test-action@v2
         with:
           test-rust: ${{runner.os == 'Linux'}}
+          test-swift: ${{runner.os == 'macOS'}}
       - name: Parse examples
         id: test
         uses: tree-sitter/parse-action@v4
