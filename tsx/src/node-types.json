@@ -2255,15 +2255,23 @@
         ]
       },
       "condition": {
-        "multiple": false,
+        "multiple": true,
         "required": true,
         "types": [
+          {
+            "type": ";",
+            "named": false
+          },
           {
             "type": "empty_statement",
             "named": true
           },
           {
-            "type": "expression_statement",
+            "type": "expression",
+            "named": true
+          },
+          {
+            "type": "sequence_expression",
             "named": true
           }
         ]
@@ -2291,11 +2299,15 @@
             "named": true
           },
           {
-            "type": "expression_statement",
+            "type": "expression",
             "named": true
           },
           {
             "type": "lexical_declaration",
+            "named": true
+          },
+          {
+            "type": "sequence_expression",
             "named": true
           },
           {
@@ -3471,11 +3483,6 @@
         ]
       }
     }
-  },
-  {
-    "type": "jsx_text",
-    "named": true,
-    "fields": {}
   },
   {
     "type": "labeled_statement",
@@ -6068,11 +6075,19 @@
     "named": false
   },
   {
+    "type": "jsx_text",
+    "named": true
+  },
+  {
     "type": "keyof",
     "named": false
   },
   {
     "type": "let",
+    "named": false
+  },
+  {
+    "type": "meta",
     "named": false
   },
   {
@@ -6097,11 +6112,11 @@
   },
   {
     "type": "number",
-    "named": true
+    "named": false
   },
   {
     "type": "number",
-    "named": false
+    "named": true
   },
   {
     "type": "object",

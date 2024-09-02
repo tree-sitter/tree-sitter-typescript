@@ -10,6 +10,7 @@ enum TokenType {
     LOGICAL_OR,
     ESCAPE_SEQUENCE,
     REGEX_PATTERN,
+    JSX_TEXT,
     FUNCTION_SIGNATURE_AUTOMATIC_SEMICOLON,
     ERROR_RECOVERY,
 };
@@ -115,6 +116,7 @@ static bool scan_automatic_semicolon(TSLexer *lexer, const bool *valid_symbols, 
     }
 
     switch (lexer->lookahead) {
+        case '`':
         case ',':
         case '.':
         case ';':
@@ -271,6 +273,47 @@ static bool scan_closing_comment(TSLexer *lexer) {
     return true;
 }
 
+static bool scan_jsx_text(TSLexer *lexer) {
+    // saw_text will be true if we see any non-whitespace content, or any whitespace content that is not a newline and
+    // does not immediately follow a newline.
+    bool saw_text = false;
+    // at_newline will be true if we are currently at a newline, or if we are at whitespace that is not a newline but
+    // immediately follows a newline.
+    bool at_newline = false;
+
+    while (lexer->lookahead != 0 && lexer->lookahead != '<' && lexer->lookahead != '>' && lexer->lookahead != '{' &&
+           lexer->lookahead != '}' && lexer->lookahead != '&') {
+        bool is_wspace = iswspace(lexer->lookahead);
+        if (lexer->lookahead == '\n') {
+            at_newline = true;
+        } else {
+            // If at_newline is already true, and we see some whitespace, then it must stay true.
+            // Otherwise, it should be false.
+            //
+            // See the table below to determine the logic for computing `saw_text`.
+            //
+            // |------------------------------------|
+            // | at_newline | is_wspace | saw_text  |
+            // |------------|-----------|-----------|
+            // | false (0)  | false (0) | true  (1) |
+            // | false (0)  | true  (1) | true  (1) |
+            // | true  (1)  | false (0) | true  (1) |
+            // | true  (1)  | true  (1) | false (0) |
+            // |------------------------------------|
+
+            at_newline &= is_wspace;
+            if (!at_newline) {
+                saw_text = true;
+            }
+        }
+
+        advance(lexer);
+    }
+
+    lexer->result_symbol = JSX_TEXT;
+    return saw_text;
+}
+
 static inline bool external_scanner_scan(void *payload, TSLexer *lexer, const bool *valid_symbols) {
     if (valid_symbols[TEMPLATE_CHARS]) {
         if (valid_symbols[AUTOMATIC_SEMICOLON]) {
@@ -278,6 +321,11 @@ static inline bool external_scanner_scan(void *payload, TSLexer *lexer, const bo
         }
         return scan_template_chars(lexer);
     }
+
+    if (valid_symbols[JSX_TEXT] && scan_jsx_text(lexer)) {
+        return true;
+    }
+
     if (valid_symbols[AUTOMATIC_SEMICOLON] || valid_symbols[FUNCTION_SIGNATURE_AUTOMATIC_SEMICOLON]) {
         bool scanned_comment = false;
         bool ret = scan_automatic_semicolon(lexer, valid_symbols, &scanned_comment);
