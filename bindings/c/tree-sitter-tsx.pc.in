@@ -1,11 +1,11 @@
-prefix=@PREFIX@
-libdir=@LIBDIR@
-includedir=@INCLUDEDIR@
+prefix=@CMAKE_INSTALL_PREFIX@
+libdir=${prefix}/@CMAKE_INSTALL_LIBDIR@
+includedir=${prefix}/@CMAKE_INSTALL_INCLUDEDIR@
 
 Name: tree-sitter-tsx
-Description: TSX grammar for tree-sitter
-URL: @URL@
-Version: @VERSION@
-Requires: @REQUIRES@
-Libs: -L${libdir} @ADDITIONAL_LIBS@ -ltree-sitter-tsx
+Description: @PROJECT_DESCRIPTION@
+URL: @CMAKE_PROJECT_HOMEPAGE_URL@
+Version: @CMAKE_PROJECT_VERSION@
+Requires: @TS_REQUIRES@
+Libs: -L${libdir} -ltree-sitter-tsx
 Cflags: -I${includedir}

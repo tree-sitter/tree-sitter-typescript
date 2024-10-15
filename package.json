@@ -28,138 +28,31 @@
     "tsx/package.json",
     "typescript/src/**",
     "tsx/src/**",
-    "common/**"
+    "common/**",
+    "*.wasm"
   ],
   "dependencies": {
-    "node-addon-api": "^8.1.0",
+    "node-addon-api": "^8.2.1",
     "node-gyp-build": "^4.8.2"
   },
   "peerDependencies": {
     "tree-sitter": "^0.21.0"
   },
   "peerDependenciesMeta": {
-    "tree_sitter": {
+    "tree-sitter": {
       "optional": true
     }
   },
   "devDependencies": {
-    "eslint": ">=8.57.0",
-    "eslint-config-google": "^0.14.0",
-    "tree-sitter-cli": "^0.23.0",
-    "tree-sitter-javascript": "^0.23.0",
-    "prebuildify": "^6.0.1"
+    "eslint": ">=9.12.0",
+    "eslint-config-treesitter": "^1.0.2",
+    "tree-sitter-cli": "^0.24.3",
+    "prebuildify": "^6.0.1",
+    "tree-sitter-javascript": "^0.23.0"
   },
   "scripts": {
     "install": "node-gyp-build",
-    "prebuildify": "prebuildify --napi --strip",
-    "build": "npm run build-typescript && npm run build-tsx",
-    "build-typescript": "cd typescript && npx tree-sitter generate --no-bindings",
-    "build-tsx": "cd tsx && npx tree-sitter generate --no-bindings",
     "lint": "eslint common/define-grammar.js",
-    "parse": "tree-sitter parse",
-    "test": "tree-sitter test"
-  },
-  "tree-sitter": [
-    {
-      "scope": "source.ts",
-      "file-types": [
-        "ts"
-      ],
-      "path": "typescript",
-      "highlights": [
-        "queries/highlights.scm",
-        "node_modules/tree-sitter-javascript/queries/highlights.scm"
-      ],
-      "locals": [
-        "queries/locals.scm",
-        "node_modules/tree-sitter-javascript/queries/locals.scm"
-      ],
-      "tags": [
-        "queries/tags.scm",
-        "node_modules/tree-sitter-javascript/queries/tags.scm"
-      ],
-      "injections": "node_modules/tree-sitter-javascript/queries/injections.scm",
-      "injection-regex": "^(ts|typescript)$"
-    },
-    {
-      "scope": "source.tsx",
-      "file-types": [
-        "tsx"
-      ],
-      "path": "tsx",
-      "highlights": [
-        "queries/highlights.scm",
-        "node_modules/tree-sitter-javascript/queries/highlights-jsx.scm",
-        "node_modules/tree-sitter-javascript/queries/highlights.scm"
-      ],
-      "locals": "node_modules/tree-sitter-javascript/queries/locals.scm",
-      "tags": [
-        "queries/tags.scm",
-        "node_modules/tree-sitter-javascript/queries/tags.scm"
-      ],
-      "injections": "node_modules/tree-sitter-javascript/queries/injections.scm",
-      "injection-regex": "^(ts|typescript)$"
-    },
-    {
-      "scope": "source.js.flow",
-      "file-types": [
-        "js"
-      ],
-      "path": "tsx",
-      "highlights": [
-        "queries/highlights.scm",
-        "node_modules/tree-sitter-javascript/queries/highlights-jsx.scm",
-        "node_modules/tree-sitter-javascript/queries/highlights.scm"
-      ],
-      "locals": "node_modules/tree-sitter-javascript/queries/locals.scm",
-      "tags": [
-        "queries/tags.scm",
-        "node_modules/tree-sitter-javascript/queries/tags.scm"
-      ],
-      "injections": "node_modules/tree-sitter-javascript/queries/injections.scm",
-      "content-regex": "@flow"
-    }
-  ],
-  "eslintConfig": {
-    "env": {
-      "commonjs": true,
-      "es2021": true
-    },
-    "extends": "google",
-    "parserOptions": {
-      "ecmaVersion": "latest",
-      "sourceType": "module"
-    },
-    "rules": {
-      "arrow-parens": "off",
-      "camel-case": "off",
-      "indent": [
-        "error",
-        2,
-        {
-          "SwitchCase": 1
-        }
-      ],
-      "max-len": [
-        "error",
-        {
-          "code": 160,
-          "ignoreComments": true,
-          "ignoreUrls": true,
-          "ignoreStrings": true
-        }
-      ],
-      "spaced-comment": [
-        "warn",
-        "always",
-        {
-          "line": {
-            "markers": [
-              "/"
-            ]
-          }
-        }
-      ]
-    }
+    "test": "node --test bindings/node/*_test.js"
   }
 }

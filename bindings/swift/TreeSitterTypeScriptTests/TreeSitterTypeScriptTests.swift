@@ -1,15 +1,20 @@
 import XCTest
 import SwiftTreeSitter
 import TreeSitterTypeScript
+import TreeSitterTSX
 
 final class TreeSitterTypeScriptTests: XCTestCase {
-    func testCanLoadGrammar() throws {
+    func testCanLoadTypeScriptGrammar() throws {
         let parser = Parser()
-        let language_typescript = Language(language: tree_sitter_typescript())
-        XCTAssertNoThrow(try parser.setLanguage(language_typescript),
+        let language = Language(language: tree_sitter_typescript())
+        XCTAssertNoThrow(try parser.setLanguage(language),
                          "Error loading TypeScript grammar")
-        let language_tsx = Language(language: tree_sitter_tsx())
-        XCTAssertNoThrow(try parser.setLanguage(language_tsx),
+    }
+
+    func testCanLoadTSXGrammar() throws {
+        let parser = Parser()
+        let language = Language(language: tree_sitter_tsx())
+        XCTAssertNoThrow(try parser.setLanguage(language),
                          "Error loading TSX grammar")
     }
 }

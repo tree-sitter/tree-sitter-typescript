@@ -1,15 +1,13 @@
-* text eol=lf
+* text=auto eol=lf
 
-typescript/src/*.json linguist-generated
-typescript/src/parser.c linguist-generated
-typescript/src/tree_sitter/* linguist-generated
-
-tsx/src/*.json linguist-generated
-tsx/src/parser.c linguist-generated
-tsx/src/tree_sitter/* linguist-generated
+src/*.json linguist-generated
+src/parser.c linguist-generated
+src/tree_sitter/* linguist-generated
 
 bindings/** linguist-generated
 binding.gyp linguist-generated
 setup.py linguist-generated
 Makefile linguist-generated
+CMakeLists.txt linguist-generated
 Package.swift linguist-generated
+go.mod linguist-generated
