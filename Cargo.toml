@@ -22,8 +22,8 @@ include = [
   "typescript/src",
   "tsx/grammar.js",
   "tsx/src",
-  "queries",
-  "tree-sitter.json"
+  "queries/*",
+  "./tree-sitter.json",
 ]
 
 [lib]
