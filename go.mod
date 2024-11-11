@@ -1,6 +1,6 @@
 module github.com/tree-sitter/tree-sitter-typescript
 
-go 1.23.0
+go 1.22.0
 
 require github.com/tree-sitter/go-tree-sitter v0.24.0
 
