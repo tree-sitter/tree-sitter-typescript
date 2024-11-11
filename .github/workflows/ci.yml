@@ -58,3 +58,4 @@ jobs:
             examples/**/*.tsx
             !examples/redux/src/types/store.ts
             !examples/vscode/src/bootstrap-window.ts
+            !examples/vscode/extensions/vscode-colorize-perf-tests/test/colorize-fixtures/test-checker.ts
