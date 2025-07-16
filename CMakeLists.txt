@@ -19,6 +19,8 @@ find_program(TREE_SITTER_CLI tree-sitter DOC "Tree-sitter CLI")
 
 include(GNUInstallDirs)
 
+set(TREE_SITTER_TYPESCRIPT_SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR})
+
 macro(add_parser name)
     add_custom_command(OUTPUT "${CMAKE_CURRENT_SOURCE_DIR}/src/parser.c"
                        DEPENDS "${CMAKE_CURRENT_SOURCE_DIR}/src/grammar.json"
@@ -43,10 +45,10 @@ macro(add_parser name)
                           SOVERSION "${TREE_SITTER_ABI_VERSION}.${PROJECT_VERSION_MAJOR}"
                           DEFINE_SYMBOL "")
 
-    configure_file("${CMAKE_SOURCE_DIR}/bindings/c/tree-sitter-${name}.pc.in"
+    configure_file("${TREE_SITTER_TYPESCRIPT_SOURCE_DIR}/bindings/c/tree-sitter-${name}.pc.in"
                    "${CMAKE_CURRENT_BINARY_DIR}/tree-sitter-${name}.pc" @ONLY)
 
-    install(FILES "${CMAKE_SOURCE_DIR}/bindings/c/tree-sitter-${name}.h"
+    install(FILES "${TREE_SITTER_TYPESCRIPT_SOURCE_DIR}/bindings/c/tree-sitter-${name}.h"
             DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}/tree_sitter")
     install(FILES "${CMAKE_CURRENT_BINARY_DIR}/tree-sitter-${name}.pc"
             DESTINATION "${CMAKE_INSTALL_DATAROOTDIR}/pkgconfig")
