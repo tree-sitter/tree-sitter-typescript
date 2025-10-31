@@ -325,6 +325,23 @@ f<T>(x)
         (identifier)))))
 
 ==================================
+Generic template calls
+==================================
+
+f<T>`x`
+
+---
+
+(program
+  (expression_statement
+    (call_expression
+      (identifier)
+      (type_arguments
+        (type_identifier))
+      (template_string
+        (string_fragment)))))
+
+==================================
 Instantiation expressions
 ==================================
 
