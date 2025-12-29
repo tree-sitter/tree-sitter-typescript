@@ -33,9 +33,9 @@ jobs:
         os: [ubuntu-latest, windows-latest, macos-14]
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
       - name: Set up tree-sitter
-        uses: tree-sitter/setup-action/cli@v1
+        uses: tree-sitter/setup-action/cli@v2
       - name: Set up examples
         run: |-
           git clone https://github.com/desktop/desktop examples/desktop --single-branch --depth=1 --filter=blob:none
