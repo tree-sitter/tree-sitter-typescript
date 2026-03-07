@@ -1207,7 +1207,7 @@ class C {
       (decorator
         (parenthesized_expression
           (member_expression
-            (identifier)
+            (super)
             (property_identifier))))
       (method_definition
         (property_identifier)
@@ -1467,3 +1467,95 @@ class Bar extends Foo {
         name: (property_identifier)
         parameters: (formal_parameters)
         body: (statement_block)))))
+
+=======================================
+Using declarations
+=======================================
+
+using file = getFile();
+await using resource = getResource();
+using x = a, y = b;
+
+---
+
+(program
+  (using_declaration
+    (variable_declarator
+      name: (identifier)
+      value: (call_expression
+        function: (identifier)
+        arguments: (arguments))))
+  (using_declaration
+    (variable_declarator
+      name: (identifier)
+      value: (call_expression
+        function: (identifier)
+        arguments: (arguments))))
+  (using_declaration
+    (variable_declarator
+      name: (identifier)
+      value: (identifier))
+    (variable_declarator
+      name: (identifier)
+      value: (identifier))))
+
+=======================================
+Using declarations with type annotations
+=======================================
+
+using file: Disposable = getFile();
+await using resource: AsyncDisposable = getResource();
+
+---
+
+(program
+  (using_declaration
+    (variable_declarator
+      name: (identifier)
+      type: (type_annotation
+        (type_identifier))
+      value: (call_expression
+        function: (identifier)
+        arguments: (arguments))))
+  (using_declaration
+    (variable_declarator
+      name: (identifier)
+      type: (type_annotation
+        (type_identifier))
+      value: (call_expression
+        function: (identifier)
+        arguments: (arguments)))))
+
+=======================================
+Using declarations in for-of loops
+=======================================
+
+for (using item of items) {
+  process(item);
+}
+
+for await (await using resource of resources) {
+  consume(resource);
+}
+
+---
+
+(program
+  (for_in_statement
+    left: (identifier)
+    right: (identifier)
+    body: (statement_block
+      (expression_statement
+        (call_expression
+          function: (identifier)
+          arguments: (arguments
+            (identifier))))))
+  (for_in_statement
+    left: (identifier)
+    right: (identifier)
+    body: (statement_block
+      (expression_statement
+        (call_expression
+          function: (identifier)
+          arguments: (arguments
+            (identifier)))))))

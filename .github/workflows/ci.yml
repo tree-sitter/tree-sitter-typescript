@@ -35,17 +35,18 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
       - name: Set up tree-sitter
-        uses: tree-sitter/setup-action/cli@v1
+        uses: tree-sitter/setup-action/cli@v2
       - name: Set up examples
         run: |-
           git clone https://github.com/desktop/desktop examples/desktop --single-branch --depth=1 --filter=blob:none
           git clone https://github.com/reduxjs/redux examples/redux --single-branch --depth=1 --filter=blob:none
           git clone https://github.com/microsoft/vscode examples/vscode --single-branch --depth=1 --filter=blob:none
       - name: Run tests
-        uses: tree-sitter/parser-test-action@v2
+        uses: tree-sitter/parser-test-action@v3
         with:
           test-rust: true
           test-node: true
+          node-version: 22
           test-python: true
           test-go: true
           test-swift: true
@@ -56,6 +57,51 @@ jobs:
           files: |
             examples/**/*.ts
             examples/**/*.tsx
-            !examples/redux/src/types/store.ts
-            !examples/vscode/src/bootstrap-window.ts
-            !examples/vscode/extensions/vscode-colorize-perf-tests/test/colorize-fixtures/test-checker.ts
+          invalid-files: |
+            examples/redux/src/types/store.ts
+            examples/redux/examples/counter-ts/src/App.test.tsx
+            examples/vscode/src/bootstrap-window.ts
+            examples/vscode/build/next/index.ts
+            examples/vscode/extensions/ipynb/src/notebookAttachmentCleaner.ts
+            examples/vscode/extensions/merge-conflict/src/documentTracker.ts
+            examples/vscode/extensions/terminal-suggest/src/upstreamSpecs.ts
+            examples/vscode/extensions/typescript-language-features/src/typescriptServiceClient.ts
+            examples/vscode/extensions/vscode-colorize-perf-tests/test/colorize-fixtures/test-checker.ts
+            examples/vscode/src/vs/base/browser/dom.ts
+            examples/vscode/src/vs/base/common/async.ts
+            examples/vscode/src/vs/base/common/observableInternal/observables/derivedImpl.ts
+            examples/vscode/src/vs/code/electron-browser/workbench/workbench.ts
+            examples/vscode/src/vs/editor/browser/widget/diffEditor/utils.ts
+            examples/vscode/src/vs/editor/common/model/tokens/treeSitter/treeSitterTree.ts
+            examples/vscode/src/vs/platform/dialogs/electron-main/dialogMainService.ts
+            examples/vscode/src/vs/platform/mcp/test/common/mcpManagementService.test.ts
+            examples/vscode/src/vs/platform/storage/common/storage.ts
+            examples/vscode/src/vs/sessions/electron-browser/sessions.ts
+            examples/vscode/src/vs/workbench/api/browser/mainThreadChatAgents2.ts
+            examples/vscode/src/vs/workbench/api/common/extHostCustomEditors.ts
+            examples/vscode/src/vs/workbench/api/common/extHostTesting.ts
+            examples/vscode/src/vs/workbench/api/test/browser/extHostTesting.test.ts
+            examples/vscode/src/vs/workbench/browser/layout.ts
+            examples/vscode/src/vs/workbench/browser/parts/editor/editorPane.ts
+            examples/vscode/src/vs/workbench/browser/parts/editor/editorsObserver.ts
+            examples/vscode/src/vs/workbench/contrib/chat/browser/chatSessions/chatSessionPickerActionItem.ts
+            examples/vscode/src/vs/workbench/contrib/chat/browser/widgetHosts/chatQuick.ts
+            examples/vscode/src/vs/workbench/contrib/chat/test/common/promptSyntax/hookSchema.test.ts
+            examples/vscode/src/vs/workbench/contrib/debug/browser/debugConfigurationManager.ts
+            examples/vscode/src/vs/workbench/contrib/debug/common/debugModel.ts
+            examples/vscode/src/vs/workbench/contrib/files/browser/views/explorerViewer.ts
+            examples/vscode/src/vs/workbench/contrib/inlineChat/browser/inlineChatWidget.ts
+            examples/vscode/src/vs/workbench/contrib/markdown/browser/markedKatexSupport.ts
+            examples/vscode/src/vs/workbench/contrib/markdown/common/markedKatexExtension.ts
+            examples/vscode/src/vs/workbench/contrib/notebook/browser/contrib/debug/notebookDebugDecorations.ts
+            examples/vscode/src/vs/workbench/contrib/notebook/browser/notebookCellLayoutManager.ts
+            examples/vscode/src/vs/workbench/contrib/tasks/common/problemCollectors.ts
+            examples/vscode/src/vs/workbench/contrib/terminal/test/browser/terminalProfileService.integrationTest.ts
+            examples/vscode/src/vs/workbench/contrib/terminalContrib/chatAgentTools/browser/tools/commandLineAnalyzer/autoApprove/commandLineAutoApprover.ts
+            examples/vscode/src/vs/workbench/contrib/testing/common/testCoverage.ts
+            examples/vscode/src/vs/workbench/contrib/webview/browser/webviewElement.ts
+            examples/vscode/src/vs/workbench/services/editor/browser/editorResolverService.ts
+            examples/vscode/src/vs/workbench/services/extensions/common/extensionManifestPropertiesService.ts
+            examples/vscode/src/vs/workbench/services/log/common/defaultLogLevels.ts
+            examples/vscode/src/vs/workbench/services/workingCopy/common/workingCopyService.ts
+            examples/vscode/src/vs/workbench/test/browser/componentFixtures/inlineCompletionsExtras.fixture.ts
