@@ -558,6 +558,12 @@ Type-only Export
 export type { UserType }
 export type { UserType } from "./User.js";
 export type { A, B, C as D } from 'mymodule';
+export type * from './module';
+export type * as Name from './module';
+export type * as default from './module';
+export type * as "string-name" from './module';
+export { type x };
+export { type x as y };
 
 ---
 
@@ -582,7 +588,35 @@ export type { A, B, C as D } from 'mymodule';
         (identifier)
         (identifier)))
     (string
-      (string_fragment))))
+      (string_fragment)))
+  (export_statement
+    (string
+      (string_fragment)))
+  (export_statement
+    (namespace_export
+      (identifier))
+    (string
+      (string_fragment)))
+  (export_statement
+    (namespace_export
+      (identifier))
+    (string
+      (string_fragment)))
+  (export_statement
+    (namespace_export
+      (string
+        (string_fragment)))
+    (string
+      (string_fragment)))
+  (export_statement
+    (export_clause
+      (export_specifier
+        (identifier))))
+  (export_statement
+    (export_clause
+      (export_specifier
+        (identifier)
+        (identifier)))))
 
 =======================================
 Flow Export Types
