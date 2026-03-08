@@ -1,4 +1,4 @@
-TS ?= tree-sitter
+TS ?= npx tree-sitter
 
 all install uninstall clean:
 	$(MAKE) -C typescript $@
