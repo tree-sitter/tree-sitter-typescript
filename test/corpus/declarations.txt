@@ -1467,3 +1467,31 @@ class Bar extends Foo {
         name: (property_identifier)
         parameters: (formal_parameters)
         body: (statement_block)))))
+
+=====================
+Export type star
+=====================
+
+export type * from 'foo';
+
+---
+
+(program
+  (export_statement
+    source: (string
+      (string_fragment))))
+
+=====================
+Export type star as namespace
+=====================
+
+export type * as Types from 'foo';
+
+---
+
+(program
+  (export_statement
+    (namespace_export
+      (identifier))
+    source: (string
+      (string_fragment))))
