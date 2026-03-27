@@ -8727,6 +8727,32 @@
       "type": "STRING",
       "value": "override"
     },
+    "variance": {
+      "type": "CHOICE",
+      "members": [
+        {
+          "type": "SEQ",
+          "members": [
+            {
+              "type": "STRING",
+              "value": "in"
+            },
+            {
+              "type": "STRING",
+              "value": "out"
+            }
+          ]
+        },
+        {
+          "type": "STRING",
+          "value": "in"
+        },
+        {
+          "type": "STRING",
+          "value": "out"
+        }
+      ]
+    },
     "required_parameter": {
       "type": "SEQ",
       "members": [
@@ -10592,6 +10618,18 @@
             {
               "type": "STRING",
               "value": "const"
+            },
+            {
+              "type": "BLANK"
+            }
+          ]
+        },
+        {
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "SYMBOL",
+              "name": "variance"
             },
             {
               "type": "BLANK"

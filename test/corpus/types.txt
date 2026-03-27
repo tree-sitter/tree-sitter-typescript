@@ -2214,3 +2214,82 @@ import something from 'foo.css' assert { type: 'css' }
           (property_identifier)
           (string
             (string_fragment)))))))
+
+=====================
+Variance annotations
+=====================
+
+interface I1<out A> {}
+interface I2<in B> {}
+interface I3<in out C> {}
+type T1<out A, in B, in out C> = A;
+
+---
+
+(program
+  (interface_declaration
+    (type_identifier)
+    (type_parameters
+      (type_parameter
+        (variance)
+        (type_identifier)))
+    (interface_body))
+  (interface_declaration
+    (type_identifier)
+    (type_parameters
+      (type_parameter
+        (variance)
+        (type_identifier)))
+    (interface_body))
+  (interface_declaration
+    (type_identifier)
+    (type_parameters
+      (type_parameter
+        (variance)
+        (type_identifier)))
+    (interface_body))
+  (type_alias_declaration
+    (type_identifier)
+    (type_parameters
+      (type_parameter
+        (variance)
+        (type_identifier))
+      (type_parameter
+        (variance)
+        (type_identifier))
+      (type_parameter
+        (variance)
+        (type_identifier)))
+    (type_identifier)))
+
+=====================
+Variance annotations with constraints and defaults
+=====================
+
+interface Queue<out A, out R = never> {}
+type Covariant<out T extends string> = T;
+
+---
+
+(program
+  (interface_declaration
+    (type_identifier)
+    (type_parameters
+      (type_parameter
+        (variance)
+        (type_identifier))
+      (type_parameter
+        (variance)
+        (type_identifier)
+        (default_type
+          (predefined_type))))
+    (interface_body))
+  (type_alias_declaration
+    (type_identifier)
+    (type_parameters
+      (type_parameter
+        (variance)
+        (type_identifier)
+        (constraint
+          (predefined_type))))
+    (type_identifier)))

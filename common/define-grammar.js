@@ -656,6 +656,15 @@ module.exports = function defineGrammar(dialect) {
 
       override_modifier: _ => 'override',
 
+      // TypeScript 4.7 variance annotations on type parameters.
+      // `in` marks a type parameter as contravariant, `out` as covariant,
+      // and `in out` explicitly marks it as invariant.
+      variance: _ => choice(
+        seq('in', 'out'),
+        'in',
+        'out',
+      ),
+
       required_parameter: $ => seq(
         $._parameter_name,
         field('type', optional($.type_annotation)),
@@ -1004,6 +1013,7 @@ module.exports = function defineGrammar(dialect) {
 
       type_parameter: $ => seq(
         optional('const'),
+        optional($.variance),
         field('name', $._type_identifier),
         field('constraint', optional($.constraint)),
         field('value', optional($.default_type)),
