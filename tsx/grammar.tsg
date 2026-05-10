@@ -1,0 +1,38 @@
+// TSX dialect - native DSL.
+// Inherits from common/define-grammar.tsg, which itself inherits the
+// JavaScript grammar. Mirrors `defineGrammar('tsx')`.
+
+let common = inherit("../common/define-grammar.tsg")
+
+grammar {
+    language: "tsx",
+    inherits: common,
+
+    conflicts: append(grammar_config(common, conflicts), [
+        [jsx_opening_element, type_parameter],
+        [jsx_namespace_name, primary_type],
+    ]),
+}
+
+// expression: TSX flavor. Adds the four TS-specific arms (no
+// type_assertion - that's typescript-only) plus the full JS expression
+// member list (including _jsx_element which typescript drops).
+override rule expression {
+    choice(
+        as_expression,
+        satisfies_expression,
+        instantiation_expression,
+        internal_module,
+        primary_expression,
+        _jsx_element,
+        assignment_expression,
+        augmented_assignment_expression,
+        await_expression,
+        unary_expression,
+        binary_expression,
+        ternary_expression,
+        update_expression,
+        new_expression,
+        yield_expression,
+    )
+}

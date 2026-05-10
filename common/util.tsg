@@ -1,0 +1,7 @@
+// Shared helpers for the TypeScript grammars.
+// Mirrors the functions defined at the bottom of common/define-grammar.js.
+
+macro sepBy1(s: rule_t, r: rule_t) rule_t { seq(r, repeat(seq(s, r))) }
+macro sepBy(s: rule_t, r: rule_t) rule_t { optional(sepBy1(s, r)) }
+macro commaSep1(r: rule_t) rule_t { sepBy1(",", r) }
+macro commaSep(r: rule_t) rule_t { sepBy(",", r) }

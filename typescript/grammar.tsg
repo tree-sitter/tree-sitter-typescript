@@ -1,0 +1,37 @@
+// TypeScript dialect (typescript) - native DSL.
+// Inherits from common/define-grammar.tsg, which itself inherits the
+// JavaScript grammar. Mirrors `defineGrammar('typescript')`.
+
+let common = inherit("../common/define-grammar.tsg")
+
+grammar {
+    language: "typescript",
+    inherits: common,
+
+    conflicts: append(grammar_config(common, conflicts), [
+        [primary_type, type_parameter],
+    ]),
+}
+
+// expression: TypeScript flavor. Adds the four TS-specific arms plus
+// type_assertion, then the JS expression members EXCLUDING _jsx_element.
+// JS doesn't need the filter so we list members explicitly.
+override rule expression {
+    choice(
+        as_expression,
+        satisfies_expression,
+        instantiation_expression,
+        internal_module,
+        type_assertion,
+        primary_expression,
+        assignment_expression,
+        augmented_assignment_expression,
+        await_expression,
+        unary_expression,
+        binary_expression,
+        ternary_expression,
+        update_expression,
+        new_expression,
+        yield_expression,
+    )
+}
