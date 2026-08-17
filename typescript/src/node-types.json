@@ -3393,6 +3393,16 @@
           }
         ]
       }
+    },
+    "children": {
+      "multiple": false,
+      "required": false,
+      "types": [
+        {
+          "type": "type_arguments",
+          "named": true
+        }
+      ]
     }
   },
   {
