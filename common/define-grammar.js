@@ -78,6 +78,7 @@ module.exports = function defineGrammar(dialect) {
 
       // This appears to be necessary to parse a parenthesized class expression
       [$.class],
+      [$._type_query_member_expression_in_type_annotation],
 
       [$.nested_identifier, $.nested_type_identifier, $.primary_expression],
       [$.nested_identifier, $.nested_type_identifier],
@@ -702,6 +703,7 @@ module.exports = function defineGrammar(dialect) {
           $.private_property_identifier,
           alias($.identifier, $.property_identifier),
         )),
+        optional($.type_arguments),
       ),
       _type_query_call_expression_in_type_annotation: $ => seq(
         field('function', choice(

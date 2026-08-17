@@ -8985,6 +8985,18 @@
               }
             ]
           }
+        },
+        {
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "SYMBOL",
+              "name": "type_arguments"
+            },
+            {
+              "type": "BLANK"
+            }
+          ]
         }
       ]
     },
@@ -11183,6 +11195,9 @@
     ],
     [
       "class"
+    ],
+    [
+      "_type_query_member_expression_in_type_annotation"
     ],
     [
       "nested_identifier",
