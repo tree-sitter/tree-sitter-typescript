@@ -1467,3 +1467,126 @@ class Bar extends Foo {
         name: (property_identifier)
         parameters: (formal_parameters)
         body: (statement_block)))))
+
+=========================================
+Auto-accessor modifier composed with others
+=========================================
+
+class A { accessor a = 1; }
+class B { public accessor b = 1; }
+class C { static accessor c = 1; }
+class D { public static accessor d = 1; }
+class E { static accessor #e = 1; }
+class F extends G { override accessor f = 1; }
+abstract class H { abstract accessor h: number; }
+
+---
+
+(program
+  (class_declaration
+    (type_identifier)
+    (class_body
+      (public_field_definition
+        (property_identifier)
+        (number))))
+  (class_declaration
+    (type_identifier)
+    (class_body
+      (public_field_definition
+        (accessibility_modifier)
+        (property_identifier)
+        (number))))
+  (class_declaration
+    (type_identifier)
+    (class_body
+      (public_field_definition
+        (property_identifier)
+        (number))))
+  (class_declaration
+    (type_identifier)
+    (class_body
+      (public_field_definition
+        (accessibility_modifier)
+        (property_identifier)
+        (number))))
+  (class_declaration
+    (type_identifier)
+    (class_body
+      (public_field_definition
+        (private_property_identifier)
+        (number))))
+  (class_declaration
+    (type_identifier)
+    (class_heritage
+      (extends_clause
+        (identifier)))
+    (class_body
+      (public_field_definition
+        (override_modifier)
+        (property_identifier)
+        (number))))
+  (abstract_class_declaration
+    (type_identifier)
+    (class_body
+      (public_field_definition
+        (property_identifier)
+        (type_annotation
+          (predefined_type))))))
+
+=========================================
+Class member named accessor
+=========================================
+
+class A { accessor() { return 1; } }
+class B { accessor; }
+class C { accessor = 1; }
+class D { accessor: number = 1; }
+class E { static accessor = 1; }
+class F { get accessor() { return 1; } }
+
+---
+
+(program
+  (class_declaration
+    (type_identifier)
+    (class_body
+      (method_definition
+        (property_identifier)
+        (formal_parameters)
+        (statement_block
+          (return_statement
+            (number))))))
+  (class_declaration
+    (type_identifier)
+    (class_body
+      (public_field_definition
+        (property_identifier))))
+  (class_declaration
+    (type_identifier)
+    (class_body
+      (public_field_definition
+        (property_identifier)
+        (number))))
+  (class_declaration
+    (type_identifier)
+    (class_body
+      (public_field_definition
+        (property_identifier)
+        (type_annotation
+          (predefined_type))
+        (number))))
+  (class_declaration
+    (type_identifier)
+    (class_body
+      (public_field_definition
+        (property_identifier)
+        (number))))
+  (class_declaration
+    (type_identifier)
+    (class_body
+      (method_definition
+        (property_identifier)
+        (formal_parameters)
+        (statement_block
+          (return_statement
+            (number)))))))
