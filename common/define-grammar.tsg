@@ -92,6 +92,12 @@ grammar {
         [_parameter_name, primary_type],
         [pattern, primary_type],
 
+        // `using x! : T` overlaps the JavaScript expression form beginning
+        // with the identifier `using`; retain both parses for LR generation.
+        [variable_declarator, primary_expression],
+        // The TS `using` assignment extension overlaps an initializer.
+        [assignment_expression, _initializer],
+
         [optional_tuple_parameter, primary_type],
         [rest_pattern, primary_type, primary_expression],
 
