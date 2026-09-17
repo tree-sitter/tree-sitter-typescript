@@ -19,11 +19,12 @@
   ],
   "files": [
     "binding.gyp",
+    "scripts/**",
     "prebuilds/**",
     "bindings/node/*",
     "queries/*",
-    "typescript/grammar.js",
-    "tsx/grammar.js",
+    "typescript/grammar.mjs",
+    "tsx/grammar.mjs",
     "tree-sitter.json",
     "typescript/package.json",
     "tsx/package.json",
@@ -35,10 +36,10 @@
   "dependencies": {
     "node-addon-api": "^8.2.2",
     "node-gyp-build": "^4.8.2",
-    "tree-sitter-javascript": "^0.23.1"
+    "tree-sitter-javascript": "file:../tree-sitter-javascript"
   },
   "peerDependencies": {
-    "tree-sitter": "^0.21.0"
+    "tree-sitter": "^0.25.0"
   },
   "peerDependenciesMeta": {
     "tree-sitter": {
@@ -48,12 +49,18 @@
   "devDependencies": {
     "eslint": ">=9.14.0",
     "eslint-config-treesitter": "^1.0.2",
-    "tree-sitter-cli": "^0.24.4",
+    "tree-sitter": "^0.25.0",
+    "tree-sitter-cli": "file:../tree-sitter/crates/cli/npm",
     "prebuildify": "^6.0.1"
   },
   "scripts": {
     "install": "node-gyp-build",
-    "lint": "eslint common/define-grammar.js",
+    "lint": "eslint common/grammar.mjs typescript/grammar.mjs tsx/grammar.mjs",
+    "tree-sitter": "node scripts/tree-sitter.cjs",
+    "generate": "npm run generate:typescript && npm run generate:tsx",
+    "generate:typescript": "npm run tree-sitter -- generate typescript/grammar.mjs -o typescript/src --js-runtime native",
+    "generate:tsx": "npm run tree-sitter -- generate tsx/grammar.mjs -o tsx/src --js-runtime native",
+    "test:corpus": "npm run tree-sitter -- test",
     "test": "node --test bindings/node/*_test.js"
   }
 }

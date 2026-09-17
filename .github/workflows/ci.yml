@@ -4,17 +4,17 @@ on:
   push:
     branches: [master]
     paths:
-      - "scripts.js"
+      - "scripts/**"
       - "common/*"
-      - "*/grammar.js"
+      - "*/grammar.mjs"
       - "*/src/**"
       - "bindings/**"
       - "binding.gyp"
   pull_request:
     paths:
-      - "scripts.js"
+      - "scripts/**"
       - "common/*"
-      - "*/grammar.js"
+      - "*/grammar.mjs"
       - "*/src/**"
       - "bindings/**"
       - "binding.gyp"

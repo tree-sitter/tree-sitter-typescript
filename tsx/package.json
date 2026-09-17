@@ -2,8 +2,8 @@
   "main": "../bindings/node/tsx",
   "private": true,
   "scripts": {
-    "build": "tree-sitter generate",
-    "prestart": "tree-sitter build --wasm",
-    "start": "tree-sitter playground"
+    "build": "npm --prefix .. run generate:tsx",
+    "prestart": "node ../scripts/tree-sitter.cjs build --wasm",
+    "start": "node ../scripts/tree-sitter.cjs playground"
   }
 }

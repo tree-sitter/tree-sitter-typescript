@@ -4,10 +4,14 @@ on:
   push:
     branches: [master]
     paths:
-      - common/define-grammar.js
+      - "**/grammar.mjs"
+      - eslint.config.mjs
+      - package*.json
   pull_request:
     paths:
-      - common/define-grammar.js
+      - "**/grammar.mjs"
+      - eslint.config.mjs
+      - package*.json
 
 jobs:
   lint:

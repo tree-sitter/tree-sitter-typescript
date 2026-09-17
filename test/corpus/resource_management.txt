@@ -1,0 +1,49 @@
+==================================
+Using declarations inherited from JavaScript
+:language(typescript)
+:language(tsx)
+==================================
+
+using resource = acquire();
+await using asyncResource: Disposable = acquireAsync();
+for (using item of resources) {}
+
+---
+
+(program
+  (using_declaration
+    (variable_declarator
+      (identifier)
+      (call_expression
+        (identifier)
+        (arguments))))
+  (using_declaration
+    (variable_declarator
+      (identifier)
+      (type_annotation
+        (type_identifier))
+      (call_expression
+        (identifier)
+        (arguments))))
+  (for_in_statement
+    (identifier)
+    (identifier)
+    (statement_block)))
+
+==================================
+Bindings named using
+:language(typescript)
+:language(tsx)
+==================================
+
+const using = acquire();
+
+---
+
+(program
+  (lexical_declaration
+    (variable_declarator
+      (identifier)
+      (call_expression
+        (identifier)
+        (arguments)))))
