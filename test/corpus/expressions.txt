@@ -381,6 +381,45 @@ Type assertions
       (property_identifier)))))
 
 ==========================================================
+JSX with bare ampersands in text
+:language(tsx)
+==========================================================
+
+<p>Shipping & Handling</p>;
+
+<p>a &b; c &#; d &#x; e &amp;</p>;
+
+<p>&</p>;
+
+---
+
+(program
+  (expression_statement
+    (jsx_element
+      (jsx_opening_element
+        (identifier))
+      (jsx_text)
+      (jsx_closing_element
+        (identifier))))
+  (expression_statement
+    (jsx_element
+      (jsx_opening_element
+        (identifier))
+      (jsx_text)
+      (html_character_reference)
+      (jsx_text)
+      (html_character_reference)
+      (jsx_closing_element
+        (identifier))))
+  (expression_statement
+    (jsx_element
+      (jsx_opening_element
+        (identifier))
+      (jsx_text)
+      (jsx_closing_element
+        (identifier)))))
+
+==========================================================
 Type arguments in JSX
 :language(tsx)
 ==========================================================
