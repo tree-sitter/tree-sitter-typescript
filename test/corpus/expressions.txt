@@ -424,3 +424,48 @@ a ? function(){ return true } : b;
           (return_statement
             (true))))
       (identifier))))
+
+==================================
+Automatic semicolon insertion before identifiers starting with in
+==================================
+
+a
+in_b
+a
+in1
+a
+in$
+a
+instanceof_
+a
+in b
+a
+instanceof B
+
+---
+
+(program
+  (expression_statement
+    (identifier))
+  (expression_statement
+    (identifier))
+  (expression_statement
+    (identifier))
+  (expression_statement
+    (identifier))
+  (expression_statement
+    (identifier))
+  (expression_statement
+    (identifier))
+  (expression_statement
+    (identifier))
+  (expression_statement
+    (identifier))
+  (expression_statement
+    (binary_expression
+      (identifier)
+      (identifier)))
+  (expression_statement
+    (binary_expression
+      (identifier)
+      (identifier))))
