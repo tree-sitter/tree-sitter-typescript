@@ -1565,6 +1565,31 @@ type t = [a: A, b?: B, ...c: C[]]
             (type_identifier)))))))
 
 ==================================
+Tuple labels named like predefined types
+==================================
+
+type t = [symbol: string, string?: number, number: never]
+
+---
+
+(program
+  (type_alias_declaration
+    (type_identifier)
+    (tuple_type
+      (required_parameter
+        (identifier)
+        (type_annotation
+          (predefined_type)))
+      (optional_parameter
+        (identifier)
+        (type_annotation
+          (predefined_type)))
+      (required_parameter
+        (identifier)
+        (type_annotation
+          (predefined_type))))))
+
+==================================
 Conditional types
 ==================================
 

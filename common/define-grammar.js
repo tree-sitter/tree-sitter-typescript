@@ -731,12 +731,12 @@ module.exports = function defineGrammar(dialect) {
       ),
 
       tuple_parameter: $ => seq(
-        field('name', choice($.identifier, $.rest_pattern)),
+        field('name', choice($.identifier, alias($.predefined_type, $.identifier), $.rest_pattern)),
         field('type', $.type_annotation),
       ),
 
       optional_tuple_parameter: $ => seq(
-        field('name', $.identifier),
+        field('name', choice($.identifier, alias($.predefined_type, $.identifier))),
         '?',
         field('type', $.type_annotation),
       ),
