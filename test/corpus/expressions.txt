@@ -424,3 +424,252 @@ a ? function(){ return true } : b;
           (return_statement
             (true))))
       (identifier))))
+
+==============================
+typeof import() in call type arguments
+==============================
+
+const a = f<typeof import('m')>();
+const b = f<typeof import('m'), Foo>();
+f<typeof import('x')>(1)
+hoist('a', async importOriginal => {
+  const actual = importOriginal<typeof import('vitest')>()
+})
+1
+a < typeof b;
+
+---
+
+(program
+  (lexical_declaration
+    (variable_declarator
+      name: (identifier)
+      value: (call_expression
+        function: (identifier)
+        type_arguments: (type_arguments
+          (type_query
+            (call_expression
+              function: (import)
+              arguments: (arguments
+                (string
+                  (string_fragment))))))
+        arguments: (arguments))))
+  (lexical_declaration
+    (variable_declarator
+      name: (identifier)
+      value: (call_expression
+        function: (identifier)
+        type_arguments: (type_arguments
+          (type_query
+            (call_expression
+              function: (import)
+              arguments: (arguments
+                (string
+                  (string_fragment)))))
+          (type_identifier))
+        arguments: (arguments))))
+  (expression_statement
+    (call_expression
+      function: (identifier)
+      type_arguments: (type_arguments
+        (type_query
+          (call_expression
+            function: (import)
+            arguments: (arguments
+              (string
+                (string_fragment))))))
+      arguments: (arguments
+        (number))))
+  (expression_statement
+    (call_expression
+      function: (identifier)
+      arguments: (arguments
+        (string
+          (string_fragment))
+        (arrow_function
+          parameter: (identifier)
+          body: (statement_block
+            (lexical_declaration
+              (variable_declarator
+                name: (identifier)
+                value: (call_expression
+                  function: (identifier)
+                  type_arguments: (type_arguments
+                    (type_query
+                      (call_expression
+                        function: (import)
+                        arguments: (arguments
+                          (string
+                            (string_fragment))))))
+                  arguments: (arguments)))))))))
+  (expression_statement
+    (number))
+  (expression_statement
+    (binary_expression
+      left: (identifier)
+      right: (unary_expression
+        argument: (identifier)))))
+
+==============================
+typeof import() nested in call type arguments
+==============================
+
+f<typeof import('m').x>();
+f<typeof import('m')['x']>();
+f<typeof import('m')[]>();
+f<(typeof import('m'))>();
+f<typeof import('m') | A>();
+f<keyof typeof import('m')>();
+new C<typeof import('m')>();
+
+---
+
+(program
+  (expression_statement
+    (call_expression
+      function: (identifier)
+      type_arguments: (type_arguments
+        (type_query
+          (member_expression
+            object: (call_expression
+              function: (import)
+              arguments: (arguments
+                (string
+                  (string_fragment))))
+            property: (property_identifier))))
+      arguments: (arguments)))
+  (expression_statement
+    (call_expression
+      function: (identifier)
+      type_arguments: (type_arguments
+        (lookup_type
+          (type_query
+            (call_expression
+              function: (import)
+              arguments: (arguments
+                (string
+                  (string_fragment)))))
+          (literal_type
+            (string
+              (string_fragment)))))
+      arguments: (arguments)))
+  (expression_statement
+    (call_expression
+      function: (identifier)
+      type_arguments: (type_arguments
+        (array_type
+          (type_query
+            (call_expression
+              function: (import)
+              arguments: (arguments
+                (string
+                  (string_fragment)))))))
+      arguments: (arguments)))
+  (expression_statement
+    (call_expression
+      function: (identifier)
+      type_arguments: (type_arguments
+        (parenthesized_type
+          (type_query
+            (call_expression
+              function: (import)
+              arguments: (arguments
+                (string
+                  (string_fragment)))))))
+      arguments: (arguments)))
+  (expression_statement
+    (call_expression
+      function: (identifier)
+      type_arguments: (type_arguments
+        (union_type
+          (type_query
+            (call_expression
+              function: (import)
+              arguments: (arguments
+                (string
+                  (string_fragment)))))
+          (type_identifier)))
+      arguments: (arguments)))
+  (expression_statement
+    (call_expression
+      function: (identifier)
+      type_arguments: (type_arguments
+        (index_type_query
+          (type_query
+            (call_expression
+              function: (import)
+              arguments: (arguments
+                (string
+                  (string_fragment)))))))
+      arguments: (arguments)))
+  (expression_statement
+    (new_expression
+      constructor: (identifier)
+      type_arguments: (type_arguments
+        (type_query
+          (call_expression
+            function: (import)
+            arguments: (arguments
+              (string
+                (string_fragment))))))
+      arguments: (arguments))))
+
+==============================
+typeof import() type argument does not break following statements
+==============================
+
+vi.mock('./api', async importOriginal => {
+  const actual = await importOriginal<typeof import('./api')>()
+  return { ...actual, fetchUser: vi.fn() }
+})
+
+describe('fetchUser', () => {})
+
+---
+
+(program
+  (expression_statement
+    (call_expression
+      function: (member_expression
+        object: (identifier)
+        property: (property_identifier))
+      arguments: (arguments
+        (string
+          (string_fragment))
+        (arrow_function
+          parameter: (identifier)
+          body: (statement_block
+            (lexical_declaration
+              (variable_declarator
+                name: (identifier)
+                value: (call_expression
+                  function: (await_expression
+                    (identifier))
+                  type_arguments: (type_arguments
+                    (type_query
+                      (call_expression
+                        function: (import)
+                        arguments: (arguments
+                          (string
+                            (string_fragment))))))
+                  arguments: (arguments))))
+            (return_statement
+              (object
+                (spread_element
+                  (identifier))
+                (pair
+                  key: (property_identifier)
+                  value: (call_expression
+                    function: (member_expression
+                      object: (identifier)
+                      property: (property_identifier))
+                    arguments: (arguments))))))))))
+  (expression_statement
+    (call_expression
+      function: (identifier)
+      arguments: (arguments
+        (string
+          (string_fragment))
+        (arrow_function
+          parameters: (formal_parameters)
+          body: (statement_block))))))
