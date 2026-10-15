@@ -16,6 +16,7 @@ module.exports = function defineGrammar(dialect) {
 
     precedences: ($, previous) => previous.concat([
       [
+        'type_query_call',
         'call',
         'instantiation',
         'unary',
@@ -867,7 +868,7 @@ module.exports = function defineGrammar(dialect) {
         optional('?.'),
         '[', field('index', choice($.predefined_type, $.string, $.number)), ']',
       ),
-      _type_query_call_expression: $ => seq(
+      _type_query_call_expression: $ => prec('type_query_call', seq(
         field('function', choice(
           $.import,
           $.identifier,
@@ -875,7 +876,7 @@ module.exports = function defineGrammar(dialect) {
           alias($._type_query_subscript_expression, $.subscript_expression),
         )),
         field('arguments', $.arguments),
-      ),
+      )),
       _type_query_instantiation_expression: $ => seq(
         field('function', choice(
           $.import,
