@@ -1,3 +1,5 @@
+; inherits: javascript
+
 ; Types
 
 (type_identifier) @type
