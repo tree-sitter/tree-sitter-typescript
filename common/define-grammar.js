@@ -141,8 +141,18 @@ module.exports = function defineGrammar(dialect) {
           seq(optional('static'), optional($.override_modifier), optional('readonly')),
           seq(optional('abstract'), optional('readonly')),
           seq(optional('readonly'), optional('abstract')),
-          optional('accessor'),
         ),
+        // `accessor` is a modifier that COMPOSES with the ones above, not a fourth
+        // alternative to them. As an arm of that choice it was mutually exclusive with
+        // `static`, `override`, `abstract` and `readonly`, so `static accessor x = 1`
+        // and `abstract accessor x: number` were rejected outright. Accessibility
+        // modifiers and decorators are matched in earlier clauses, which is why
+        // `public accessor` and `@dec accessor` were the only two that ever worked.
+        //
+        // `readonly accessor` is over-accepted here: TypeScript rejects it (TS1243).
+        // Excluding it would need the readonly-bearing arms split, and a grammar that
+        // accepts a little more than the type checker is harmless.
+        optional('accessor'),
         field('name', $._property_name),
         optional(choice('?', '!')),
         field('type', optional($.type_annotation)),
@@ -1082,6 +1092,13 @@ module.exports = function defineGrammar(dialect) {
         'protected',
         'override',
         'readonly',
+        // `accessor` is contextual, not reserved: a class member may be named
+        // `accessor`, and in the method form that is plain ECMAScript predating
+        // TypeScript. Without this row the anonymous `accessor` modifier token wins
+        // at the start of a member and the following `(`, `;`, `=` or `:` has no
+        // name to attach to. This is the same mechanism `static`, `readonly`,
+        // `override` and `declare` already rely on to be nameable.
+        'accessor',
         'module',
         'any',
         'number',
