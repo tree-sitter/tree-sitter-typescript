@@ -39,7 +39,7 @@ pub fn build(b: *std.Build) void {
         if (reuse_alloc) {
             grammar.addCMacro("TREE_SITTER_REUSE_ALLOCATOR", "");
         }
-        if (optimize == .Debug) {
+        if (optimize == .debug) {
             grammar.addCMacro("TREE_SITTER_DEBUG", "");
         }
 

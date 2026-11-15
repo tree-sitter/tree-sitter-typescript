@@ -1,11 +1,11 @@
 .{
     .name = .tree_sitter_typescript,
     .fingerprint = 0x075d53554e1018ef,
-    .minimum_zig_version = "0.16.0",
+    .minimum_zig_version = "0.17.0",
     .version = "0.23.2",
     .dependencies = .{
         .tree_sitter = .{
-            .url = "git+https://github.com/tree-sitter/zig-tree-sitter#b4b72c903e69998fc88e27e154a5e3cc9166551b",
+            .url = "git+https://github.com/Nikutsuki/zig-tree-sitter#706a6a27d80d4c9bc033973d6807f60479f30a58",
             .hash = "tree_sitter-0.25.0-8heIf51vAQConvVIgvm-9mVIbqh7yabZYqPXfOpS3YoG",
             .lazy = true,
         },
