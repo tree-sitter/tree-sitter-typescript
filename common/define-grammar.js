@@ -71,6 +71,7 @@ module.exports = function defineGrammar(dialect) {
     ]),
 
     conflicts: ($, previous) => previous.concat([
+      [$.expression, $._typed_template_call],
       [$.call_expression, $.instantiation_expression, $.binary_expression],
       [$.call_expression, $.instantiation_expression, $.binary_expression, $.unary_expression],
       [$.call_expression, $.instantiation_expression, $.binary_expression, $.update_expression],
@@ -171,15 +172,16 @@ module.exports = function defineGrammar(dialect) {
       ),
 
       call_expression: $ => choice(
-        prec('call', seq(
+        prec.dynamic(2, prec('call', seq(
           field('function', choice($.expression, $.import)),
           field('type_arguments', optional($.type_arguments)),
           field('arguments', $.arguments),
-        )),
+        ))),
         prec('template_call', seq(
           field('function', choice($.primary_expression, $.new_expression)),
           field('arguments', $.template_string),
         )),
+        $._typed_template_call,
         prec('member', seq(
           field('function', $.primary_expression),
           '?.',
@@ -187,6 +189,20 @@ module.exports = function defineGrammar(dialect) {
           field('arguments', $.arguments),
         )),
       ),
+
+      // A tagged template with type arguments, `sql<{ a: string }>`x``. The callee
+      // is a primary_expression, as for the template above, so a prefix, binary or
+      // update operator in front binds to the whole tagged template, as in tsc
+      // (`await sql<T>`x`` is await (sql<T>`x`)). It conflicts with reducing the
+      // callee to an `expression` for a call or an instantiation. Dynamic
+      // precedence settles the readings that both parse: the template wins over
+      // the comparison `(a < b) > template`, and a plain call outranks the
+      // template reading so `c ? f<R<S>>(d) : e` still reads as a call.
+      _typed_template_call: $ => prec.dynamic(1, seq(
+        field('function', choice($.primary_expression, $.new_expression)),
+        field('type_arguments', $.type_arguments),
+        field('arguments', $.template_string),
+      )),
 
       new_expression: $ => prec.right('new', seq(
         'new',
