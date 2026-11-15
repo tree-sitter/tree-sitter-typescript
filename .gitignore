@@ -1,13 +1,16 @@
 # Rust artifacts
 target/
+Cargo.lock
 
 # Node artifacts
 build/
 prebuilds/
 node_modules/
+package-lock.json
 
 # Swift artifacts
 .build/
+Package.resolved
 
 # Go artifacts
 _obj/
@@ -25,6 +28,13 @@ dist/
 *.dylib
 *.dll
 *.pc
+*.exp
+*.lib
+
+# Zig artifacts
+.zig-cache/
+zig-cache/
+zig-out/
 
 # Example dirs
 /examples/*/
