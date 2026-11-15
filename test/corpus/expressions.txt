@@ -325,6 +325,342 @@ f<T>(x)
         (identifier)))))
 
 ==================================
+Generic tagged templates
+==================================
+
+f<T>`x`
+a.b<T>`x`
+sql<{ value: string }>`SELECT ${c}`
+sql<string[]>`x`.execute(db)
+sql<typeof x>`x`
+sql<A | B>`x`
+sql<[A, B]>`x`
+
+---
+
+(program
+  (expression_statement
+    (call_expression
+      (identifier)
+      (type_arguments
+        (type_identifier))
+      (template_string
+        (string_fragment))))
+  (expression_statement
+    (call_expression
+      (member_expression
+        (identifier)
+        (property_identifier))
+      (type_arguments
+        (type_identifier))
+      (template_string
+        (string_fragment))))
+  (expression_statement
+    (call_expression
+      (identifier)
+      (type_arguments
+        (object_type
+          (property_signature
+            (property_identifier)
+            (type_annotation
+              (predefined_type)))))
+      (template_string
+        (string_fragment)
+        (template_substitution
+          (identifier)))))
+  (expression_statement
+    (call_expression
+      (member_expression
+        (call_expression
+          (identifier)
+          (type_arguments
+            (array_type
+              (predefined_type)))
+          (template_string
+            (string_fragment)))
+        (property_identifier))
+      (arguments
+        (identifier))))
+  (expression_statement
+    (call_expression
+      (identifier)
+      (type_arguments
+        (type_query
+          (identifier)))
+      (template_string
+        (string_fragment))))
+  (expression_statement
+    (call_expression
+      (identifier)
+      (type_arguments
+        (union_type
+          (type_identifier)
+          (type_identifier)))
+      (template_string
+        (string_fragment))))
+  (expression_statement
+    (call_expression
+      (identifier)
+      (type_arguments
+        (tuple_type
+          (type_identifier)
+          (type_identifier)))
+      (template_string
+        (string_fragment)))))
+
+==================================
+Generic tagged templates do not change calls, instantiations and comparisons
+==================================
+
+a<b>(c)
+a<b>;
+f<{ a: 1 }>(c)
+x = a < b > c
+
+---
+
+(program
+  (expression_statement
+    (call_expression
+      (identifier)
+      (type_arguments
+        (type_identifier))
+      (arguments
+        (identifier))))
+  (expression_statement
+    (instantiation_expression
+      (identifier)
+      (type_arguments
+        (type_identifier))))
+  (expression_statement
+    (call_expression
+      (identifier)
+      (type_arguments
+        (object_type
+          (property_signature
+            (property_identifier)
+            (type_annotation
+              (literal_type
+                (number))))))
+      (arguments
+        (identifier))))
+  (expression_statement
+    (assignment_expression
+      (identifier)
+      (binary_expression
+        (binary_expression
+          (identifier)
+          (identifier))
+        (identifier)))))
+
+==================================
+Generic tagged templates keep an await outside
+==================================
+
+await sql<T>`x`
+
+---
+
+(program
+  (expression_statement
+    (await_expression
+      (call_expression
+        (identifier)
+        (type_arguments
+          (type_identifier))
+        (template_string
+          (string_fragment))))))
+
+==================================
+Generic tagged templates keep a binary operator outside
+==================================
+
+a + b<c>`x`
+a * b<c>`x`
+
+---
+
+(program
+  (expression_statement
+    (binary_expression
+      (identifier)
+      (call_expression
+        (identifier)
+        (type_arguments
+          (type_identifier))
+        (template_string
+          (string_fragment)))))
+  (expression_statement
+    (binary_expression
+      (identifier)
+      (call_expression
+        (identifier)
+        (type_arguments
+          (type_identifier))
+        (template_string
+          (string_fragment))))))
+
+==================================
+Generic tagged templates keep a prefix operator outside
+==================================
+
+typeof a<b>`x`
+void a<b>`x`
+delete a<b>`x`
+!a<b>`x`
+-a<b>`x`
+
+---
+
+(program
+  (expression_statement
+    (unary_expression
+      (call_expression
+        (identifier)
+        (type_arguments
+          (type_identifier))
+        (template_string
+          (string_fragment)))))
+  (expression_statement
+    (unary_expression
+      (call_expression
+        (identifier)
+        (type_arguments
+          (type_identifier))
+        (template_string
+          (string_fragment)))))
+  (expression_statement
+    (unary_expression
+      (call_expression
+        (identifier)
+        (type_arguments
+          (type_identifier))
+        (template_string
+          (string_fragment)))))
+  (expression_statement
+    (binary_expression
+      (unary_expression
+        (call_expression
+          (identifier)
+          (type_arguments
+            (type_identifier))
+          (template_string
+            (string_fragment))))
+      (call_expression
+        (identifier)
+        (type_arguments
+          (type_identifier))
+        (template_string
+          (string_fragment))))))
+
+==================================
+Generic tagged templates keep a prefix update outside
+==================================
+
+++a<b>`x`
+
+---
+
+(program
+  (expression_statement
+    (update_expression
+      (call_expression
+        (identifier)
+        (type_arguments
+          (type_identifier))
+        (template_string
+          (string_fragment))))))
+
+==================================
+Postfix update before a comparison is not a tagged template
+==================================
+
+a++ <b>`x`
+
+---
+
+(program
+  (expression_statement
+    (binary_expression
+      (binary_expression
+        (update_expression
+          (identifier))
+        (identifier))
+      (template_string
+        (string_fragment)))))
+
+==================================
+Awaited generic tagged template with a member call
+==================================
+
+await sql<{ v: string }>`x`.execute(db)
+
+---
+
+(program
+  (expression_statement
+    (await_expression
+      (call_expression
+        (member_expression
+          (call_expression
+            (identifier)
+            (type_arguments
+              (object_type
+                (property_signature
+                  (property_identifier)
+                  (type_annotation
+                    (predefined_type)))))
+            (template_string
+              (string_fragment)))
+          (property_identifier))
+        (arguments
+          (identifier))))))
+
+==================================
+Generic calls with nested type arguments in a conditional
+==================================
+
+x = c ? f<R<S>>(d) : e
+x = c ? a.b<R<S, U>>(d) : e
+
+---
+
+(program
+  (expression_statement
+    (assignment_expression
+      (identifier)
+      (ternary_expression
+        (identifier)
+        (call_expression
+          (identifier)
+          (type_arguments
+            (generic_type
+              (type_identifier)
+              (type_arguments
+                (type_identifier))))
+          (arguments
+            (identifier)))
+        (identifier))))
+  (expression_statement
+    (assignment_expression
+      (identifier)
+      (ternary_expression
+        (identifier)
+        (call_expression
+          (member_expression
+            (identifier)
+            (property_identifier))
+          (type_arguments
+            (generic_type
+              (type_identifier)
+              (type_arguments
+                (type_identifier)
+                (type_identifier))))
+          (arguments
+            (identifier)))
+        (identifier)))))
+
+==================================
 Instantiation expressions
 ==================================
 
