@@ -63,14 +63,34 @@ module.exports = function defineGrammar(dialect) {
       [$.decorator_call_expression, $.decorator],
       [$.literal_type, $.pattern],
       [$.predefined_type, $.pattern],
-      [$.call_expression, $._type_query_call_expression],
-      [$.call_expression, $._type_query_call_expression_in_type_annotation],
       [$.new_expression, $.primary_expression],
       [$.meta_property, $.primary_expression],
       [$.construct_signature, $._property_name],
     ]),
 
     conflicts: ($, previous) => previous.concat([
+      // Both pairs moved here from `precedences`, where they ranked the two rules
+      // statically. `call_expression` takes `import` as a `function` directly
+      // (`choice($.expression, $.import)`), so with `import` -- and only with
+      // `import`, since an `identifier` must reduce to `primary_expression`
+      // first -- `call_expression` and the type-side rule both reach
+      // `import arguments •` in a single state. A reduce/reduce conflict is
+      // settled by precedence BEFORE any declared conflict is consulted, so the
+      // ordering killed the type-side reading outright and the parser committed
+      // to reading `f<...>` as a comparison, then failed at `>()`. Every other
+      // position parses because the comparison reading is not live there. As
+      // conflicts instead, GLR carries both readings until `>` decides -- which
+      // is what already happens for `f<typeof g('m')>()`, whose `identifier`
+      // function never pairs this way.
+      //
+      // `_type_query_call_expression` is the `typeof import('m')` half;
+      // `_type_query_call_expression_in_type_annotation` is the bare
+      // `import('m')` half, which `type` reaches via
+      // `prec(-1, alias(..., $.call_expression))`. Same cause, same fix, and the
+      // two are kept together so one regeneration covers both.
+      [$.call_expression, $._type_query_call_expression],
+      [$.call_expression, $._type_query_call_expression_in_type_annotation],
+
       [$.call_expression, $.instantiation_expression, $.binary_expression],
       [$.call_expression, $.instantiation_expression, $.binary_expression, $.unary_expression],
       [$.call_expression, $.instantiation_expression, $.binary_expression, $.update_expression],
