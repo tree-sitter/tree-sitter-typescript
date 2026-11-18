@@ -2214,3 +2214,106 @@ import something from 'foo.css' assert { type: 'css' }
           (property_identifier)
           (string
             (string_fragment)))))))
+
+========================================
+Typeof import as the first type argument
+========================================
+
+const a = f<typeof import('m')>();
+const b = await f<typeof import('m')>();
+const c = f<typeof import('m'), Foo>();
+const d = f<typeof import('m')>;
+
+---
+
+(program
+  (lexical_declaration
+    (variable_declarator
+      (identifier)
+      (call_expression
+        (identifier)
+        (type_arguments
+          (type_query
+            (call_expression
+              (import)
+              (arguments
+                (string
+                  (string_fragment))))))
+        (arguments))))
+  (lexical_declaration
+    (variable_declarator
+      (identifier)
+      (call_expression
+        (await_expression
+          (identifier))
+        (type_arguments
+          (type_query
+            (call_expression
+              (import)
+              (arguments
+                (string
+                  (string_fragment))))))
+        (arguments))))
+  (lexical_declaration
+    (variable_declarator
+      (identifier)
+      (call_expression
+        (identifier)
+        (type_arguments
+          (type_query
+            (call_expression
+              (import)
+              (arguments
+                (string
+                  (string_fragment)))))
+          (type_identifier))
+        (arguments))))
+  (lexical_declaration
+    (variable_declarator
+      (identifier)
+      (instantiation_expression
+        (identifier)
+        (type_arguments
+          (type_query
+            (call_expression
+              (import)
+              (arguments
+                (string
+                  (string_fragment))))))))))
+
+============================================
+Bare import as the first type argument
+============================================
+
+const a = f<import('m')>();
+const b = f<import('m').X>();
+
+---
+
+(program
+  (lexical_declaration
+    (variable_declarator
+      (identifier)
+      (call_expression
+        (identifier)
+        (type_arguments
+          (call_expression
+            (import)
+            (arguments
+              (string
+                (string_fragment)))))
+        (arguments))))
+  (lexical_declaration
+    (variable_declarator
+      (identifier)
+      (call_expression
+        (identifier)
+        (type_arguments
+          (member_expression
+            (call_expression
+              (import)
+              (arguments
+                (string
+                  (string_fragment))))
+            (property_identifier)))
+        (arguments)))))
