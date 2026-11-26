@@ -726,8 +726,6 @@ module.exports = function defineGrammar(dialect) {
         $.readonly_type,
         $.constructor_type,
         $.infer_type,
-        prec(-1, alias($._type_query_member_expression_in_type_annotation, $.member_expression)),
-        prec(-1, alias($._type_query_call_expression_in_type_annotation, $.call_expression)),
       ),
 
       tuple_parameter: $ => seq(
@@ -782,6 +780,11 @@ module.exports = function defineGrammar(dialect) {
         $.intersection_type,
         $.union_type,
         'const',
+        // `import('m').T` is a type like any other: it can be an array's element,
+        // `keyof`'s operand, a union's member. In `type` alone it could only stand
+        // on its own, so `import('m').T[]` failed to parse.
+        prec(-1, alias($._type_query_member_expression_in_type_annotation, $.member_expression)),
+        prec(-1, alias($._type_query_call_expression_in_type_annotation, $.call_expression)),
       ),
 
       template_type: $ => seq('${', choice($.primary_type, $.infer_type), '}'),

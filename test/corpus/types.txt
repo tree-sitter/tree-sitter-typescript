@@ -2214,3 +2214,58 @@ import something from 'foo.css' assert { type: 'css' }
           (property_identifier)
           (string
             (string_fragment)))))))
+
+=======================================
+Import types as array elements and operands
+=======================================
+
+const a: import('m').T[] = [];
+let b: keyof import('m').T;
+type C = import('m').T | import('n').U[];
+
+---
+
+(program
+  (lexical_declaration
+    (variable_declarator
+      (identifier)
+      (type_annotation
+        (array_type
+          (member_expression
+            (call_expression
+              (import)
+              (arguments
+                (string
+                  (string_fragment))))
+            (property_identifier))))
+      (array)))
+  (lexical_declaration
+    (variable_declarator
+      (identifier)
+      (type_annotation
+        (index_type_query
+          (member_expression
+            (call_expression
+              (import)
+              (arguments
+                (string
+                  (string_fragment))))
+            (property_identifier))))))
+  (type_alias_declaration
+    (type_identifier)
+    (union_type
+      (member_expression
+        (call_expression
+          (import)
+          (arguments
+            (string
+              (string_fragment))))
+        (property_identifier))
+      (array_type
+        (member_expression
+          (call_expression
+            (import)
+            (arguments
+              (string
+                (string_fragment))))
+          (property_identifier))))))
