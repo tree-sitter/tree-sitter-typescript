@@ -276,6 +276,10 @@
         "named": true
       },
       {
+        "type": "call_expression",
+        "named": true
+      },
+      {
         "type": "conditional_type",
         "named": true
       },
@@ -309,6 +313,10 @@
       },
       {
         "type": "lookup_type",
+        "named": true
+      },
+      {
+        "type": "member_expression",
         "named": true
       },
       {
@@ -444,10 +452,6 @@
     "named": true,
     "subtypes": [
       {
-        "type": "call_expression",
-        "named": true
-      },
-      {
         "type": "constructor_type",
         "named": true
       },
@@ -457,10 +461,6 @@
       },
       {
         "type": "infer_type",
-        "named": true
-      },
-      {
-        "type": "member_expression",
         "named": true
       },
       {
